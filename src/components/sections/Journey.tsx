@@ -153,7 +153,7 @@ export default function Journey() {
               className={`px-6 py-3 rounded-2xl font-medium transition-all duration-300 ${
                 activeStory === index
                   ? 'bg-gradient-to-r from-green-400/20 to-blue-400/20 text-green-400 border-2 border-green-400/50'
-                  : 'glass-card text-stone-700 hover:bg-white/80'
+                  : 'bg-stone-200/80 text-stone-700 hover:bg-stone-300/80 border border-stone-300'
               }`}
             >
               <div className="text-sm">{story.title}</div>

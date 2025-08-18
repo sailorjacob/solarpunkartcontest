@@ -77,6 +77,59 @@
       padding-bottom: 6rem;
     }
   }
+
+  .subheading {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  @media (min-width: 1024px) {
+    .subheading {
+      font-size: 4rem;
+    }
+  }
+
+  .text-gradient-premium {
+    background: linear-gradient(135deg, #8B7355 0%, #A0956B 50%, #94A36B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .pattern-grid {
+    background-image: 
+      linear-gradient(rgba(139, 115, 85, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 115, 85, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .mesh-gradient {
+    background: linear-gradient(135deg, #fafaf9 0%, #f5f5f4 50%, #e7e5e4 100%);
+  }
+
+  .pattern-dots {
+    background-image: radial-gradient(circle, rgba(139, 115, 85, 0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .floating {
+    animation: floating 6s ease-in-out infinite;
+  }
+
+  @keyframes floating {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* Earth tone color utilities */
+  .bg-mars-500 { background-color: #8B7355; }
+  .bg-mars-400 { background-color: #A0956B; }
+  .bg-sage-400 { background-color: #94A36B; }
+  .bg-azure-400 { background-color: #7B8FA3; }
+  .text-mars-500 { color: #8B7355; }
+  .text-sage-400 { color: #94A36B; }
+  .border-mars-500 { border-color: #8B7355; }
 }
 
 /* Custom scrollbar */
