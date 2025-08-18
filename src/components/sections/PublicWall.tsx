@@ -192,7 +192,7 @@ export default function PublicWall() {
     } else {
       // Fallback gray background
       ctx.fillStyle = '#f0f0f0';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
   };
 
