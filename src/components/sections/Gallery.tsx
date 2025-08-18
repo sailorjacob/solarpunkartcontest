@@ -136,7 +136,7 @@ const visionImages = [
 ];
 
 export default function Gallery() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(6); // Start with image 07 (lush rocket station)
   const [showInfo, setShowInfo] = useState(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -149,7 +149,7 @@ export default function Gallery() {
     }, 8000); // 8 seconds per image
     
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, visionImages.length]);
 
   const nextImage = () => {
     setCurrentIndex((prev) => (prev + 1) % visionImages.length);
@@ -164,7 +164,28 @@ export default function Gallery() {
   const currentImage = visionImages[currentIndex];
 
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-black">
+    <section 
+      className="relative w-full h-screen overflow-hidden bg-black"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          prevImage();
+        }
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          nextImage();
+        }
+        if (e.key === ' ') {
+          e.preventDefault();
+          setIsAutoPlaying(!isAutoPlaying);
+        }
+        if (e.key === 'i' || e.key === 'I') {
+          e.preventDefault();
+          setShowInfo(!showInfo);
+        }
+      }}
+    >
       {/* Fullscreen Image Display */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -218,16 +239,16 @@ export default function Gallery() {
 
       {/* Info Toggle */}
       <div className="absolute top-8 right-8 z-20 flex gap-3">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
           onClick={() => setIsAutoPlaying(!isAutoPlaying)}
           className={`p-3 backdrop-blur-sm border border-white/20 rounded-full text-white transition-all ${
             isAutoPlaying ? 'bg-emerald-500/30' : 'bg-black/30'
           }`}
         >
           {isAutoPlaying ? <Pause size={20} /> : <Play size={20} />}
-        </motion.button>
+            </motion.button>
         
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -237,7 +258,7 @@ export default function Gallery() {
         >
           <Info size={20} />
         </motion.button>
-      </div>
+                  </div>
 
       {/* Progress Indicators */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
@@ -281,21 +302,21 @@ export default function Gallery() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
-                  >
+                    >
                     <Download size={16} />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     onClick={() => setShowInfo(false)}
                     className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
-                  >
+                    >
                     <X size={16} />
-                  </motion.button>
+                    </motion.button>
                 </div>
               </div>
               <p className="text-gray-200 leading-relaxed">
@@ -313,29 +334,7 @@ export default function Gallery() {
         </div>
       </div>
 
-      {/* Keyboard Navigation */}
-      <div 
-        className="absolute inset-0 z-0"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'ArrowLeft') {
-            e.preventDefault();
-            prevImage();
-          }
-          if (e.key === 'ArrowRight') {
-            e.preventDefault();
-            nextImage();
-          }
-          if (e.key === ' ') {
-            e.preventDefault();
-            setIsAutoPlaying(!isAutoPlaying);
-          }
-          if (e.key === 'i' || e.key === 'I') {
-            e.preventDefault();
-            setShowInfo(!showInfo);
-          }
-        }}
-      />
+
     </section>
   );
 }
