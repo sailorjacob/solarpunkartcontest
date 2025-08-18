@@ -1,294 +1,302 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 export default function PublicWall() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const backgroundImageRef = useRef<HTMLImageElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isPainting, setIsPainting] = useState(false);
+  const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
+  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
 
   // Ink blue color and settings  
-  const neonBlue = '#1E40AF'; // Ink blue instead of cyan
+  const inkBlue = '#1E40AF';
   const sprayDensity = 100;
   const sprayRadius = 15;
   const glowBlur = 20;
 
-  // Initialize canvas when component first loads
-  const initializeCanvas = () => {
-    if (!canvasRef.current || isImageLoaded) return;
+  // Gallery canvas frame URLs
+  const galleryFrames = [
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe1.png',
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe2.png',
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe3.png',
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe4.png'
+  ];
+
+  // Initialize fullscreen canvas for painting
+  const initializePaintingCanvas = () => {
+    if (!canvasRef.current) return;
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = 1400;
-    canvas.height = 800;
-
-    // Load background image
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
+    canvas.width = 1600;
+    canvas.height = 900;
     
-    img.onload = () => {
-      if (!canvasRef.current) return;
-      
-      // Calculate dimensions to fit the image properly
-      const imgAspect = img.width / img.height;
-      const canvasAspect = canvas.width / canvas.height;
-      
-      let drawWidth, drawHeight, offsetX, offsetY;
-      
-      if (imgAspect > canvasAspect) {
-        drawWidth = canvas.width;
-        drawHeight = canvas.width / imgAspect;
-        offsetX = 0;
-        offsetY = (canvas.height - drawHeight) / 2;
-      } else {
-        drawHeight = canvas.height;
-        drawWidth = canvas.height * imgAspect;
-        offsetX = (canvas.width - drawWidth) / 2;
-        offsetY = 0;
-      }
-      
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-      backgroundImageRef.current = img;
-      setIsImageLoaded(true);
-    };
-    
-    img.onerror = () => {
-      // Fallback: gray background
-      ctx.fillStyle = '#f0f0f0';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      setIsImageLoaded(true);
-    };
-    
-    img.src = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/galleryfield.png';
+    // Set background to white
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
 
-  // Set base drawing styles
-  const setBaseStyles = (ctx: CanvasRenderingContext2D) => {
-    ctx.shadowColor = neonBlue;
-    ctx.shadowBlur = glowBlur;
-    ctx.fillStyle = neonBlue;
-    ctx.strokeStyle = neonBlue;
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.globalAlpha = 1;
+  const startPainting = () => {
+    setIsPainting(true);
+    setTimeout(() => {
+      initializePaintingCanvas();
+    }, 100);
   };
 
-  // Get mouse position relative to canvas
-  const getMousePos = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canvasRef.current) return { x: 0, y: 0 };
-    const rect = canvasRef.current.getBoundingClientRect();
-    return {
-      x: (e.clientX - rect.left) * (1200 / rect.width),
-      y: (e.clientY - rect.top) * (600 / rect.height)
-    };
-  };
-
-  // Enhanced spray function
-  const spray = (x: number, y: number) => {
-    if (!canvasRef.current) return;
-    const ctx = canvasRef.current.getContext('2d');
-    if (!ctx) return;
-
-    // Solid base layer
-    ctx.save();
-    setBaseStyles(ctx);
-    for (let i = 0; i < sprayDensity; i++) {
-      const offsetX = (Math.random() * 2 - 1) * sprayRadius * 0.5;
-      const offsetY = (Math.random() * 2 - 1) * sprayRadius * 0.5;
-      const particleSize = Math.random() * 1.5 + 0.5;
-      ctx.beginPath();
-      ctx.arc(x + offsetX, y + offsetY, particleSize, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
-    // Fainter outer particles
-    ctx.globalAlpha = 0.3;
-    for (let i = 0; i < sprayDensity / 2; i++) {
-      const offsetX = (Math.random() * 2 - 1) * sprayRadius;
-      const offsetY = (Math.random() * 2 - 1) * sprayRadius;
-      const particleSize = Math.random() * 2 + 1;
-      ctx.beginPath();
-      ctx.arc(x + offsetX, y + offsetY, particleSize, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.restore();
-
-    // Glow overlay
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.globalAlpha = 0.5;
-    ctx.shadowBlur = glowBlur * 1.5;
-    ctx.shadowColor = neonBlue;
-    ctx.fillStyle = neonBlue;
-    
-    for (let i = 0; i < sprayDensity / 2; i++) {
-      const offsetX = (Math.random() * 2 - 1) * sprayRadius * 0.7;
-      const offsetY = (Math.random() * 2 - 1) * sprayRadius * 0.7;
-      const particleSize = Math.random() * 1.5 + 0.5;
-      ctx.beginPath();
-      ctx.arc(x + offsetX, y + offsetY, particleSize, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.restore();
-  };
-
-  // Drawing event handlers
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isImageLoaded) {
-      initializeCanvas();
-      return;
-    }
-    
     setIsDrawing(true);
-    const pos = getMousePos(e);
-    spray(pos.x, pos.y);
+    draw(e);
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !isImageLoaded) return;
-    const pos = getMousePos(e);
-    spray(pos.x, pos.y);
+    if (!isDrawing || !canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    // Create spray paint effect
+    ctx.globalCompositeOperation = 'source-over';
+    
+    for (let i = 0; i < sprayDensity; i++) {
+      const offsetX = (Math.random() - 0.5) * sprayRadius * 2;
+      const offsetY = (Math.random() - 0.5) * sprayRadius * 2;
+      const distance = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+      
+      if (distance <= sprayRadius) {
+        const opacity = Math.max(0, 1 - distance / sprayRadius) * 0.1;
+        ctx.fillStyle = `rgba(30, 64, 175, ${opacity})`;
+        ctx.fillRect(x + offsetX, y + offsetY, 1, 1);
+      }
+    }
+
+    // Add glow effect
+    ctx.shadowColor = inkBlue;
+    ctx.shadowBlur = glowBlur;
+    ctx.fillStyle = inkBlue;
+    ctx.globalAlpha = 0.03;
+    ctx.beginPath();
+    ctx.arc(x, y, sprayRadius * 0.7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
   };
 
   const stopDrawing = () => {
     setIsDrawing(false);
   };
 
-  // Clear drawings (keep background image)
   const clearCanvas = () => {
     if (!canvasRef.current) return;
-    const ctx = canvasRef.current.getContext('2d');
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    
-    if (backgroundImageRef.current) {
-      // Redraw background image
-      const canvas = canvasRef.current;
-      const img = backgroundImageRef.current;
-      const imgAspect = img.width / img.height;
-      const canvasAspect = canvas.width / canvas.height;
-      
-      let drawWidth, drawHeight, offsetX, offsetY;
-      
-      if (imgAspect > canvasAspect) {
-        drawWidth = canvas.width;
-        drawHeight = canvas.width / imgAspect;
-        offsetX = 0;
-        offsetY = (canvas.height - drawHeight) / 2;
-      } else {
-        drawHeight = canvas.height;
-        drawWidth = canvas.height * imgAspect;
-        offsetX = (canvas.width - drawWidth) / 2;
-        offsetY = 0;
-      }
-      
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-    } else {
-      // Fallback gray background
-      ctx.fillStyle = '#f0f0f0';
-      ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    }
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
 
-  // Save as PNG
-  const saveArt = () => {
+  const submitArt = () => {
     if (!canvasRef.current) return;
-    const link = document.createElement('a');
-    link.download = 'sojourn-neon-art.png';
-    link.href = canvasRef.current.toDataURL('image/png');
-    link.click();
+    
+    // Get canvas as data URL
+    const artworkData = canvasRef.current.toDataURL('image/png');
+    
+    // Add to submissions (in real app, this would go to your backend)
+    const newSubmissions = [...artSubmissions];
+    newSubmissions[currentCanvasIndex] = artworkData;
+    setArtSubmissions(newSubmissions);
+    
+    // Move to next canvas position
+    setCurrentCanvasIndex((prev) => (prev + 1) % 4);
+    
+    // Return to gallery view
+    setIsPainting(false);
   };
 
-  return (
-    <section className="min-h-screen bg-stone-50 py-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-8"
-        >
-          <h2 className="text-3xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-blue-600">
-            COLLABORATIVE ART WALL
-          </h2>
-          <p className="text-lg text-stone-600 max-w-2xl mx-auto">
-            Express your vision of Sojourn with ink blue spraypaint.
-          </p>
-        </motion.div>
+  if (!isPainting) {
+    // Gallery Entrance View
+    return (
+      <section className="min-h-screen bg-gradient-to-br from-stone-100 to-stone-200 relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 pattern-grid opacity-10" />
+        
+        <div className="relative z-10 min-h-screen flex flex-col">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center pt-20 pb-12"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-blue-600">
+              COLLABORATIVE GALLERY
+            </h2>
+            <p className="text-lg text-stone-600 max-w-2xl mx-auto px-6">
+              Create digital art that will be displayed in our virtual gallery space
+            </p>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-white rounded-2xl shadow-2xl p-8"
-        >
-          {/* Controls */}
-          <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full border-2 border-stone-300" 
-                   style={{ backgroundColor: neonBlue, boxShadow: `0 0 20px ${neonBlue}` }}>
+          {/* Gallery Display */}
+          <div className="flex-1 flex items-center justify-center px-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="relative max-w-6xl w-full"
+            >
+              {/* Base Gallery Image */}
+              <div className="relative w-full">
+                <Image
+                  src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png"
+                  alt="Virtual Gallery with Canvas Frames"
+                  width={1200}
+                  height={800}
+                  className="w-full h-auto rounded-2xl shadow-2xl"
+                  priority
+                />
+                
+                {/* Overlay submitted artworks */}
+                {artSubmissions.map((artwork, index) => artwork && (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={galleryFrames[index]}
+                      alt={`Gallery Frame ${index + 1}`}
+                      width={1200}
+                      height={800}
+                      className="w-full h-auto"
+                    />
+                  </motion.div>
+                ))}
               </div>
-              <span className="text-sm font-semibold text-stone-700 uppercase tracking-wider">
-                Neon Blue Spraypaint
-              </span>
-            </div>
 
-            <div className="flex items-center gap-3">
-              <button
-                onClick={clearCanvas}
-                className="px-6 py-2 bg-stone-800 text-stone-100 rounded-full font-mono text-sm uppercase tracking-wider hover:bg-stone-900 transition-all duration-200 border border-stone-700"
+              {/* Start Painting Button */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+                className="absolute inset-0 flex items-center justify-center"
               >
-                Clear
-              </button>
-              <button
-                onClick={saveArt}
-                className="px-6 py-2 bg-stone-700 text-stone-100 rounded-full font-mono text-sm uppercase tracking-wider hover:bg-stone-800 transition-all duration-200 border border-stone-600"
-              >
-                Save
-              </button>
-            </div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={startPainting}
+                  className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full shadow-2xl hover:bg-blue-700 transition-all duration-300 backdrop-blur-sm border border-white/20"
+                >
+                  Start Creating Art
+                </motion.button>
+              </motion.div>
+            </motion.div>
           </div>
 
           {/* Instructions */}
-          <div className="mb-4 p-3 bg-stone-100 rounded-lg">
-            <p className="text-sm text-stone-600 text-center">
-              <strong>Instructions:</strong> Click anywhere to initialize the canvas • 
-              Click and drag to spray ink blue paint • 
-              Your art contributes to the collective Sojourn vision
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="text-center pb-20"
+          >
+            <p className="text-sm text-stone-500 max-w-xl mx-auto px-6">
+              Click "Start Creating Art" to enter the painting mode. Your artwork will be displayed on one of the gallery canvases.
             </p>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+
+  // Fullscreen Painting Mode
+  return (
+    <section className="fixed inset-0 bg-white z-50 overflow-hidden">
+      {/* Fullscreen Canvas */}
+      <div className="absolute inset-0">
+        <canvas
+          ref={canvasRef}
+          width={1600}
+          height={900}
+          className="w-full h-full cursor-crosshair"
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseLeave={stopDrawing}
+          style={{ backgroundColor: '#ffffff' }}
+        />
+      </div>
+
+      {/* Floating Controls */}
+      <div className="absolute top-8 left-8 right-8 z-10">
+        <div className="flex justify-between items-center">
+          {/* Title */}
+          <div className="bg-black/20 backdrop-blur-sm rounded-full px-6 py-3">
+            <h3 className="text-white font-semibold text-lg">Paint Your Vision</h3>
           </div>
 
-          {/* Canvas */}
-          <div className="border-2 border-stone-300 rounded-lg overflow-hidden">
-            <canvas
-              ref={canvasRef}
-              width={1400}
-              height={800}
-              className="w-full max-w-full h-auto cursor-crosshair"
-              onMouseDown={startDrawing}
-              onMouseMove={draw}
-              onMouseUp={stopDrawing}
-              onMouseLeave={stopDrawing}
-              style={{ backgroundColor: '#f0f0f0' }}
-            />
+          {/* Controls */}
+          <div className="flex gap-3">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={clearCanvas}
+              className="px-6 py-3 bg-red-500/80 text-white rounded-full font-medium backdrop-blur-sm hover:bg-red-600/80 transition-all"
+            >
+              Clear
+            </motion.button>
+            
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsPainting(false)}
+              className="px-6 py-3 bg-gray-500/80 text-white rounded-full font-medium backdrop-blur-sm hover:bg-gray-600/80 transition-all"
+            >
+              Back to Gallery
+            </motion.button>
+            
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={submitArt}
+              className="px-6 py-3 bg-blue-600/80 text-white rounded-full font-medium backdrop-blur-sm hover:bg-blue-700/80 transition-all"
+            >
+              Submit to Gallery
+            </motion.button>
           </div>
+        </div>
+      </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-stone-500 font-mono uppercase tracking-wide">
-              Advanced ink blue spraypaint with realistic effects • 
-              Glowing particles and spray patterns • 
-              Paint your vision of sustainable interstellar civilization
-            </p>
-          </div>
-        </motion.div>
+      {/* Instructions */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="bg-black/20 backdrop-blur-sm rounded-lg px-6 py-3">
+          <p className="text-white text-sm text-center">
+            Click and drag to paint with ink blue • Your art will be displayed in the gallery
+          </p>
+        </div>
+      </div>
+
+      {/* Canvas Info */}
+      <div className="absolute bottom-8 right-8 z-10">
+        <div className="bg-black/20 backdrop-blur-sm rounded-lg px-4 py-2">
+          <p className="text-white text-xs font-mono">
+            Canvas {currentCanvasIndex + 1}/4
+          </p>
+        </div>
       </div>
     </section>
   );
