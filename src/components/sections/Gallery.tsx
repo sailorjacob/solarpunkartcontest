@@ -146,7 +146,7 @@ export default function Gallery() {
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % visionImages.length);
-    }, 8000); // 8 seconds per image
+    }, 4000); // 4 seconds per image
     
     return () => clearInterval(interval);
   }, [isAutoPlaying, visionImages.length]);

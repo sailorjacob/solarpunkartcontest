@@ -136,6 +136,12 @@ export default function Home() {
                   </button>
                 </li>
               </ul>
+              
+              <div className="mt-6 pt-4 border-t border-stone-200">
+                <p className="text-slate-600 text-sm">
+                  By <span className="text-blue-500 text-base italic font-light tracking-wide" style={{fontFamily: 'cursive'}}>Jacob</span>
+                </p>
+              </div>
             </div>
 
             {/* Status */}
