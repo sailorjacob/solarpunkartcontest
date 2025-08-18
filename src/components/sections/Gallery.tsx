@@ -21,13 +21,7 @@ const visionImages = [
     description: 'Lush vegetation cascades through architectural marvels, demonstrating the successful integration of Terran flora with Keplerian soil enhancement protocols.',
     category: 'nature'
   },
-  {
-    id: 3,
-    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Capital%20Building.png',
-    title: 'Governance Spire',
-    description: 'The Capital Building serves as the democratic heart of Sojourn, designed with bio-integrated architecture that reflects our collective commitment to ecological stewardship.',
-    category: 'civic'
-  },
+
   {
     id: 4,
     src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Capital%20City%201.png',

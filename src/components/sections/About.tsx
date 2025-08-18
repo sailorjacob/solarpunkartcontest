@@ -60,14 +60,7 @@ export default function About({ onBack }: AboutProps) {
             Early brainstorming with Grok for terraforming research and initial project scope
           </p>
           
-          <img 
-            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/Perplexity%20deep%20research.png"
-            alt="Perplexity research"
-            className="w-full mb-6"
-          />
-          <p className="text-sm text-stone-500 mb-6">
-            Used Perplexity for deep research into sustainable city design and Mars terraforming concepts
-          </p>
+
 
           {/* Visual Development */}
           <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Visual Asset Creation</h2>
@@ -242,7 +235,7 @@ export default function About({ onBack }: AboutProps) {
 
           {/* Tools Used */}
           <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Tools Used</h2>
-          <p className="text-stone-600 mb-4">AI Models: Claude 4 Sonnet, ChatGPT 5, Grok 4 Web, Perplexity Deep Research, Midjourney, Udio</p>
+          <p className="text-stone-600 mb-4">AI Models: Claude 4 Sonnet, ChatGPT 5, Grok 4 Web, Midjourney, Udio</p>
           <p className="text-stone-600 mb-4">Hardware: MacBook Pro 15" 2017, RODE USB Microphone, ATH-M50x Headphones</p>
           <p className="text-stone-600 mb-4">Creative Software: Ableton Live, Omnisphere, BFD Drums, Udio</p>
           <p className="text-stone-600 mb-4">Tech Stack: Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion, HTML5 Canvas, Howler.js, Lucide React</p>
