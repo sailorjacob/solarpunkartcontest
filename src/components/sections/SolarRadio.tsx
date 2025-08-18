@@ -8,21 +8,43 @@ interface Track {
   title: string;
   artist: string;
   duration: string;
-  audioUrl: string;
+  audioUrl?: string;
 }
 
-const tracks: Track[] = [
-  { 
-    title: 'Travel', 
-    artist: 'SolarPunk DJ', 
-    duration: '4:17', 
-    audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Travel.mp3' 
+const radioStations = [
+  {
+    id: 1,
+    name: 'Underground Live',
+    description: 'Live from the Mars Underground Mall',
+    genre: 'Electronic',
+    color: 'from-punk-green to-punk-mint',
+    frequency: '108.5',
+    tracks: [
+      { 
+        title: 'Travel', 
+        artist: 'SolarPunk DJ', 
+        duration: '4:17', 
+        audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Travel.mp3' 
+      },
+      { 
+        title: 'Terraform', 
+        artist: 'SolarPunk DJ', 
+        duration: '3:52', 
+        audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Terraform.mp3' 
+      },
+    ],
   },
-  { 
-    title: 'Terraform', 
-    artist: 'SolarPunk DJ', 
-    duration: '3:52', 
-    audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Terraform.mp3' 
+  {
+    id: 2,
+    name: 'Mars Ambient',
+    description: 'Atmospheric sounds from the red planet',
+    genre: 'Ambient',
+    color: 'from-mars-red to-mars-orange',
+    frequency: '92.3',
+    tracks: [
+      { title: 'Dust Storm Meditation', artist: 'Solar Collective', duration: '5:42' },
+      { title: 'Olympus Mons Sunrise', artist: 'Terra Dreams', duration: '7:18' },
+    ],
   },
 ];
 
@@ -31,14 +53,19 @@ const djVideos = [
   'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj2.mp4'
 ];
 
+const undergroundMallVideo = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/undergroundmalltimelapse.mp4';
+
 export default function SolarRadio() {
+  const [selectedStation, setSelectedStation] = useState(radioStations[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(0);
   const [volume, setVolume] = useState(70);
+  const [visualizerData, setVisualizerData] = useState<number[]>(new Array(20).fill(0));
   const [currentDjVideo, setCurrentDjVideo] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
   const audioRef = useRef<Howl | null>(null);
+  const visualizerInterval = useRef<NodeJS.Timeout | null>(null);
+  const djVideoInterval = useRef<NodeJS.Timeout | null>(null);
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -47,40 +74,63 @@ export default function SolarRadio() {
       if (audioRef.current) {
         audioRef.current.unload();
       }
+      if (visualizerInterval.current) {
+        clearInterval(visualizerInterval.current);
+      }
+      if (djVideoInterval.current) {
+        clearInterval(djVideoInterval.current);
+      }
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
     };
   }, []);
 
-  // DJ video rotation when playing
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    // Simulate visualizer and DJ video transitions when playing
     if (isPlaying) {
-      interval = setInterval(() => {
+      visualizerInterval.current = setInterval(() => {
+        setVisualizerData(
+          new Array(20).fill(0).map(() => Math.random() * 100)
+        );
+      }, 100);
+      
+      // Start DJ video transitions when playing
+      djVideoInterval.current = setInterval(() => {
         setCurrentDjVideo((prev) => (prev + 1) % djVideos.length);
-      }, 10000); // Change video every 10 seconds
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+      }, 8000); // Change video every 8 seconds
 
-  // Progress tracking
-  useEffect(() => {
-    if (isPlaying && audioRef.current) {
+      // Progress tracking
       progressInterval.current = setInterval(() => {
         if (audioRef.current) {
           const seek = audioRef.current.seek() as number;
           const duration = audioRef.current.duration() as number;
-          setProgress((seek / duration) * 100);
+          if (duration > 0) {
+            setProgress((seek / duration) * 100);
+          }
         }
       }, 1000);
     } else {
+      if (visualizerInterval.current) {
+        clearInterval(visualizerInterval.current);
+      }
+      if (djVideoInterval.current) {
+        clearInterval(djVideoInterval.current);
+      }
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
+      setVisualizerData(new Array(20).fill(0));
+      setProgress(0);
     }
 
     return () => {
+      if (visualizerInterval.current) {
+        clearInterval(visualizerInterval.current);
+      }
+      if (djVideoInterval.current) {
+        clearInterval(djVideoInterval.current);
+      }
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
@@ -88,40 +138,40 @@ export default function SolarRadio() {
   }, [isPlaying]);
 
   const togglePlay = () => {
-    const currentTrackData = tracks[currentTrack];
+    const currentTrackData = selectedStation.tracks[currentTrack];
     
     if (!isPlaying) {
-      // Stop any existing audio
-      if (audioRef.current) {
-        audioRef.current.stop();
-        audioRef.current.unload();
-      }
-      
-      // Create new Howl instance for the track
-      audioRef.current = new Howl({
-        src: [currentTrackData.audioUrl],
-        volume: volume / 100,
-        onload: () => {
-          setDuration(audioRef.current?.duration() as number);
-        },
-        onend: () => {
-          setIsPlaying(false);
-          setProgress(0);
-          nextTrack();
-        },
-        onloaderror: (id, error) => {
-          console.error('Audio load error:', error);
-          setIsPlaying(false);
-        },
-        onplayerror: (id, error) => {
-          console.error('Audio play error:', error);
-          setIsPlaying(false);
+      // Start playing
+      if ((currentTrackData as any).audioUrl) {
+        // Stop any existing audio
+        if (audioRef.current) {
+          audioRef.current.stop();
+          audioRef.current.unload();
         }
-      });
-      
-      audioRef.current.play();
+        
+        // Create new Howl instance for the track
+        audioRef.current = new Howl({
+          src: [(currentTrackData as any).audioUrl],
+          volume: volume / 100,
+          onend: () => {
+            setIsPlaying(false);
+            nextTrack();
+          },
+          onloaderror: (id, error) => {
+            console.error('Audio load error:', error);
+            setIsPlaying(false);
+          },
+          onplayerror: (id, error) => {
+            console.error('Audio play error:', error);
+            setIsPlaying(false);
+          }
+        });
+        
+        audioRef.current.play();
+      }
       setIsPlaying(true);
     } else {
+      // Stop playing
       if (audioRef.current) {
         audioRef.current.pause();
       }
@@ -135,8 +185,7 @@ export default function SolarRadio() {
       audioRef.current.unload();
     }
     setIsPlaying(false);
-    setProgress(0);
-    setCurrentTrack((prev) => (prev + 1) % tracks.length);
+    setCurrentTrack((prev) => (prev + 1) % selectedStation.tracks.length);
   };
 
   const prevTrack = () => {
@@ -145,18 +194,9 @@ export default function SolarRadio() {
       audioRef.current.unload();
     }
     setIsPlaying(false);
-    setProgress(0);
-    setCurrentTrack((prev) => prev === 0 ? tracks.length - 1 : prev - 1);
-  };
-
-  const selectTrack = (index: number) => {
-    if (audioRef.current) {
-      audioRef.current.stop();
-      audioRef.current.unload();
-    }
-    setIsPlaying(false);
-    setProgress(0);
-    setCurrentTrack(index);
+    setCurrentTrack((prev) => 
+      prev === 0 ? selectedStation.tracks.length - 1 : prev - 1
+    );
   };
 
   // Update volume when volume state changes
@@ -174,11 +214,20 @@ export default function SolarRadio() {
 
   return (
     <section className="min-h-screen py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-punk-green/5 via-transparent to-solar-gold/5" />
+      {/* Underground Mall Background Video */}
+      <div className="absolute inset-0">
+        <video
+          src={undergroundMallVideo}
+          autoPlay
+          loop
+          muted
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/70" />
+      </div>
       
-      <div className="max-w-4xl mx-auto relative z-10">
-        {/* Header */}
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -191,155 +240,279 @@ export default function SolarRadio() {
               SolarPunk Radio
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Live from Mars Studio
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-4">
+            Live Electronic Music Event
+          </p>
+          <p className="text-lg text-punk-green font-semibold">
+            📍 Underground Mall • Mars Colony District
           </p>
         </motion.div>
 
-        {/* Main Player */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="glass rounded-3xl p-8 mb-8"
-        >
-          {/* DJ Video Section */}
-          <div className="relative w-full h-80 rounded-2xl overflow-hidden mb-8 bg-black/20">
-            <div className="grid grid-cols-2 h-full gap-1">
-              {djVideos.map((video, index) => (
-                <div key={index} className="relative h-full overflow-hidden rounded-xl">
-                  <video
-                    src={video}
-                    autoPlay
-                    loop
-                    muted
-                    className={`w-full h-full object-cover transition-all duration-1000 ${
-                      isPlaying ? 'brightness-100' : 'brightness-75'
-                    } ${
-                      currentDjVideo === index && isPlaying ? 'scale-105' : 'scale-100'
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Station Selector */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="lg:col-span-1"
+          >
+            <div className="glass rounded-2xl p-6">
+              <h3 className="text-xl font-bold mb-6 text-punk-green">Event Stages</h3>
+              <div className="space-y-3">
+                {radioStations.map((station) => (
+                  <motion.button
+                    key={station.id}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      if (audioRef.current) {
+                        audioRef.current.stop();
+                        audioRef.current.unload();
+                      }
+                      setIsPlaying(false);
+                      setSelectedStation(station);
+                      setCurrentTrack(0);
+                    }}
+                    className={`w-full text-left p-4 rounded-xl transition-all ${
+                      selectedStation.id === station.id
+                        ? 'bg-gradient-to-r ' + station.color + ' text-black'
+                        : 'hover:bg-white/10'
                     }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-bold">{station.name}</h4>
+                        <p className={`text-xs mt-1 ${
+                          selectedStation.id === station.id ? 'text-black/70' : 'text-gray-500'
+                        }`}>
+                          {station.genre} • FM {station.frequency}
+                        </p>
+                      </div>
+                      {selectedStation.id === station.id && isPlaying && (
+                        <div className="flex gap-1">
+                          {[1, 2, 3].map((i) => (
+                            <motion.div
+                              key={i}
+                              animate={{ height: [8, 16, 8] }}
+                              transition={{
+                                duration: 0.5,
+                                repeat: Infinity,
+                                delay: i * 0.1,
+                              }}
+                              className="w-1 bg-black/50 rounded-full"
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Main Player */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="lg:col-span-2"
+          >
+            <div className="glass rounded-2xl p-8">
+              {/* Station Info */}
+              <div className="mb-8">
+                <div className={`inline-block px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r ${selectedStation.color} text-black mb-4`}>
+                  STAGE {selectedStation.frequency}
+                </div>
+                <h3 className="text-3xl font-bold mb-2">{selectedStation.name}</h3>
+                <p className="text-gray-300">{selectedStation.description}</p>
+              </div>
+
+              {/* DJ Video Section */}
+              <div className="mb-8">
+                <div className="relative w-full h-64 rounded-xl overflow-hidden bg-black/20">
+                  <AnimatePresence mode="wait">
+                    <motion.video
+                      key={currentDjVideo}
+                      initial={{ opacity: 0, scale: 1.1 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 1 }}
+                      src={djVideos[currentDjVideo]}
+                      autoPlay
+                      loop
+                      muted
+                      className="w-full h-full object-cover"
+                    />
+                  </AnimatePresence>
+                  
+                  {/* Video overlay with station info */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white text-sm font-medium opacity-90">
+                          Live from Underground Mall
+                        </p>
+                        <p className="text-white/70 text-xs">
+                          SolarPunk DJ • {selectedStation.name}
+                        </p>
+                      </div>
+                      {isPlaying && (
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                          <span className="text-white text-xs font-medium">LIVE</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Visualizer */}
+              <div className="mb-8 h-32 flex items-end justify-center gap-1">
+                {visualizerData.map((height, index) => (
+                  <motion.div
+                    key={index}
+                    animate={{ height: `${height}%` }}
+                    transition={{ duration: 0.1 }}
+                    className={`w-3 bg-gradient-to-t ${selectedStation.color} rounded-t-full`}
+                    style={{ minHeight: '4px' }}
                   />
-                  {/* Video overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-1000 ${
-                    currentDjVideo === index && isPlaying ? 'opacity-60' : 'opacity-80'
-                  }`} />
-                </div>
-              ))}
-            </div>
-            
-            {/* Live indicator */}
-            {isPlaying && (
-              <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/70 rounded-full px-3 py-2">
-                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                <span className="text-white text-sm font-medium">LIVE</span>
+                ))}
               </div>
-            )}
-            
-            {/* Current track overlay */}
-            <div className="absolute bottom-4 left-4 right-4 text-white">
-              <h3 className="text-2xl font-bold mb-1">{tracks[currentTrack].title}</h3>
-              <p className="text-white/80 text-lg">{tracks[currentTrack].artist}</p>
-            </div>
-          </div>
 
-          {/* Progress Bar */}
-          <div className="mb-6">
-            <div className="flex items-center gap-3 text-sm text-gray-400 mb-2">
-              <span>{isPlaying && audioRef.current ? formatTime(audioRef.current.seek() as number) : '0:00'}</span>
-              <div className="flex-1 bg-white/10 rounded-full h-2 overflow-hidden">
-                <motion.div
-                  className="h-full bg-gradient-to-r from-punk-green to-solar-gold"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.1 }}
+              {/* Current Track */}
+              <div className="mb-8 text-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentTrack}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <h4 className="text-2xl font-bold mb-2">
+                      {selectedStation.tracks[currentTrack].title}
+                    </h4>
+                    <p className="text-gray-300">
+                      {selectedStation.tracks[currentTrack].artist}
+                    </p>
+                    <p className="text-sm text-gray-400 mt-2">
+                      {selectedStation.tracks[currentTrack].duration}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Progress Bar */}
+              {(selectedStation.tracks[currentTrack] as any).audioUrl && (
+                <div className="mb-8">
+                  <div className="flex items-center gap-3 text-sm text-gray-400 mb-2">
+                    <span>{isPlaying && audioRef.current ? formatTime(audioRef.current.seek() as number) : '0:00'}</span>
+                    <div className="flex-1 bg-white/10 rounded-full h-2 overflow-hidden">
+                      <motion.div
+                        className={`h-full bg-gradient-to-r ${selectedStation.color}`}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progress}%` }}
+                        transition={{ duration: 0.1 }}
+                      />
+                    </div>
+                    <span>{selectedStation.tracks[currentTrack].duration}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Player Controls */}
+              <div className="flex items-center justify-center gap-4 mb-8">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={prevTrack}
+                  className="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-white/20"
+                >
+                  <span className="text-xl">⏮</span>
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={togglePlay}
+                  className={`w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-r ${selectedStation.color} text-black`}
+                >
+                  <span className="text-2xl">{isPlaying ? '⏸' : '▶'}</span>
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={nextTrack}
+                  className="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-white/20"
+                >
+                  <span className="text-xl">⏭</span>
+                </motion.button>
+              </div>
+
+              {/* Volume Control */}
+              <div className="flex items-center gap-4">
+                <span className="text-gray-400">🔊</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={(e) => setVolume(Number(e.target.value))}
+                  className="flex-1 range-slider"
                 />
+                <span className="text-gray-400 w-12 text-right">{volume}%</span>
               </div>
-              <span>{tracks[currentTrack].duration}</span>
-            </div>
-          </div>
 
-          {/* Player Controls */}
-          <div className="flex items-center justify-center gap-6 mb-8">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={prevTrack}
-              className="w-14 h-14 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-colors"
-            >
-              <span className="text-2xl">⏮</span>
-            </motion.button>
-            
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={togglePlay}
-              className="w-20 h-20 rounded-full bg-gradient-to-r from-punk-green to-solar-gold text-black flex items-center justify-center shadow-lg"
-            >
-              <span className="text-3xl">{isPlaying ? '⏸' : '▶'}</span>
-            </motion.button>
-            
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={nextTrack}
-              className="w-14 h-14 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-colors"
-            >
-              <span className="text-2xl">⏭</span>
-            </motion.button>
-          </div>
-
-          {/* Volume Control */}
-          <div className="flex items-center gap-4 mb-8">
-            <span className="text-gray-400 text-xl">🔊</span>
-            <div className="flex-1 bg-white/10 rounded-full h-2 overflow-hidden">
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={volume}
-                onChange={(e) => setVolume(Number(e.target.value))}
-                className="w-full h-2 bg-transparent appearance-none cursor-pointer range-slider"
-              />
-            </div>
-            <span className="text-gray-400 w-12 text-right">{volume}%</span>
-          </div>
-
-          {/* Track List */}
-          <div className="space-y-3">
-            {tracks.map((track, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ x: 5 }}
-                onClick={() => selectTrack(index)}
-                className={`flex items-center justify-between p-4 rounded-xl cursor-pointer transition-all ${
-                  index === currentTrack
-                    ? 'bg-gradient-to-r from-punk-green/20 to-solar-gold/20 border border-punk-green/30'
-                    : 'hover:bg-white/5'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                    index === currentTrack && isPlaying
-                      ? 'bg-gradient-to-r from-punk-green to-solar-gold text-black'
-                      : 'bg-white/10'
-                  }`}>
-                    {index === currentTrack && isPlaying ? (
-                      <span className="text-lg">♪</span>
-                    ) : (
-                      <span className="text-lg">▶</span>
-                    )}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg">{track.title}</h4>
-                    <p className="text-gray-400">{track.artist}</p>
-                  </div>
+              {/* Track List */}
+              <div className="mt-8 pt-8 border-t border-white/10">
+                <h4 className="text-lg font-semibold mb-4">Event Lineup</h4>
+                <div className="space-y-3">
+                  {selectedStation.tracks.map((track, index) => (
+                    <motion.div
+                      key={index}
+                      whileHover={{ x: 5 }}
+                      className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all ${
+                        index === currentTrack
+                          ? 'bg-white/10'
+                          : 'hover:bg-white/5'
+                      }`}
+                      onClick={() => {
+                        if (audioRef.current) {
+                          audioRef.current.stop();
+                          audioRef.current.unload();
+                        }
+                        setIsPlaying(false);
+                        setCurrentTrack(index);
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-gray-500 w-6">{index + 1}</span>
+                        <div>
+                          <div className="flex items-center gap-2">
+                          <p className="font-semibold">{track.title}</p>
+                            {(track as any).audioUrl && (
+                              <span className="text-xs bg-punk-green text-black px-2 py-1 rounded-full font-bold">
+                                LIVE
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-400">{track.artist}</p>
+                        </div>
+                      </div>
+                      <span className="text-sm text-gray-400">{track.duration}</span>
+                    </motion.div>
+                  ))}
                 </div>
-                <span className="text-gray-400">{track.duration}</span>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

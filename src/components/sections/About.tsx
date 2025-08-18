@@ -21,12 +21,16 @@ export default function About({ onBack }: AboutProps) {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to Sojourn
+          Back
         </motion.button>
 
         {/* Simple Blog Content */}
         <div className="prose prose-lg max-w-none">
           <h1 className="text-2xl font-bold text-stone-800 mb-6">Development Notes</h1>
+          
+          <p className="text-stone-600 mb-6 leading-relaxed">
+            Sojourn - a temporary stay, like our time short time in the grand scheme of the universe. I imagine a future where we are traveling amongst the stars, and that's how we arrive here. One of many future populated planets in a time that being 500 years old is considered young because humans are living for thousands of years due to advancements in med tech and stagnating cell aging. There are futuristic art pieces that can be updated remotely by artists for patrons, moonlight garden health fast food. Terraformed worlds in which we use translucent mega bubble structures to trap heat and create lush eco systems for our cities which are also largely underground.
+          </p>
           
           <p className="text-stone-600 mb-4">
             The project began with many creative possibilities - a golden plated statue, film photography, music. 

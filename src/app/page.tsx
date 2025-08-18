@@ -86,8 +86,10 @@ export default function Home() {
 
   return (
     <main className="relative">
-      {/* Navigation */}
-      <Navigation activeSection={activeSection} onSectionChange={handleSectionChange} />
+      {/* Navigation - Hidden on About page */}
+      {activeSection !== 'about' && (
+        <Navigation activeSection={activeSection} onSectionChange={handleSectionChange} />
+      )}
       
       {/* Content Sections */}
       <AnimatePresence mode="wait">
