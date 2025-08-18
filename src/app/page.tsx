@@ -8,6 +8,7 @@ import Journey from '@/components/sections/Journey';
 import Gallery from '@/components/sections/Gallery';
 import PublicWall from '@/components/sections/PublicWall';
 import SolarRadio from '@/components/sections/SolarRadio';
+import About from '@/components/sections/About';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
@@ -44,6 +45,8 @@ export default function Home() {
         return <PublicWall />;
       case 'radio':
         return <SolarRadio />;
+      case 'about':
+        return <About />;
       default:
         return (
           <Hero 
@@ -128,7 +131,8 @@ export default function Home() {
                   { id: 'journey', label: 'Project Timeline' },
                   { id: 'gallery', label: 'Visual Archive' },
                   { id: 'wall', label: 'Interactive Lab' },
-                  { id: 'radio', label: 'Communication Hub' }
+                  { id: 'radio', label: 'Communication Hub' },
+                  { id: 'about', label: 'Documentation' }
                 ].map((item) => (
                   <li key={item.id}>
                     <button 
