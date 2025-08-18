@@ -56,12 +56,12 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                   <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-400 rounded-sm" />
                   <div>
                     <h1 className={`font-bold text-xl tracking-tight transition-colors duration-300 ${
-                      isScrolled ? 'text-white' : 'text-stone-800'
+                      isScrolled ? 'text-white' : 'text-slate-800'
                     }`}>
                       SOJOURN
                     </h1>
                     <p className={`text-xs font-mono tracking-wider -mt-1 transition-colors duration-300 ${
-                      isScrolled ? 'text-gray-400' : 'text-stone-600'
+                      isScrolled ? 'text-gray-400' : 'text-slate-600'
                     }`}>
                       KEPLER-442B
                     </p>
@@ -98,24 +98,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
               ))}
             </div>
 
-            {/* CTA Button */}
-            <div className="hidden md:flex items-center gap-4">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => onSectionChange('wall')}
-                className={`px-4 py-2 font-medium rounded-full transition-colors tracking-wide ${
-                  isScrolled 
-                    ? 'bg-white text-black hover:bg-gray-200'
-                    : 'bg-emerald-600 text-white hover:bg-emerald-700'
-                }`}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-              >
-                Start Creating
-              </motion.button>
-            </div>
+
 
             {/* Mobile Menu Button */}
             <button

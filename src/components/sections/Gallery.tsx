@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, Info, Download, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Info, Download, X, Play, Pause } from 'lucide-react';
 
 // Stunning visions of Sojourn on Kepler-442b
 const visionImages = [
@@ -226,7 +226,7 @@ export default function Gallery() {
             isAutoPlaying ? 'bg-emerald-500/30' : 'bg-black/30'
           }`}
         >
-          {isAutoPlaying ? '⏸️' : '▶️'}
+          {isAutoPlaying ? <Pause size={20} /> : <Play size={20} />}
         </motion.button>
         
         <motion.button
@@ -318,13 +318,22 @@ export default function Gallery() {
         className="absolute inset-0 z-0"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === 'ArrowLeft') prevImage();
-          if (e.key === 'ArrowRight') nextImage();
+          if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prevImage();
+          }
+          if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            nextImage();
+          }
           if (e.key === ' ') {
             e.preventDefault();
             setIsAutoPlaying(!isAutoPlaying);
           }
-          if (e.key === 'i') setShowInfo(!showInfo);
+          if (e.key === 'i' || e.key === 'I') {
+            e.preventDefault();
+            setShowInfo(!showInfo);
+          }
         }}
       />
     </section>

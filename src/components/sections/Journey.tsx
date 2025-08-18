@@ -125,7 +125,7 @@ export default function Journey() {
             </span>
           </div>
           
-          <h2 className="subheading text-gradient-premium mb-6">
+          <h2 className="subheading mb-6 text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-blue-600">
             From Survival to Paradise
           </h2>
           

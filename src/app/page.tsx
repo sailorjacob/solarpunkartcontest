@@ -102,7 +102,7 @@ export default function Home() {
 
       {/* Industrial Footer - Only on Home Page */}
       {activeSection === 'home' && (
-        <footer className="relative border-t border-slate-600 bg-gradient-to-br from-slate-800 via-slate-700 to-emerald-900 text-white">
+        <footer className="relative border-t border-amber-800/30 bg-gradient-to-br from-amber-900 via-orange-900 to-red-900 text-white">
         <div className="container-custom py-16">
           <div className="grid md:grid-cols-3 gap-12">
             {/* Project Info */}
@@ -114,11 +114,11 @@ export default function Home() {
                   <p className="text-xs font-mono text-gray-400">KEPLER-442B</p>
                 </div>
               </div>
-              <p className="text-gray-300 leading-relaxed mb-4">
+              <p className="text-blue-200 leading-relaxed mb-4">
                 Advanced sustainable civilization project. Terraforming Kepler-442b through 
                 ecological integration and cutting-edge technology.
               </p>
-              <div className="text-xs font-mono text-gray-500">
+              <div className="text-xs font-mono text-blue-300">
                 PURITY: LEVEL 7 HARMONY
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function Home() {
                 <li>
                   <button 
                     onClick={() => handleSectionChange('about')}
-                    className="text-gray-400 hover:text-green-400 transition-colors font-mono text-sm uppercase tracking-wide"
+                    className="text-blue-300 hover:text-blue-100 transition-colors font-mono text-sm uppercase tracking-wide"
                   >
                     Documentation
                   </button>
@@ -144,15 +144,15 @@ export default function Home() {
               <div className="space-y-3 text-sm font-mono">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-gray-300">All Systems Operational</span>
+                  <span className="text-blue-200">All Systems Operational</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-blue-400 rounded-full" />
-                  <span className="text-gray-300">Atmospheric Processors Online</span>
+                  <span className="text-blue-200">Atmospheric Processors Online</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-orange-400 rounded-full" />
-                  <span className="text-gray-300">Terraforming Progress: 89.3%</span>
+                  <span className="text-blue-200">Terraforming Progress: 89.3%</span>
                 </div>
               </div>
             </div>
@@ -160,10 +160,10 @@ export default function Home() {
           
           <div className="mt-12 pt-8 border-t border-gray-800">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-sm font-mono text-gray-500">
+              <p className="text-sm font-mono text-blue-300">
                 © 2157 SOJOURN COLONY ALPHA • INTERSTELLAR COLLECTIVE
               </p>
-              <div className="flex items-center gap-6 text-xs font-mono text-gray-500 uppercase">
+              <div className="flex items-center gap-6 text-xs font-mono text-blue-300 uppercase">
                 <div>HARMONY PROTOCOL ACTIVE</div>
                 <div>DATA PROTECTED</div>
                 <div>TRANSMISSION PURE</div>

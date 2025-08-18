@@ -215,7 +215,7 @@ export default function PublicWall() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-bold text-stone-800 mb-4">
+          <h2 className="text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-blue-600">
             COLLABORATIVE ART WALL
           </h2>
           <p className="text-xl text-stone-600 max-w-3xl mx-auto">
