@@ -1,0 +1,290 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+
+interface HeroProps {
+  onExploreClick: () => void;
+  onCreateClick: () => void;
+}
+
+const heroImages = [
+  {
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/cityoverheadview.png',
+    title: 'Metropolitan Scale',
+    position: 'top-right'
+  },
+  {
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/lushcityview2.png',
+    title: 'Ecological Integration',
+    position: 'center-left'
+  },
+  {
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/greenhouse.png',
+    title: 'Agricultural Systems',
+    position: 'bottom-right'
+  }
+];
+
+export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ 
+        x: (e.clientX - window.innerWidth / 2) / 100,
+        y: (e.clientY - window.innerHeight / 2) / 100
+      });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <section className="relative min-h-screen bg-black text-white overflow-hidden">
+      {/* Background Image Carousel */}
+      <div className="absolute inset-0">
+        {heroImages.map((image, index) => (
+          <motion.div
+            key={image.src}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ 
+              opacity: index === currentImageIndex ? 0.4 : 0,
+              scale: index === currentImageIndex ? 1 : 1.1
+            }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
+            <img
+              src={image.src}
+              alt={image.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/80" />
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Grid Overlay */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="w-full h-full" style={{
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px'
+        }} />
+      </div>
+
+      {/* Floating Image Previews */}
+      {heroImages.map((image, index) => (
+        <motion.div
+          key={`preview-${index}`}
+          animate={{
+            x: mousePosition.x * (index + 1) * 0.5,
+            y: mousePosition.y * (index + 1) * 0.3,
+          }}
+          transition={{ type: "spring", damping: 30 }}
+          className={`absolute w-32 h-20 ${
+            index === 0 ? 'top-20 right-20' : 
+            index === 1 ? 'bottom-40 left-20' : 
+            'top-1/2 right-10'
+          }`}
+        >
+          <div className="relative w-full h-full rounded-lg overflow-hidden border border-white/20">
+            <img
+              src={image.src}
+              alt={image.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute bottom-1 left-1 right-1">
+              <div className="text-xs font-mono text-white/80">{image.title}</div>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+
+      {/* Main Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 min-h-screen flex flex-col justify-center">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left Column - Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="space-y-8"
+          >
+            {/* Project Classification */}
+            <div className="flex items-center gap-4">
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+              <span className="font-mono text-sm tracking-wider text-gray-400 uppercase">
+                CLASSIFIED PROJECT // MARS-2157
+              </span>
+            </div>
+
+            {/* Main Title */}
+            <div className="space-y-4">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="text-7xl lg:text-9xl font-black leading-none"
+              >
+                SOLAR
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400">
+                  PUNK
+                </span>
+                <br />
+                CITY
+              </motion.h1>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+                className="text-xl text-gray-300 font-light"
+              >
+                LIFE ON MARS — SUSTAINABLE CIVILIZATION
+              </motion.div>
+            </div>
+
+            {/* Mission Statement */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.9 }}
+              className="max-w-lg"
+            >
+              <p className="text-lg text-gray-300 leading-relaxed">
+                Advanced terraforming technology meets sustainable urban planning. 
+                Witness humanity's greatest achievement: a thriving ecological 
+                metropolis on the Red Planet.
+              </p>
+            </motion.div>
+
+            {/* Technical Specs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.1 }}
+              className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-700"
+            >
+              <div>
+                <div className="text-3xl font-bold text-green-400">2.4M</div>
+                <div className="text-sm text-gray-500 font-mono">POPULATION</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-blue-400">100%</div>
+                <div className="text-sm text-gray-500 font-mono">RENEWABLE</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-orange-400">2157</div>
+                <div className="text-sm text-gray-500 font-mono">EST. YEAR</div>
+              </div>
+            </motion.div>
+
+            {/* Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.3 }}
+              className="flex gap-4 pt-4"
+            >
+              <button
+                onClick={onExploreClick}
+                className="px-8 py-4 bg-white text-black font-bold rounded-none hover:bg-gray-200 transition-colors uppercase tracking-wider"
+              >
+                EXPLORE PROJECT
+              </button>
+              <button
+                onClick={onCreateClick}
+                className="px-8 py-4 border border-white text-white font-bold rounded-none hover:bg-white hover:text-black transition-colors uppercase tracking-wider"
+              >
+                VIEW GALLERY
+              </button>
+            </motion.div>
+          </motion.div>
+
+          {/* Right Column - Current Image Display */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="relative"
+          >
+            <div className="relative aspect-[4/3] rounded-lg overflow-hidden border border-gray-700">
+              <img
+                src={heroImages[currentImageIndex].src}
+                alt={heroImages[currentImageIndex].title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              
+              {/* Image Info Overlay */}
+              <div className="absolute bottom-4 left-4 right-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-lg font-bold text-white">
+                      {heroImages[currentImageIndex].title}
+                    </div>
+                    <div className="text-sm text-gray-300 font-mono">
+                      SECTOR {currentImageIndex + 1}/3 — ACTIVE
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    {heroImages.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-2 h-2 rounded-full ${
+                          index === currentImageIndex ? 'bg-white' : 'bg-white/30'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Technical Data */}
+            <div className="mt-4 p-4 bg-gray-900/50 border border-gray-700 font-mono text-xs">
+              <div className="grid grid-cols-2 gap-4 text-gray-400">
+                <div>STATUS: OPERATIONAL</div>
+                <div>SECURITY: LEVEL 7</div>
+                <div>COORDINATES: 14°S 175°W</div>
+                <div>ELEVATION: -2.5KM</div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Bottom Status Bar */}
+      <div className="absolute bottom-0 left-0 right-0 border-t border-gray-800 bg-black/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between text-xs font-mono text-gray-400">
+            <div className="flex items-center gap-6">
+              <div>MARS COLONY ALPHA</div>
+              <div>STATUS: ACTIVE</div>
+              <div>TEMP: -23°C</div>
+            </div>
+            <div className="flex items-center gap-6">
+              <div>OXYGEN: 21.2%</div>
+              <div>PRESSURE: 1.01 ATM</div>
+              <div>LOCAL TIME: 14:32</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
