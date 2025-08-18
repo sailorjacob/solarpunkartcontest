@@ -1,9 +1,9 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, Info, Download, X, Play, Pause } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Info, Download, X, Play, Pause, Palette, Eye } from 'lucide-react';
 
 // Stunning visions of Sojourn on Kepler-442b
 const visionImages = [
@@ -133,10 +133,306 @@ export default function Gallery() {
   const [currentIndex, setCurrentIndex] = useState(6); // Start with image 07 (lush rocket station)
   const [showInfo, setShowInfo] = useState(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [activeTab, setActiveTab] = useState<'view' | 'create'>('view');
+  
+  // Canvas and painting state (from PublicWall)
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const backgroundImageRef = useRef<HTMLImageElement | null>(null);
+  const maskCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isMaskLoaded, setIsMaskLoaded] = useState(false);
+  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
+  const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
+  const [savedArtworks, setSavedArtworks] = useState<Array<{
+    id: string;
+    title: string;
+    baseImage: string;
+    artwork: string;
+    timestamp: number;
+    frameIndex: number;
+  }>>([]);
+
+  // Painting settings
+  const neonBlue = '#1E40AF';
+  const sprayDensity = 80;
+  const [sprayRadius, setSprayRadius] = useState(5);
+  const glowBlur = 15;
+
+  // Gallery canvas frame URLs for mapping
+  const galleryFrames = [
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe1.png',
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe2.png',
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe3.png',
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe4.png'
+  ];
+
+  // Set base drawing styles
+  const setBaseStyles = (ctx: CanvasRenderingContext2D) => {
+    ctx.shadowColor = neonBlue;
+    ctx.shadowBlur = glowBlur;
+    ctx.fillStyle = neonBlue;
+    ctx.strokeStyle = neonBlue;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+  };
+
+  // Initialize canvas when component first loads
+  const initializeCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    canvas.width = 800;
+    canvas.height = 600;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    setBaseStyles(ctx);
+    loadCurrentMask();
+  };
+
+  // Load current mask image for the canvas frame
+  const loadCurrentMask = () => {
+    const canvas = canvasRef.current;
+    const maskCanvas = maskCanvasRef.current;
+    if (!canvas || !maskCanvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const maskCtx = maskCanvas.getContext('2d');
+    if (!ctx || !maskCtx) return;
+
+    // Set mask canvas dimensions
+    maskCanvas.width = canvas.width;
+    maskCanvas.height = canvas.height;
+
+    // Clear mask canvas
+    maskCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+
+    const maskImage = new window.Image();
+    maskImage.crossOrigin = 'anonymous';
+    maskImage.onload = () => {
+      maskCtx.drawImage(maskImage, 0, 0, maskCanvas.width, maskCanvas.height);
+      setIsMaskLoaded(true);
+    };
+    maskImage.src = galleryFrames[currentCanvasIndex];
+  };
+
+  // Drawing functions
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    setIsDrawing(true);
+    draw(e);
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    
+    const canvas = canvasRef.current;
+    const maskCanvas = maskCanvasRef.current;
+    if (!canvas || !maskCanvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const ctx = canvas.getContext('2d');
+    const maskCtx = maskCanvas.getContext('2d');
+    if (!ctx || !maskCtx) return;
+
+    // Check if we're drawing in the allowed area (where mask is transparent/white)
+    const maskData = maskCtx.getImageData(x, y, 1, 1);
+    const [r, g, b, a] = maskData.data;
+    
+    // Only draw if the mask area is transparent or white (allowing drawing)
+    if (a === 0 || (r > 200 && g > 200 && b > 200)) {
+      setBaseStyles(ctx);
+      
+      // Create spray paint effect
+      for (let i = 0; i < sprayDensity; i++) {
+        const offsetX = (Math.random() - 0.5) * sprayRadius * 2;
+        const offsetY = (Math.random() - 0.5) * sprayRadius * 2;
+        const distance = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+        
+        if (distance <= sprayRadius) {
+          const alpha = Math.max(0, 1 - (distance / sprayRadius));
+          ctx.globalAlpha = alpha * 0.3;
+          ctx.fillRect(x + offsetX, y + offsetY, 1, 1);
+        }
+      }
+    }
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  const downloadArtwork = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // Create a new canvas to combine the background image with the painted overlay
+    const combinedCanvas = document.createElement('canvas');
+    const combinedCtx = combinedCanvas.getContext('2d');
+    if (!combinedCtx) return;
+
+    // Set dimensions to match the original image
+    const currentImage = visionImages[currentIndex];
+    const img = new window.Image();
+    img.crossOrigin = 'anonymous';
+    
+    img.onload = () => {
+      combinedCanvas.width = img.width;
+      combinedCanvas.height = img.height;
+      
+      // Draw the original image
+      combinedCtx.drawImage(img, 0, 0);
+      
+      // Draw the painted overlay (scale to match image dimensions)
+      combinedCtx.drawImage(canvas, 0, 0, combinedCanvas.width, combinedCanvas.height);
+      
+      // Download the combined image
+      const link = document.createElement('a');
+      link.download = `${currentImage.title.replace(/\s+/g, '_')}_artwork.png`;
+      link.href = combinedCanvas.toDataURL('image/png');
+      link.click();
+    };
+    
+    img.src = currentImage.src;
+  };
+
+  // Find next available canvas slot
+  const findNextAvailableCanvas = () => {
+    // If all canvases are full, start overwriting from the beginning
+    if (artSubmissions.length >= 4) {
+      return 0;
+    }
+    // Otherwise, find the first empty slot
+    for (let i = 0; i < 4; i++) {
+      if (!artSubmissions[i]) {
+        return i;
+      }
+    }
+    return 0; // Fallback
+  };
+
+  const saveArt = () => {
+    if (!canvasRef.current) return;
+    
+    // Get canvas as data URL
+    const artworkData = canvasRef.current.toDataURL('image/png');
+    
+    // Save to database
+    const savedArtwork = saveArtworkToDatabase(artworkData);
+    if (!savedArtwork) return;
+    
+    // Add to submissions at current position
+    const newSubmissions = [...artSubmissions];
+    newSubmissions[currentCanvasIndex] = artworkData;
+    setArtSubmissions(newSubmissions);
+    
+    // Move to next available canvas position
+    const nextIndex = findNextAvailableCanvas();
+    setCurrentCanvasIndex(nextIndex);
+    
+    // Clear and reset for next artist
+    clearCanvas();
+    
+    // Load new mask for next canvas
+    setIsMaskLoaded(false);
+    setTimeout(() => {
+      loadCurrentMask();
+    }, 100);
+    
+    console.log(`Art saved to canvas position ${currentCanvasIndex + 1}, moving to position ${nextIndex + 1}`);
+    console.log(`Gallery frames in use: ${newSubmissions.filter(Boolean).length}/4`);
+    console.log('Artwork saved to public gallery!');
+  };
+
+  // Function to manually select a canvas frame
+  const selectCanvasFrame = (frameIndex: number) => {
+    setCurrentCanvasIndex(frameIndex);
+    clearCanvas();
+    setIsMaskLoaded(false);
+    setTimeout(() => {
+      loadCurrentMask();
+    }, 100);
+  };
+
+  // Load saved artworks from localStorage (simulating database)
+  const loadSavedArtworks = () => {
+    try {
+      const saved = localStorage.getItem('solarpunk-gallery-artworks');
+      if (saved) {
+        const artworks = JSON.parse(saved);
+        setSavedArtworks(artworks);
+        // Update artSubmissions to show which frames are used
+        const submissions = new Array(4).fill(null);
+        artworks.forEach((artwork: any) => {
+          if (artwork.frameIndex < 4) {
+            submissions[artwork.frameIndex] = artwork.artwork;
+          }
+        });
+        setArtSubmissions(submissions);
+      }
+    } catch (error) {
+      console.error('Error loading saved artworks:', error);
+    }
+  };
+
+  // Save artwork to localStorage (simulating database save)
+  const saveArtworkToDatabase = (artworkData: string) => {
+    try {
+      const currentImage = visionImages[currentIndex];
+      const newArtwork = {
+        id: `artwork_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        title: `${currentImage.title} - Remix`,
+        baseImage: currentImage.src,
+        artwork: artworkData,
+        timestamp: Date.now(),
+        frameIndex: currentCanvasIndex
+      };
+
+      const existingArtworks = [...savedArtworks];
+      // Remove any existing artwork for this frame
+      const filteredArtworks = existingArtworks.filter(art => art.frameIndex !== currentCanvasIndex);
+      filteredArtworks.push(newArtwork);
+      
+      setSavedArtworks(filteredArtworks);
+      localStorage.setItem('solarpunk-gallery-artworks', JSON.stringify(filteredArtworks));
+      
+      console.log('Artwork saved to gallery database:', newArtwork.title);
+      return newArtwork;
+    } catch (error) {
+      console.error('Error saving artwork:', error);
+      return null;
+    }
+  };
+
+  // Initialize canvas on component mount
+  useEffect(() => {
+    if (activeTab === 'create') {
+      initializeCanvas();
+    }
+  }, [activeTab]);
+
+  // Load saved artworks on component mount
+  useEffect(() => {
+    loadSavedArtworks();
+  }, []);
 
   // Auto-advance slideshow
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || activeTab !== 'view') return;
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % visionImages.length);
@@ -162,6 +458,7 @@ export default function Gallery() {
       className="relative w-full h-screen overflow-hidden bg-black"
       tabIndex={0}
       onKeyDown={(e) => {
+        if (activeTab === 'view') {
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
           prevImage();
@@ -177,10 +474,45 @@ export default function Gallery() {
         if (e.key === 'i' || e.key === 'I') {
           e.preventDefault();
           setShowInfo(!showInfo);
+          }
         }
       }}
     >
-      {/* Fullscreen Image Display */}
+      {/* Tab Navigation */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-30">
+        <div className="flex bg-black/30 backdrop-blur-sm border border-white/20 rounded-full p-1">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setActiveTab('view')}
+            className={`px-6 py-2 rounded-full flex items-center gap-2 transition-all ${
+              activeTab === 'view' 
+                ? 'bg-white/20 text-white' 
+                : 'text-white/60 hover:text-white/80'
+            }`}
+          >
+            <Eye size={16} />
+            View Gallery
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setActiveTab('create')}
+            className={`px-6 py-2 rounded-full flex items-center gap-2 transition-all ${
+              activeTab === 'create' 
+                ? 'bg-white/20 text-white' 
+                : 'text-white/60 hover:text-white/80'
+            }`}
+          >
+            <Palette size={16} />
+            Create Art
+          </motion.button>
+        </div>
+      </div>
+
+      {/* VIEW TAB - Fullscreen Image Display */}
+      {activeTab === 'view' && (
+        <>
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
@@ -327,7 +659,161 @@ export default function Gallery() {
           ← → arrows • space • i for info
         </div>
       </div>
+      </>
+      )}
 
+      {/* CREATE TAB - Art Creation Interface */}
+      {activeTab === 'create' && (
+        <div className="relative w-full h-full">
+          {/* Background Image - Current gallery image */}
+          <div className="absolute inset-0">
+            <Image
+              src={currentImage.src}
+              alt={currentImage.title}
+              fill
+              priority
+              className="object-cover opacity-80"
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-black/20" />
+          </div>
+
+          {/* Canvas Container */}
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <div className="relative">
+              {/* Main Canvas */}
+              <canvas
+                ref={canvasRef}
+                className="border border-white/20 rounded-lg cursor-crosshair"
+                onMouseDown={startDrawing}
+                onMouseMove={draw}
+                onMouseUp={stopDrawing}
+                onMouseLeave={stopDrawing}
+                style={{
+                  background: 'transparent',
+                  maxWidth: '90vw',
+                  maxHeight: '70vh'
+                }}
+              />
+              
+              {/* Hidden mask canvas */}
+              <canvas
+                ref={maskCanvasRef}
+                className="hidden"
+              />
+            </div>
+          </div>
+
+          {/* Controls Panel */}
+          <div className="absolute top-20 right-8 z-20">
+            <div className="bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl p-4 space-y-4">
+              {/* Download Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={downloadArtwork}
+                className="w-full px-4 py-2 bg-emerald-500/20 border border-emerald-400/30 rounded-lg text-emerald-300 hover:bg-emerald-500/30 transition-all flex items-center gap-2"
+              >
+                <Download size={16} />
+                Download Art
+              </motion.button>
+
+              {/* Submit Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={saveArt}
+                className="w-full px-4 py-2 bg-blue-500/20 border border-blue-400/30 rounded-lg text-blue-300 hover:bg-blue-500/30 transition-all"
+              >
+                Submit to Gallery
+              </motion.button>
+
+              {/* Clear Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={clearCanvas}
+                className="w-full px-4 py-2 bg-red-500/20 border border-red-400/30 rounded-lg text-red-300 hover:bg-red-500/30 transition-all"
+              >
+                Clear Canvas
+              </motion.button>
+
+              {/* Canvas Frame Selector */}
+              <div className="space-y-2">
+                <label className="text-white/80 text-sm">Canvas Frame</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {galleryFrames.map((_, index) => (
+                    <motion.button
+                      key={index}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => selectCanvasFrame(index)}
+                      className={`p-2 rounded border text-xs transition-all ${
+                        currentCanvasIndex === index
+                          ? 'bg-blue-500/30 border-blue-400/50 text-blue-300'
+                          : artSubmissions[index]
+                          ? 'bg-green-500/20 border-green-400/30 text-green-300'
+                          : 'bg-gray-500/20 border-gray-400/30 text-gray-300 hover:border-gray-300/50'
+                      }`}
+                    >
+                      Frame {index + 1}
+                      {artSubmissions[index] && (
+                        <div className="text-xs opacity-75">Used</div>
+                      )}
+                    </motion.button>
+                  ))}
+                </div>
+                <div className="text-white/60 text-xs">
+                  {artSubmissions.filter(Boolean).length}/4 frames used
+                </div>
+              </div>
+
+              {/* Brush Size Control */}
+              <div className="space-y-2">
+                <label className="text-white/80 text-sm">Brush Size</label>
+                <input
+                  type="range"
+                  min="2"
+                  max="20"
+                  value={sprayRadius}
+                  onChange={(e) => setSprayRadius(Number(e.target.value))}
+                  className="w-full accent-blue-400"
+                />
+                <div className="text-white/60 text-xs">{sprayRadius}px</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Image Navigation for Create Mode */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+            <div className="flex gap-2">
+              {visionImages.map((_, index) => (
+                <motion.button
+                  key={index}
+                  whileHover={{ scale: 1.2 }}
+                  onClick={() => {
+                    setCurrentIndex(index);
+                    clearCanvas(); // Clear when switching images
+                  }}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentIndex 
+                      ? 'bg-white w-8' 
+                      : 'bg-white/40 hover:bg-white/60'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Image Info */}
+          <div className="absolute bottom-8 left-8 z-20">
+            <div className="bg-black/60 backdrop-blur-md border border-white/20 rounded-lg p-3">
+              <h3 className="text-white font-semibold text-sm">{currentImage.title}</h3>
+              <p className="text-white/60 text-xs capitalize">{currentImage.category}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
     </section>
   );
