@@ -9,8 +9,8 @@ export default function PublicWall() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-  // Neon blue color and settings
-  const neonBlue = '#00FFFF';
+  // Ink blue color and settings  
+  const neonBlue = '#1E40AF'; // Ink blue instead of cyan
   const sprayDensity = 100;
   const sprayRadius = 15;
   const glowBlur = 20;
@@ -23,8 +23,8 @@ export default function PublicWall() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = 1200;
-    canvas.height = 600;
+    canvas.width = 1400;
+    canvas.height = 800;
 
     // Load background image
     const img = new Image();
@@ -213,14 +213,13 @@ export default function PublicWall() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-8"
         >
-          <h2 className="text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-blue-600">
+          <h2 className="text-3xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-blue-600">
             COLLABORATIVE ART WALL
           </h2>
-          <p className="text-xl text-stone-600 max-w-3xl mx-auto">
-            Express your vision of Sojourn with neon blue spraypaint. 
-            Create stunning graffiti art with realistic spray patterns and glowing effects.
+          <p className="text-lg text-stone-600 max-w-2xl mx-auto">
+            Express your vision of Sojourn with ink blue spraypaint.
           </p>
         </motion.div>
 
@@ -259,11 +258,10 @@ export default function PublicWall() {
           </div>
 
           {/* Instructions */}
-          <div className="mb-6 p-4 bg-stone-100 rounded-lg">
+          <div className="mb-4 p-3 bg-stone-100 rounded-lg">
             <p className="text-sm text-stone-600 text-center">
               <strong>Instructions:</strong> Click anywhere to initialize the canvas • 
-              Click and drag to spray neon blue paint • 
-              Paint glows with realistic neon lighting • 
+              Click and drag to spray ink blue paint • 
               Your art contributes to the collective Sojourn vision
             </p>
           </div>
@@ -272,8 +270,8 @@ export default function PublicWall() {
           <div className="border-2 border-stone-300 rounded-lg overflow-hidden">
             <canvas
               ref={canvasRef}
-              width={1200}
-              height={600}
+              width={1400}
+              height={800}
               className="w-full max-w-full h-auto cursor-crosshair"
               onMouseDown={startDrawing}
               onMouseMove={draw}
@@ -285,7 +283,7 @@ export default function PublicWall() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-stone-500 font-mono uppercase tracking-wide">
-              Advanced neon spraypaint with realistic effects • 
+              Advanced ink blue spraypaint with realistic effects • 
               Glowing particles and spray patterns • 
               Paint your vision of sustainable interstellar civilization
             </p>

@@ -146,7 +146,7 @@ export default function Gallery() {
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % visionImages.length);
-    }, 4000); // 4 seconds per image
+    }, 8000); // 8 seconds per image
     
     return () => clearInterval(interval);
   }, [isAutoPlaying, visionImages.length]);
@@ -239,16 +239,16 @@ export default function Gallery() {
 
       {/* Info Toggle */}
       <div className="absolute top-8 right-8 z-20 flex gap-3">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => setIsAutoPlaying(!isAutoPlaying)}
           className={`p-3 backdrop-blur-sm border border-white/20 rounded-full text-white transition-all ${
             isAutoPlaying ? 'bg-emerald-500/30' : 'bg-black/30'
           }`}
         >
           {isAutoPlaying ? <Pause size={20} /> : <Play size={20} />}
-            </motion.button>
+        </motion.button>
         
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -258,7 +258,7 @@ export default function Gallery() {
         >
           <Info size={20} />
         </motion.button>
-                  </div>
+      </div>
 
       {/* Progress Indicators */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
