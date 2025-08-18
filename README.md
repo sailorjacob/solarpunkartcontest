@@ -1,24 +1,24 @@
-# 🌱 Sojourn - Life on Kepler-442b
+# Sojourn - Life on Kepler-442b
 
 An immersive, award-worthy art project showcasing AI-generated visions of a sustainable future on a terraformed exoplanet in the Kepler-442 system. This interactive web experience combines stunning visuals, collaborative art creation, and atmospheric audio to imagine humanity's next chapter among the stars.
 
 ![Sojourn City Banner](public/banner.jpg)
 
-## ✨ Features
+## Features
 
-### 🎨 **Vision Gallery**
+### Vision Gallery
 - Curated collection of AI-generated Kepler-442b solarpunk landscapes
 - Detailed view with Midjourney prompts
 - Filterable by categories (architecture, nature, technology, community)
 - Lightbox modal with download options
 
-### 🚀 **Creative Process**
+### Creative Process
 - Behind-the-scenes showcase of Midjourney iterations
 - Timeline and grid view options
 - Step-by-step visualization of the creative journey
 - Prompt evolution tracking
 
-### 🎭 **Public Art Wall**
+### Public Art Wall
 - Real-time collaborative digital graffiti canvas
 - Advanced brush tools powered by PixiJS:
   - Spray paint with realistic particle effects
@@ -29,7 +29,7 @@ An immersive, award-worthy art project showcasing AI-generated visions of a sust
 - Save and share artwork functionality
 - Community gallery showcase
 
-### 📻 **Sojourn Radio**
+### Sojourn Radio
 - Four themed radio stations:
   - Kepler Ambient - Ethereal soundscapes
   - Sojourn Beats - Uplifting electronic rhythms
@@ -39,7 +39,7 @@ An immersive, award-worthy art project showcasing AI-generated visions of a sust
 - Track queue and playlist management
 - Volume control and playback controls
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework:** Next.js 14 with App Router
 - **Language:** TypeScript
@@ -50,7 +50,7 @@ An immersive, award-worthy art project showcasing AI-generated visions of a sust
 - **Real-time:** Ready for Supabase integration
 - **Icons:** Custom emoji and Lucide React
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -61,8 +61,8 @@ An immersive, award-worthy art project showcasing AI-generated visions of a sust
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/solarpunk-mars.git
-cd solarpunk-mars
+git clone https://github.com/sailorjacob/solarpunkartcontest.git
+cd solarpunkartcontest
 ```
 
 2. Install dependencies:
@@ -84,7 +84,7 @@ npm run build
 npm start
 ```
 
-## 🎨 Adding Your Own Content
+## Adding Your Own Content
 
 ### Adding Midjourney Images
 
@@ -104,7 +104,7 @@ Update the custom colors in `tailwind.config.ts`:
 - Punk colors: `punk-green`, `punk-mint`, `punk-forest`, `punk-sage`
 - Neon colors: `neon-blue`, `neon-pink`, `neon-green`
 
-## 🔧 Optional: Supabase Integration
+## Optional: Supabase Integration
 
 To enable real-time collaboration and data persistence:
 
@@ -142,7 +142,7 @@ CREATE TABLE gallery (
 
 4. Initialize Supabase client in your components (example provided in comments)
 
-## 🎯 Design Philosophy
+## Design Philosophy
 
 This project embodies the solarpunk aesthetic - a vision of the future that's:
 - **Sustainable:** Showcasing renewable energy and green technology
@@ -150,7 +150,7 @@ This project embodies the solarpunk aesthetic - a vision of the future that's:
 - **Community-focused:** Enabling collaborative creation and sharing
 - **Beautiful:** Combining nature and technology in harmony
 
-## 🏆 Awwwards-Level Features
+## Awwwards-Level Features
 
 - **Smooth Animations:** Every interaction is carefully animated
 - **Responsive Design:** Fully optimized for all screen sizes
@@ -160,22 +160,22 @@ This project embodies the solarpunk aesthetic - a vision of the future that's:
 - **Loading States:** Beautiful loading animations and transitions
 - **Microinteractions:** Hover effects, button animations, and visual feedback
 
-## 📝 License
+## License
 
 This project is open source and available under the MIT License.
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 🌟 Acknowledgments
+## Acknowledgments
 
-- Inspired by the solarpunk movement and Mars colonization concepts
+- Inspired by the solarpunk movement and interstellar colonization concepts
 - Built with love for the intersection of art, technology, and sustainability
 - Special thanks to the Midjourney community for AI art inspiration
 
 ---
 
-**Created with 💚 for a sustainable future on the Red Planet**
+**Created for a sustainable future on Kepler-442b**
 
 *"The future is not a destination, but a creation."*
