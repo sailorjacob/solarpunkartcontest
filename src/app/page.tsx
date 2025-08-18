@@ -137,10 +137,23 @@ export default function Home() {
                 </li>
               </ul>
               
-              <div className="mt-6 pt-4 border-t border-stone-200">
-                <p className="text-slate-600 text-sm">
-                  By <span className="text-blue-500 text-base italic font-light tracking-wide" style={{fontFamily: 'cursive'}}>Jacob</span>
-                </p>
+              <div className="mt-6">
+                <p className="text-slate-600 text-sm mb-2">By</p>
+                <div className="pt-3 border-t border-stone-200">
+                  <div 
+                    className="text-blue-500 text-3xl font-normal transform -rotate-2 inline-block relative"
+                    style={{
+                      fontFamily: 'Georgia, "Times New Roman", Times, serif',
+                      fontWeight: '400',
+                      letterSpacing: '0.05em',
+                      textShadow: '1px 1px 0px rgba(59, 130, 246, 0.2)',
+                      fontStyle: 'italic',
+                      transform: 'rotate(-5deg) skew(-2deg)'
+                    }}
+                  >
+                    Jacob
+                  </div>
+                </div>
               </div>
             </div>
 
