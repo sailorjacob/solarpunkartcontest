@@ -15,9 +15,9 @@ export default function PublicWall() {
 
   // Ink blue color and settings  
   const neonBlue = '#1E40AF'; // Ink blue instead of cyan
-  const sprayDensity = 100;
-  const sprayRadius = 15;
-  const glowBlur = 20;
+  const sprayDensity = 80;
+  const [sprayRadius, setSprayRadius] = useState(8);
+  const glowBlur = 15;
 
   // Gallery canvas frame URLs for mapping
   const galleryFrames = [
@@ -163,7 +163,7 @@ export default function PublicWall() {
       
       // Only paint if this particle location is paintable
       if (isPointPaintable(Math.floor(particleX), Math.floor(particleY))) {
-        const particleSize = Math.random() * 1.5 + 0.5;
+        const particleSize = Math.random() * 1.2 + 0.3; // Smaller, more varied particles
         ctx.beginPath();
         ctx.arc(particleX, particleY, particleSize, 0, Math.PI * 2);
         ctx.fill();
@@ -180,7 +180,7 @@ export default function PublicWall() {
       
       // Only paint if this particle location is paintable
       if (isPointPaintable(Math.floor(particleX), Math.floor(particleY))) {
-        const particleSize = Math.random() * 2 + 1;
+        const particleSize = Math.random() * 1.5 + 0.7; // Smaller outer particles
         ctx.beginPath();
         ctx.arc(particleX, particleY, particleSize, 0, Math.PI * 2);
         ctx.fill();
@@ -204,7 +204,7 @@ export default function PublicWall() {
       
       // Only add glow if this location is paintable
       if (isPointPaintable(Math.floor(particleX), Math.floor(particleY))) {
-        const size = Math.random() * 3 + 2;
+        const size = Math.random() * 2.5 + 1.5; // Smaller glow particles
         ctx.beginPath();
         ctx.arc(particleX, particleY, size, 0, Math.PI * 2);
         ctx.fill();
@@ -263,90 +263,123 @@ export default function PublicWall() {
   };
 
   return (
-    <section className="min-h-screen bg-stone-50 py-8">
-      <div className="max-w-full mx-auto px-4">
-        {/* Minimal Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-6"
-        >
-          <h2 className="text-2xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-blue-600">
-            COLLABORATIVE GALLERY
-          </h2>
-          <p className="text-sm text-stone-600 max-w-xl mx-auto">
-            Paint on the gallery with ink blue spraypaint • Your art will be displayed on the canvases
-          </p>
-        </motion.div>
+    <section className="relative w-full h-screen overflow-hidden bg-black">
+      {/* Fullscreen Canvas */}
+      <canvas
+        ref={canvasRef}
+        width={1400}
+        height={800}
+        className="absolute inset-0 w-full h-full object-cover cursor-crosshair"
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={stopDrawing}
+        onMouseLeave={stopDrawing}
+        style={{ backgroundColor: '#000000' }}
+      />
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-white rounded-lg shadow-xl p-4"
-        >
-          {/* Controls */}
-          <div className="flex flex-wrap items-center justify-between mb-4 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 rounded-full border border-stone-300" 
-                   style={{ backgroundColor: neonBlue, boxShadow: `0 0 10px ${neonBlue}` }}>
-              </div>
-              <span className="text-sm font-medium text-stone-700">Ink Blue Spraypaint</span>
+      {/* Floating Controls Overlay - Top Right */}
+      <motion.div 
+        className="absolute top-6 right-6 z-10"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+      >
+        <div className="bg-black/80 backdrop-blur-md rounded-xl p-4 border border-white/20">
+          <div className="flex items-center gap-3 text-white">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono uppercase tracking-wide text-gray-300">Brush</span>
+              <input
+                type="range"
+                min="3"
+                max="20"
+                value={sprayRadius}
+                onChange={(e) => setSprayRadius(Number(e.target.value))}
+                className="w-16 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+              <span className="text-xs text-gray-400 w-6">{sprayRadius}</span>
             </div>
             
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-stone-500">
-                Canvas {currentCanvasIndex + 1}/4
-              </span>
+            <div className="h-4 w-px bg-gray-600" />
+            
+            <div className="flex gap-2">
               <button
                 onClick={clearCanvas}
-                className="px-4 py-2 bg-stone-600 text-stone-100 rounded-lg font-mono text-sm hover:bg-stone-700 transition-colors"
+                className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-mono uppercase tracking-wide rounded-lg transition-all duration-200 border border-white/20"
               >
                 Clear
               </button>
               <button
                 onClick={saveArt}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-mono text-sm hover:bg-blue-700 transition-colors"
+                className="px-3 py-1.5 bg-blue-600/90 hover:bg-blue-500 text-white text-xs font-mono uppercase tracking-wide rounded-lg transition-all duration-200"
               >
-                Submit to Gallery
+                Submit
               </button>
             </div>
           </div>
+        </div>
+      </motion.div>
 
-          {/* Instructions */}
-          <div className="mb-3 p-2 bg-stone-50 rounded text-center">
-            <p className="text-xs text-stone-600">
-              <strong>Click anywhere to start painting</strong> • Click and drag to spray • 
-              Your art will be displayed on canvas position {currentCanvasIndex + 1}
-            </p>
+      {/* Floating Info Overlay - Bottom Center */}
+      <motion.div 
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+      >
+        <div className="bg-black/80 backdrop-blur-md rounded-xl px-6 py-3 border border-white/20">
+          <div className="flex items-center gap-8 text-white">
+            <div className="flex items-center gap-2">
+              <div 
+                className="w-3 h-3 rounded-full border border-white/40"
+                style={{ backgroundColor: neonBlue }}
+              />
+              <span className="text-sm font-mono text-gray-300">Ink Blue Paint</span>
+            </div>
+            
+            <div className="h-3 w-px bg-gray-600" />
+            
+            <span className="text-sm font-mono text-gray-300">
+              Canvas Position <span className="text-blue-400 font-bold">{currentCanvasIndex + 1}</span>/4
+            </span>
+            
+            <div className="h-3 w-px bg-gray-600" />
+            
+            <span className="text-xs font-mono text-gray-400 uppercase tracking-wide">
+              Click & Drag to Paint • Art Applied to Gallery Frame
+            </span>
           </div>
+        </div>
+      </motion.div>
 
-          {/* Canvas */}
-          <div className="border border-stone-300 rounded overflow-hidden">
-            <canvas
-              ref={canvasRef}
-              width={1400}
-              height={800}
-              className="w-full max-w-full h-auto cursor-crosshair"
-              onMouseDown={startDrawing}
-              onMouseMove={draw}
-              onMouseUp={stopDrawing}
-              onMouseLeave={stopDrawing}
-              style={{ backgroundColor: '#f8f8f8' }}
-            />
+      {/* Canvas Position Indicator - Top Left */}
+      <motion.div 
+        className="absolute top-6 left-6 z-10"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
+      >
+        <div className="bg-black/80 backdrop-blur-md rounded-xl p-3 border border-white/20">
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1">
+              {[0, 1, 2, 3].map((index) => (
+                <div
+                  key={index}
+                  className={`w-2 h-2 rounded-full border ${
+                    index === currentCanvasIndex 
+                      ? 'bg-blue-500 border-blue-400' 
+                      : artSubmissions[index] 
+                        ? 'bg-green-500 border-green-400' 
+                        : 'bg-gray-700 border-gray-600'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-xs font-mono text-gray-300 uppercase tracking-wide">
+              Gallery Frames
+            </span>
           </div>
-
-          <div className="mt-4 text-center">
-            <p className="text-xs text-stone-500 font-mono">
-              Advanced ink blue spraypaint • Realistic spray patterns • 
-              Paint your vision of the gallery space
-            </p>
-          </div>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </section>
   );
 }
