@@ -28,60 +28,69 @@ export default function About({ onBack }: AboutProps) {
         <div className="prose prose-lg max-w-none">
           <h1 className="text-2xl font-bold text-stone-800 mb-6">Development Notes</h1>
           
+          <p className="text-stone-600 mb-4">
+            The project began with many creative possibilities - a golden plated statue, film photography, music. 
+            I wanted to visualize life on Mars and thought it would be cool to create a futuristic billboard on a green, 
+            terraformed Mars. Started by using Midjourney to generate initial concepts and built an entire world from there.
+          </p>
+          
           <p className="text-stone-600 mb-8">
-            Quick documentation of the development process for this project. Started as a SolarPunk city concept, 
-            evolved into Sojourn on Kepler-442b through various iterations.
+            <em>Sojourn means a temporary stay, which we humans are in this universe, very temporary. 
+            Pixels are the new canvas, keystrokes are the new brush.</em>
           </p>
 
-          {/* Concept & Research */}
-          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Initial Research</h2>
+          {/* Initial Concept */}
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Initial Concept & Research</h2>
+          
           <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokinitialprompt.png"
             alt="Initial concept development"
             className="w-full mb-3"
           />
           <p className="text-sm text-stone-500 mb-4">
-            Early brainstorming with Grok for terraforming research
+            Early brainstorming with Grok for terraforming research and initial project scope
           </p>
           
           <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/Perplexity%20deep%20research.png"
             alt="Perplexity research"
-            className="w-full mb-3"
+            className="w-full mb-6"
           />
           <p className="text-sm text-stone-500 mb-6">
-            Used Perplexity for deep research into sustainable city design
+            Used Perplexity for deep research into sustainable city design and Mars terraforming concepts
           </p>
 
           {/* Visual Development */}
           <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Visual Asset Creation</h2>
+          
           <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/first%20midjourney%20inspiration.png"
             alt="Midjourney art generation"
             className="w-full mb-3"
           />
           <p className="text-sm text-stone-500 mb-4">
-            First Midjourney experiments for visual language
+            First Midjourney experiments establishing the visual language for a terraformed Mars
           </p>
           
           <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/midjourney%20prompting.png"
             alt="Midjourney prompting process"
-            className="w-full mb-3"
+            className="w-full mb-6"
           />
           <p className="text-sm text-stone-500 mb-6">
-            Iterative prompting process to refine the aesthetic
+            Iterative prompting process to refine the aesthetic and build a cohesive world
           </p>
 
           {/* Development Process */}
           <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Frontend Development</h2>
+          
           <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/roughstart.png"
             alt="Early development phase"
             className="w-full mb-3"
           />
           <p className="text-sm text-stone-500 mb-4">
-            Early rough layouts and basic structure
+            Early rough layouts and basic structure - the humble beginnings
           </p>
           
           <img 
@@ -89,19 +98,17 @@ export default function About({ onBack }: AboutProps) {
             alt="Spraypaint testing failures"
             className="w-full mb-3"
           />
-          <p className="text-sm text-stone-500 mb-6">
-            Testing spray paint functionality - lots of failed attempts
+          <p className="text-sm text-stone-500 mb-4">
+            Testing spray paint functionality - many failed attempts before success
           </p>
 
-          {/* Interactive Features */}
-          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Interactive Features</h2>
           <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokspraypaintstep.png"
             alt="Spraypaint tool development"
-            className="w-full mb-3"
+            className="w-full mb-6"
           />
           <p className="text-sm text-stone-500 mb-6">
-            Working on spray paint mechanics with Grok assistance
+            Working on spray paint mechanics with AI assistance to achieve realistic effects
           </p>
 
           {/* Tools Used */}
