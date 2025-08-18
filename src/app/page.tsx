@@ -170,12 +170,11 @@ export default function Home() {
                       <div className="mt-6">
                         <p className="text-stone-600 text-sm mb-1">By</p>
                         <div 
-                          className="text-blue-600 text-3xl font-normal inline-block relative"
+                          className="text-blue-400 text-3xl font-light inline-block relative"
                           style={{
                             fontFamily: '"Brush Script MT", "Lucida Handwriting", cursive',
-                            fontWeight: '600',
+                            fontWeight: '300',
                             letterSpacing: '0.02em',
-                            textShadow: '1px 1px 2px rgba(59, 130, 246, 0.3)',
                             transform: 'rotate(3deg) skew(1deg)'
                           }}
                         >

@@ -98,6 +98,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               }}
               transition={{ type: "spring", damping: 30, delay: index * 0.1 }}
               className="w-20 h-14 cursor-pointer"
+              onClick={() => setCurrentImageIndex(index)}
             >
               <div className="relative w-full h-full rounded-md overflow-hidden border border-white/30 hover:border-white/60 transition-all duration-300">
                 <img
@@ -178,7 +179,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-600"
             >
               <div>
-                <div className="text-3xl font-bold text-emerald-400">2.4BB</div>
+                <div className="text-3xl font-bold text-emerald-400">2.4B</div>
                 <div className="text-sm text-emerald-300 font-mono">POPULATION</div>
               </div>
               <div>
@@ -186,8 +187,8 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                 <div className="text-sm text-cyan-300 font-mono">RENEWABLE</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-amber-400">2157</div>
-                <div className="text-sm text-amber-300 font-mono">EST. YEAR</div>
+                <div className="text-3xl font-bold text-white">2157</div>
+                <div className="text-sm text-gray-300 font-mono">EST. YEAR</div>
               </div>
             </motion.div>
 
@@ -206,7 +207,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               </button>
               <button
                 onClick={onCreateClick}
-                className="px-6 py-3 border-2 border-amber-400/70 text-amber-300 text-sm font-semibold rounded-lg hover:bg-amber-400/20 hover:border-amber-400 hover:text-amber-200 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+                className="px-6 py-3 border-2 border-white/70 text-white text-sm font-semibold rounded-lg hover:bg-white/20 hover:border-white hover:text-gray-100 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 Create Art
               </button>
