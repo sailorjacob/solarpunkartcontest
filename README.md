@@ -2,7 +2,7 @@
 
 An immersive, award-worthy art project showcasing AI-generated visions of a sustainable future on a terraformed exoplanet in the Kepler-442 system. This interactive web experience combines stunning visuals, collaborative art creation, and atmospheric audio to imagine humanity's next chapter among the stars.
 
-![SolarPunk City Banner](public/banner.jpg)
+![Sojourn City Banner](public/banner.jpg)
 
 ## ✨ Features
 

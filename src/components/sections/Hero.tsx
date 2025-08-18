@@ -84,38 +84,40 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
         }} />
       </div>
 
-      {/* Floating Image Previews */}
-      {heroImages.map((image, index) => (
-        <motion.div
-          key={`preview-${index}`}
-          animate={{
-            x: mousePosition.x * (index + 1) * 0.5,
-            y: mousePosition.y * (index + 1) * 0.3,
-          }}
-          transition={{ type: "spring", damping: 30 }}
-          className={`absolute w-32 h-20 ${
-            index === 0 ? 'top-20 right-20' : 
-            index === 1 ? 'bottom-40 left-20' : 
-            'top-1/2 right-10'
-          }`}
-        >
-          <div className="relative w-full h-full rounded-lg overflow-hidden border border-white/20">
-            <img
-              src={image.src}
-              alt={image.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/40" />
-            <div className="absolute bottom-1 left-1 right-1">
-              <div className="text-xs font-mono text-white/80">{image.title}</div>
+      {/* Floating Image Previews - Hidden on smaller screens */}
+      <div className="hidden xl:block">
+        {heroImages.map((image, index) => (
+          <motion.div
+            key={`preview-${index}`}
+            animate={{
+              x: mousePosition.x * (index + 1) * 0.3,
+              y: mousePosition.y * (index + 1) * 0.2,
+            }}
+            transition={{ type: "spring", damping: 30 }}
+            className={`absolute w-24 h-16 opacity-60 ${
+              index === 0 ? 'top-32 right-32' : 
+              index === 1 ? 'bottom-60 left-32' : 
+              'top-2/3 right-24'
+            }`}
+          >
+            <div className="relative w-full h-full rounded-lg overflow-hidden border border-white/20">
+              <img
+                src={image.src}
+                alt={image.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/50" />
+              <div className="absolute bottom-0.5 left-0.5 right-0.5">
+                <div className="text-xs font-mono text-white/70 truncate">{image.title}</div>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      ))}
+          </motion.div>
+        ))}
+      </div>
 
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 min-h-screen flex flex-col justify-center">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center">
           {/* Left Column - Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -161,11 +163,11 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               transition={{ duration: 0.8, delay: 0.9 }}
               className="max-w-lg"
             >
-                              <p className="text-lg text-gray-300 leading-relaxed">
-                  Advanced terraforming technology meets sustainable urban planning. 
-                  Witness humanity's greatest achievement: a thriving ecological 
-                  metropolis on a distant world beyond our solar system.
-                </p>
+              <p className="text-lg text-gray-300 leading-relaxed">
+                Advanced terraforming technology meets sustainable urban planning. 
+                Witness humanity's greatest achievement: a thriving ecological 
+                metropolis on a distant world beyond our solar system.
+              </p>
             </motion.div>
 
             {/* Technical Specs */}
@@ -194,7 +196,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.3 }}
-              className="flex gap-4 pt-4"
+              className="flex flex-wrap gap-4 pt-6"
             >
               <button
                 onClick={onExploreClick}
@@ -206,7 +208,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                 onClick={onCreateClick}
                 className="px-8 py-4 border border-white text-white font-bold rounded-none hover:bg-white hover:text-black transition-colors uppercase tracking-wider"
               >
-                VIEW GALLERY
+                CREATE ART
               </button>
             </motion.div>
           </motion.div>

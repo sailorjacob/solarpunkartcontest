@@ -15,7 +15,6 @@ const navItems = [
   { id: 'gallery', label: 'Visions' },
   { id: 'wall', label: 'Create' },
   { id: 'radio', label: 'Experience' },
-  { id: 'about', label: 'About' },
 ];
 
 export default function Navigation({ activeSection, onSectionChange }: NavigationProps) {

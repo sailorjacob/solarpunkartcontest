@@ -245,15 +245,15 @@ export default function PublicWall() {
             <div className="flex items-center gap-3">
               <button
                 onClick={clearCanvas}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
+                className="px-6 py-2 bg-stone-800 text-stone-100 rounded-full font-mono text-sm uppercase tracking-wider hover:bg-stone-900 transition-all duration-200 border border-stone-700"
               >
-                Clear Art
+                Clear
               </button>
               <button
                 onClick={saveArt}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+                className="px-6 py-2 bg-stone-700 text-stone-100 rounded-full font-mono text-sm uppercase tracking-wider hover:bg-stone-800 transition-all duration-200 border border-stone-600"
               >
-                Save PNG
+                Save
               </button>
             </div>
           </div>
@@ -284,10 +284,10 @@ export default function PublicWall() {
           </div>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-stone-500">
-              🎨 Advanced neon spraypaint with realistic effects • 
-              ✨ Glowing particles and spray patterns • 
-              🌱 Paint your vision of sustainable interstellar civilization
+            <p className="text-sm text-stone-500 font-mono uppercase tracking-wide">
+              Advanced neon spraypaint with realistic effects • 
+              Glowing particles and spray patterns • 
+              Paint your vision of sustainable interstellar civilization
             </p>
           </div>
         </motion.div>
