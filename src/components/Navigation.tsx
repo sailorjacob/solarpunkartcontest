@@ -43,7 +43,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
         )}
       >
         <div className="container-custom">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center lg:justify-between">
             {/* Logo */}
             <motion.div
               whileHover={{ scale: 1.02 }}
@@ -56,12 +56,12 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                   <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-400 rounded-sm" />
                   <div>
                     <h1 className={`font-bold text-xl tracking-tight transition-colors duration-300 ${
-                      isScrolled ? 'text-white' : 'text-slate-800'
+                      isScrolled ? 'text-white' : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio' ? 'text-slate-800' : 'text-white'
                     }`}>
                       SOJOURN
                     </h1>
                     <p className={`text-xs font-mono tracking-wider -mt-1 transition-colors duration-300 ${
-                      isScrolled ? 'text-gray-400' : 'text-slate-600'
+                      isScrolled ? 'text-gray-400' : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio' ? 'text-slate-600' : 'text-gray-300'
                     }`}>
                       KEPLER-442B
                     </p>
@@ -71,7 +71,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
             </motion.div>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="flex items-center gap-1">
               {navItems.map((item, index) => (
                 <motion.button
                   key={item.id}
@@ -87,7 +87,9 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                       ? "text-green-400 border-b-2 border-green-400"
                       : isScrolled 
                         ? "text-gray-400 hover:text-white"
-                        : "text-slate-200 hover:text-white"
+                        : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio'
+                          ? "text-slate-800 hover:text-slate-600"
+                          : "text-slate-200 hover:text-white"
                   )}
                 >
 

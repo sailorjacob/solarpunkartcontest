@@ -102,7 +102,7 @@ export default function Home() {
 
       {/* Industrial Footer - Only on Home Page */}
       {activeSection === 'home' && (
-        <footer className="relative border-t border-amber-800/30 bg-gradient-to-br from-amber-900 via-orange-900 to-red-900 text-white">
+        <footer className="relative border-t border-stone-200 bg-stone-50 text-slate-800">
         <div className="container-custom py-16">
           <div className="grid md:grid-cols-3 gap-12">
             {/* Project Info */}
@@ -110,27 +110,27 @@ export default function Home() {
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-400 rounded-sm" />
                 <div>
-                  <h3 className="font-bold text-xl">SOJOURN</h3>
-                  <p className="text-xs font-mono text-gray-400">KEPLER-442B</p>
+                  <h3 className="font-bold text-xl text-slate-800">SOJOURN</h3>
+                  <p className="text-xs font-mono text-blue-500">KEPLER-442B</p>
                 </div>
               </div>
-              <p className="text-blue-200 leading-relaxed mb-4">
+              <p className="text-slate-600 leading-relaxed mb-4">
                 Advanced sustainable civilization project. Terraforming Kepler-442b through 
                 ecological integration and cutting-edge technology.
               </p>
-              <div className="text-xs font-mono text-blue-300">
+              <div className="text-xs font-mono text-blue-500">
                 PURITY: LEVEL 7 HARMONY
               </div>
             </div>
 
             {/* Navigation */}
             <div>
-              <h4 className="font-bold text-white mb-4 uppercase tracking-wide">Sectors</h4>
+              <h4 className="font-bold text-slate-800 mb-4 uppercase tracking-wide">Sectors</h4>
               <ul className="space-y-2">
                 <li>
                   <button 
                     onClick={() => handleSectionChange('about')}
-                    className="text-blue-300 hover:text-blue-100 transition-colors font-mono text-sm uppercase tracking-wide"
+                    className="text-blue-600 hover:text-blue-800 transition-colors font-mono text-sm uppercase tracking-wide"
                   >
                     Documentation
                   </button>
@@ -140,30 +140,30 @@ export default function Home() {
 
             {/* Status */}
             <div>
-              <h4 className="font-bold text-white mb-4 uppercase tracking-wide">System Status</h4>
+              <h4 className="font-bold text-slate-800 mb-4 uppercase tracking-wide">System Status</h4>
               <div className="space-y-3 text-sm font-mono">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-blue-200">All Systems Operational</span>
+                  <span className="text-slate-600">All Systems Operational</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-blue-400 rounded-full" />
-                  <span className="text-blue-200">Atmospheric Processors Online</span>
+                  <span className="text-slate-600">Atmospheric Processors Online</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-orange-400 rounded-full" />
-                  <span className="text-blue-200">Terraforming Progress: 89.3%</span>
+                  <span className="text-slate-600">Terraforming Progress: 89.3%</span>
                 </div>
               </div>
             </div>
           </div>
           
-          <div className="mt-12 pt-8 border-t border-gray-800">
+          <div className="mt-12 pt-8 border-t border-stone-200">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-sm font-mono text-blue-300">
+              <p className="text-sm font-mono text-blue-500">
                 © 2157 SOJOURN COLONY ALPHA • INTERSTELLAR COLLECTIVE
               </p>
-              <div className="flex items-center gap-6 text-xs font-mono text-blue-300 uppercase">
+              <div className="flex items-center gap-6 text-xs font-mono text-blue-500 uppercase">
                 <div>HARMONY PROTOCOL ACTIVE</div>
                 <div>DATA PROTECTED</div>
                 <div>TRANSMISSION PURE</div>
