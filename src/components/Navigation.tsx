@@ -43,7 +43,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
         )}
       >
         <div className="container-custom">
-          <div className="flex items-center justify-center lg:justify-between">
+          <div className="flex items-center justify-between">
             {/* Logo */}
             <motion.div
               whileHover={{ scale: 1.02 }}
@@ -70,8 +70,8 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
               </div>
             </motion.div>
 
-            {/* Desktop Navigation */}
-            <div className="flex items-center gap-1">
+            {/* Desktop Navigation - Centered */}
+            <div className="hidden lg:flex items-center gap-1 absolute left-1/2 transform -translate-x-1/2">
               {navItems.map((item, index) => (
                 <motion.button
                   key={item.id}
@@ -100,7 +100,8 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
               ))}
             </div>
 
-
+            {/* Right Spacer for Balance */}
+            <div className="hidden lg:block w-32"></div>
 
             {/* Mobile Menu Button */}
             <button
