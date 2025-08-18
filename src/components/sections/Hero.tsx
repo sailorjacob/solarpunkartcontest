@@ -84,35 +84,35 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
         }} />
       </div>
 
-      {/* Floating Image Previews - Hidden on smaller screens */}
+      {/* Gallery Preview Cards - Positioned as side cards */}
       <div className="hidden xl:block">
-        {heroImages.map((image, index) => (
-          <motion.div
-            key={`preview-${index}`}
-            animate={{
-              x: mousePosition.x * (index + 1) * 0.3,
-              y: mousePosition.y * (index + 1) * 0.2,
-            }}
-            transition={{ type: "spring", damping: 30 }}
-            className={`absolute w-24 h-16 opacity-60 ${
-              index === 0 ? 'top-32 right-32' : 
-              index === 1 ? 'bottom-60 left-32' : 
-              'top-2/3 right-24'
-            }`}
-          >
-            <div className="relative w-full h-full rounded-lg overflow-hidden border border-white/20">
-              <img
-                src={image.src}
-                alt={image.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black/50" />
-              <div className="absolute bottom-0.5 left-0.5 right-0.5">
-                <div className="text-xs font-mono text-white/70 truncate">{image.title}</div>
+        <div className="absolute right-8 top-1/2 transform -translate-y-1/2 space-y-4">
+          {heroImages.map((image, index) => (
+            <motion.div
+              key={`preview-${index}`}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ 
+                opacity: index === currentImageIndex ? 0.4 : 0.8,
+                x: 0,
+                scale: index === currentImageIndex ? 0.9 : 1
+              }}
+              transition={{ type: "spring", damping: 30, delay: index * 0.1 }}
+              className="w-20 h-14 cursor-pointer"
+            >
+              <div className="relative w-full h-full rounded-md overflow-hidden border border-white/30 hover:border-white/60 transition-all duration-300">
+                <img
+                  src={image.src}
+                  alt={image.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40 hover:bg-black/20 transition-all duration-300" />
+                <div className="absolute bottom-0 left-0 right-0 p-1">
+                  <div className="text-xs font-mono text-white/80 truncate">{image.title}</div>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* Main Content */}
@@ -175,19 +175,19 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.1 }}
-              className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-700"
+              className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-600"
             >
               <div>
-                <div className="text-3xl font-bold text-green-400">2.4M</div>
-                <div className="text-sm text-gray-500 font-mono">POPULATION</div>
+                <div className="text-3xl font-bold text-emerald-400">2.4BB</div>
+                <div className="text-sm text-emerald-300 font-mono">POPULATION</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-blue-400">100%</div>
-                <div className="text-sm text-gray-500 font-mono">RENEWABLE</div>
+                <div className="text-3xl font-bold text-cyan-400">100%</div>
+                <div className="text-sm text-cyan-300 font-mono">RENEWABLE</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-orange-400">2157</div>
-                <div className="text-sm text-gray-500 font-mono">EST. YEAR</div>
+                <div className="text-3xl font-bold text-amber-400">2157</div>
+                <div className="text-sm text-amber-300 font-mono">EST. YEAR</div>
               </div>
             </motion.div>
 
@@ -200,13 +200,13 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             >
               <button
                 onClick={onExploreClick}
-                className="px-4 py-2 bg-white/90 text-black text-sm font-normal rounded-full hover:bg-white transition-all duration-300 hover:scale-105"
+                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-semibold rounded-lg hover:from-emerald-600 hover:to-cyan-600 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 Explore Project
               </button>
               <button
                 onClick={onCreateClick}
-                className="px-4 py-2 border border-white/60 text-white text-sm font-normal rounded-full hover:bg-white/10 hover:border-white transition-all duration-300 hover:scale-105"
+                className="px-6 py-3 border-2 border-amber-400/70 text-amber-300 text-sm font-semibold rounded-lg hover:bg-amber-400/20 hover:border-amber-400 hover:text-amber-200 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 Create Art
               </button>

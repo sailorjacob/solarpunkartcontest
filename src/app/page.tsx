@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import Navigation from '@/components/Navigation';
 import Hero from '@/components/sections/Hero';
 import Journey from '@/components/sections/Journey';
@@ -13,6 +14,7 @@ import About from '@/components/sections/About';
 export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
   const [isLoading, setIsLoading] = useState(true);
+  const [showFooter, setShowFooter] = useState(false);
 
   useEffect(() => {
     // Quick loading
@@ -100,97 +102,125 @@ export default function Home() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Industrial Footer - Only on Home Page */}
+      {/* Footer Toggle Button - Only on Home Page */}
       {activeSection === 'home' && (
-        <footer className="relative border-t border-stone-200 bg-stone-50 text-slate-800">
-        <div className="container-custom py-16">
-          <div className="grid md:grid-cols-3 gap-12">
-            {/* Project Info */}
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-400 rounded-sm" />
-                <div>
-                  <h3 className="font-bold text-xl text-slate-800">SOJOURN</h3>
-                  <p className="text-xs font-mono text-blue-500">KEPLER-442B</p>
-                </div>
-              </div>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                Advanced sustainable civilization project. Terraforming Kepler-442b through 
-                ecological integration and cutting-edge technology.
-              </p>
-              <div className="text-xs font-mono text-blue-500">
-                PURITY: LEVEL 7 HARMONY
-              </div>
-            </div>
+        <div className="relative">
+          {/* Toggle Button */}
+          <motion.div 
+            className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-20"
+            initial={{ y: 0 }}
+            animate={{ y: showFooter ? -8 : 0 }}
+          >
+            <button
+              onClick={() => setShowFooter(!showFooter)}
+              className="p-3 bg-stone-800/80 backdrop-blur-sm text-stone-200 rounded-t-lg hover:bg-stone-700/80 transition-all duration-300 border border-stone-600/50"
+            >
+              <ChevronDownIcon 
+                className={`w-4 h-4 transform transition-transform duration-300 ${
+                  showFooter ? 'rotate-180' : ''
+                }`} 
+              />
+            </button>
+          </motion.div>
 
-            {/* Navigation */}
-            <div>
-              <h4 className="font-bold text-slate-800 mb-4 uppercase tracking-wide">Sectors</h4>
-              <ul className="space-y-2">
-                <li>
-                  <button 
-                    onClick={() => handleSectionChange('about')}
-                    className="text-blue-600 hover:text-blue-800 transition-colors font-mono text-sm uppercase tracking-wide"
-                  >
-                    Documentation
-                  </button>
-                </li>
-              </ul>
-              
-              <div className="mt-6">
-                <p className="text-slate-600 text-sm mb-2">By</p>
-                <div className="pt-3 border-t border-stone-200">
-                  <div 
-                    className="text-blue-500 text-3xl font-normal transform -rotate-2 inline-block relative"
-                    style={{
-                      fontFamily: 'Georgia, "Times New Roman", Times, serif',
-                      fontWeight: '400',
-                      letterSpacing: '0.05em',
-                      textShadow: '1px 1px 0px rgba(59, 130, 246, 0.2)',
-                      fontStyle: 'italic',
-                      transform: 'rotate(-5deg) skew(-2deg)'
-                    }}
-                  >
-                    Jacob
+          {/* Collapsible Footer */}
+          <AnimatePresence>
+            {showFooter && (
+              <motion.footer 
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.4, ease: 'easeInOut' }}
+                className="relative overflow-hidden bg-amber-50 text-stone-800"
+              >
+                <div className="container-custom py-16">
+                  <div className="grid md:grid-cols-3 gap-12">
+                    {/* Project Info */}
+                    <div>
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-400 rounded-sm" />
+                        <div>
+                          <h3 className="font-bold text-xl text-stone-800">SOJOURN</h3>
+                          <p className="text-xs font-mono text-blue-600">KEPLER-442B</p>
+                        </div>
+                      </div>
+                      <p className="text-stone-600 leading-relaxed mb-4">
+                        Advanced sustainable civilization project. Terraforming Kepler-442b through 
+                        ecological integration and cutting-edge technology.
+                      </p>
+                      <div className="text-xs font-mono text-blue-600">
+                        SECURITY: LEVEL 9
+                      </div>
+                    </div>
+
+                    {/* Navigation */}
+                    <div>
+                      <h4 className="font-bold text-stone-800 mb-4 uppercase tracking-wide">Sectors</h4>
+                      <ul className="space-y-2">
+                        <li>
+                          <button 
+                            onClick={() => handleSectionChange('about')}
+                            className="text-blue-600 hover:text-blue-800 transition-colors font-mono text-sm uppercase tracking-wide"
+                          >
+                            Documentation
+                          </button>
+                        </li>
+                      </ul>
+                      
+                      <div className="mt-6">
+                        <p className="text-stone-600 text-sm mb-1">By</p>
+                        <div 
+                          className="text-blue-600 text-3xl font-normal inline-block relative"
+                          style={{
+                            fontFamily: '"Brush Script MT", "Lucida Handwriting", cursive',
+                            fontWeight: '600',
+                            letterSpacing: '0.02em',
+                            textShadow: '1px 1px 2px rgba(59, 130, 246, 0.3)',
+                            transform: 'rotate(3deg) skew(1deg)'
+                          }}
+                        >
+                          Jacob
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Status */}
+                    <div>
+                      <h4 className="font-bold text-stone-800 mb-4 uppercase tracking-wide">System Status</h4>
+                      <div className="space-y-3 text-sm font-mono">
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                          <span className="text-stone-600">All Systems Operational</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 bg-blue-400 rounded-full" />
+                          <span className="text-stone-600">Atmospheric Processors Online</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 bg-orange-400 rounded-full" />
+                          <span className="text-stone-600">Terraforming Progress: 89.3%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-12 pt-8 border-t border-stone-300">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                      <p className="text-sm font-mono text-blue-600">
+                        © 2157 SOJOURN COLONY ALPHA • INTERSTELLAR COLLECTIVE
+                      </p>
+                      <div className="flex items-center gap-6 text-xs font-mono text-blue-600 uppercase">
+                        <div>HARMONY PROTOCOL ACTIVE</div>
+                        <div>DATA PROTECTED</div>
+                        <div>TRANSMISSION PURE</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Status */}
-            <div>
-              <h4 className="font-bold text-slate-800 mb-4 uppercase tracking-wide">System Status</h4>
-              <div className="space-y-3 text-sm font-mono">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-slate-600">All Systems Operational</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full" />
-                  <span className="text-slate-600">Atmospheric Processors Online</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full" />
-                  <span className="text-slate-600">Terraforming Progress: 89.3%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-12 pt-8 border-t border-stone-200">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-sm font-mono text-blue-500">
-                © 2157 SOJOURN COLONY ALPHA • INTERSTELLAR COLLECTIVE
-              </p>
-              <div className="flex items-center gap-6 text-xs font-mono text-blue-500 uppercase">
-                <div>HARMONY PROTOCOL ACTIVE</div>
-                <div>DATA PROTECTED</div>
-                <div>TRANSMISSION PURE</div>
-              </div>
-            </div>
-          </div>
+              </motion.footer>
+            )}
+          </AnimatePresence>
         </div>
-        </footer>
       )}
     </main>
   );

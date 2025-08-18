@@ -10,7 +10,7 @@ export default function PublicWall() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isMaskLoaded, setIsMaskLoaded] = useState(false);
-  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
+  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(() => Math.floor(Math.random() * 4));
   const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
 
   // Ink blue color and settings  
@@ -143,7 +143,7 @@ export default function PublicWall() {
     };
   };
 
-  // Enhanced spray function with masking
+  // Enhanced spray function with masking and realistic drips
   const spray = (x: number, y: number) => {
     if (!canvasRef.current) return;
     const ctx = canvasRef.current.getContext('2d');
@@ -152,59 +152,91 @@ export default function PublicWall() {
     // Check if we can paint at this location
     if (!isPointPaintable(Math.floor(x), Math.floor(y))) return;
 
-    // Solid base layer
+    // Dense core particles (fine mist effect)
     ctx.save();
     setBaseStyles(ctx);
-    for (let i = 0; i < sprayDensity; i++) {
-      const offsetX = (Math.random() * 2 - 1) * sprayRadius * 0.5;
-      const offsetY = (Math.random() * 2 - 1) * sprayRadius * 0.5;
+    ctx.globalAlpha = 0.8;
+    for (let i = 0; i < sprayDensity * 1.2; i++) {
+      const offsetX = (Math.random() * 2 - 1) * sprayRadius * 0.3;
+      const offsetY = (Math.random() * 2 - 1) * sprayRadius * 0.3;
       const particleX = x + offsetX;
       const particleY = y + offsetY;
       
-      // Only paint if this particle location is paintable
       if (isPointPaintable(Math.floor(particleX), Math.floor(particleY))) {
-        const particleSize = Math.random() * 1.2 + 0.3; // Smaller, more varied particles
+        const particleSize = Math.random() * 0.8 + 0.2; // Much smaller core particles
         ctx.beginPath();
         ctx.arc(particleX, particleY, particleSize, 0, Math.PI * 2);
         ctx.fill();
       }
     }
     
-    // Fainter outer particles
+    // Medium spray particles
+    ctx.globalAlpha = 0.6;
+    for (let i = 0; i < sprayDensity * 0.7; i++) {
+      const offsetX = (Math.random() * 2 - 1) * sprayRadius * 0.6;
+      const offsetY = (Math.random() * 2 - 1) * sprayRadius * 0.6;
+      const particleX = x + offsetX;
+      const particleY = y + offsetY;
+      
+      if (isPointPaintable(Math.floor(particleX), Math.floor(particleY))) {
+        const particleSize = Math.random() * 1.0 + 0.3;
+        ctx.beginPath();
+        ctx.arc(particleX, particleY, particleSize, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Outer spray particles (lighter)
     ctx.globalAlpha = 0.3;
-    for (let i = 0; i < sprayDensity / 2; i++) {
+    for (let i = 0; i < sprayDensity * 0.4; i++) {
       const offsetX = (Math.random() * 2 - 1) * sprayRadius;
       const offsetY = (Math.random() * 2 - 1) * sprayRadius;
       const particleX = x + offsetX;
       const particleY = y + offsetY;
       
-      // Only paint if this particle location is paintable
       if (isPointPaintable(Math.floor(particleX), Math.floor(particleY))) {
-        const particleSize = Math.random() * 1.5 + 0.7; // Smaller outer particles
+        const particleSize = Math.random() * 1.2 + 0.4;
         ctx.beginPath();
         ctx.arc(particleX, particleY, particleSize, 0, Math.PI * 2);
         ctx.fill();
       }
     }
+
+    // Realistic drip effects (occasional)
+    if (Math.random() < 0.15) { // 15% chance for drips
+      ctx.globalAlpha = 0.7;
+      const dripLength = Math.random() * sprayRadius * 2 + sprayRadius;
+      const dripX = x + (Math.random() * 2 - 1) * sprayRadius * 0.3;
+      
+      for (let d = 0; d < dripLength; d += 2) {
+        const dripY = y + d;
+        const dripWidth = Math.max(0.5, (dripLength - d) / dripLength * 2);
+        
+        if (isPointPaintable(Math.floor(dripX), Math.floor(dripY))) {
+          ctx.beginPath();
+          ctx.arc(dripX + (Math.random() * 0.6 - 0.3), dripY, dripWidth * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
     ctx.restore();
 
-    // Glow overlay
+    // Subtle glow (much reduced)
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    ctx.globalAlpha = 0.5;
-    ctx.shadowBlur = glowBlur * 1.5;
+    ctx.globalAlpha = 0.2; // Much reduced glow
+    ctx.shadowBlur = glowBlur * 0.5; // Smaller glow radius
     ctx.shadowColor = neonBlue;
     ctx.fillStyle = neonBlue;
     
-    for (let i = 0; i < sprayDensity / 2; i++) {
-      const offsetX = (Math.random() * 2 - 1) * sprayRadius * 0.7;
-      const offsetY = (Math.random() * 2 - 1) * sprayRadius * 0.7;
+    for (let i = 0; i < sprayDensity * 0.2; i++) {
+      const offsetX = (Math.random() * 2 - 1) * sprayRadius * 0.4;
+      const offsetY = (Math.random() * 2 - 1) * sprayRadius * 0.4;
       const particleX = x + offsetX;
       const particleY = y + offsetY;
       
-      // Only add glow if this location is paintable
       if (isPointPaintable(Math.floor(particleX), Math.floor(particleY))) {
-        const size = Math.random() * 2.5 + 1.5; // Smaller glow particles
+        const size = Math.random() * 1.5 + 0.8; // Much smaller glow
         ctx.beginPath();
         ctx.arc(particleX, particleY, size, 0, Math.PI * 2);
         ctx.fill();
@@ -266,6 +298,15 @@ export default function PublicWall() {
   useEffect(() => {
     initializeCanvas();
   }, []);
+
+  // Function to change canvas frame
+  const changeCanvasFrame = (newIndex: number) => {
+    setCurrentCanvasIndex(newIndex);
+    setIsMaskLoaded(false);
+    setTimeout(() => {
+      loadCurrentMask();
+    }, 100);
+  };
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black">
@@ -370,14 +411,15 @@ export default function PublicWall() {
           <div className="flex items-center gap-3">
             <div className="flex gap-1">
               {[0, 1, 2, 3].map((index) => (
-                <div
+                <button
                   key={index}
-                  className={`w-2 h-2 rounded-full border ${
+                  onClick={() => changeCanvasFrame(index)}
+                  className={`w-2 h-2 rounded-full border transition-all duration-200 hover:scale-125 cursor-pointer ${
                     index === currentCanvasIndex 
                       ? 'bg-blue-500 border-blue-400' 
                       : artSubmissions[index] 
                         ? 'bg-green-500 border-green-400' 
-                        : 'bg-gray-300 border-gray-400'
+                        : 'bg-gray-300 border-gray-400 hover:bg-gray-400'
                   }`}
                 />
               ))}
