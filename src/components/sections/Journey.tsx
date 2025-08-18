@@ -9,7 +9,7 @@ const journeyStories = [
     id: 'early-days',
     title: 'The Pioneer Days',
     subtitle: 'First Settlement • 2087-2105',
-    description: 'The early Martian pioneers established the first sustainable habitats using innovative dome technology and careful resource management. These hardy settlers laid the foundation for what would become humanity\'s greatest off-world achievement.',
+    description: 'The early pioneers on Kepler-442b established the first sustainable habitats using innovative dome technology and careful resource management. These hardy settlers laid the foundation for what would become humanity\'s greatest interstellar achievement.',
     image: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/earlydays.png',
     details: [
       'Initial population: 10,000 settlers',
@@ -23,7 +23,7 @@ const journeyStories = [
     id: 'underground-expansion',
     title: 'Underground Networks',
     subtitle: 'Cultural Renaissance • 2105-2130',
-    description: 'As the population grew, Martians carved extensive underground cities, creating spaces for art, culture, and community. These subterranean marvels became centers of learning and creative expression.',
+    description: 'As the population grew, colonists carved extensive underground cities, creating spaces for art, culture, and community. These subterranean marvels became centers of learning and creative expression.',
     image: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/underground%20art%20museum%20entrance.png',
     details: [
       'Underground art museums and galleries',
@@ -37,7 +37,7 @@ const journeyStories = [
     id: 'greenhouse-revolution',
     title: 'Agricultural Revolution',
     subtitle: 'Food Security • 2130-2140',
-    description: 'Revolutionary greenhouse technology and vertical farming transformed Mars from dependent colony to self-sustaining civilization. These bio-domes became the lungs of the new world.',
+    description: 'Revolutionary greenhouse technology and vertical farming transformed Kepler-442b from dependent colony to self-sustaining civilization. These bio-domes became the lungs of the new world.',
     image: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/greenhouse.png',
     details: [
       'Massive atmospheric greenhouses',
@@ -79,12 +79,12 @@ const journeyStories = [
     id: 'lush-future',
     title: 'Ecological Paradise',
     subtitle: 'Full Terraforming • 2157+',
-    description: 'Today, SolarPunk City stands as proof that technology and nature can coexist beautifully. Lush vegetation, clean air, and renewable energy power a civilization that thrives in harmony with its environment.',
+    description: 'Today, Sojourn stands as proof that technology and nature can coexist beautifully. Lush vegetation, clean air, and renewable energy power a civilization that thrives in harmony with its environment.',
     image: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/lushcityview2.png',
     details: [
       'Complete atmospheric transformation',
       '100% renewable energy grid',
-      'Native Martian-Earth hybrid ecosystems',
+      'Native Kepler-442b-Earth hybrid ecosystems',
       'Carbon-negative city operations'
     ],
     theme: 'from-sage-400 to-azure-400'
@@ -129,10 +129,10 @@ export default function Journey() {
             From Survival to Paradise
           </h2>
           
-          <p className="body-large text-stone-600 max-w-3xl mx-auto text-balance">
-            Witness the 70-year transformation of Mars from barren wasteland to humanity's 
+          <p className="text-xl text-stone-600 max-w-3xl mx-auto text-balance">
+            Witness the 70-year transformation of Kepler-442b from barren wasteland to humanity's 
             most advanced sustainable civilization. Each phase tells a story of innovation, 
-            community, and ecological harmony.
+            community, and ecological harmony across the stars.
           </p>
         </motion.div>
 

@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SolarPunk City — Life on Mars",
-  description: "A visionary exploration of sustainable civilization on terraformed Mars. Experience the journey from early settlement to thriving ecological metropolis through immersive art and cutting-edge design.",
-  keywords: ["solarpunk", "mars", "terraforming", "sustainable design", "futurism", "ecology", "space colonization"],
-  authors: [{ name: "SolarPunk Collective" }],
+  title: "Sojourn — Life on Kepler-442b",
+  description: "A visionary exploration of sustainable civilization on terraformed Kepler-442b. Experience the journey from early settlement to thriving ecological metropolis through immersive art and cutting-edge design.",
+  keywords: ["sojourn", "kepler-442b", "terraforming", "sustainable design", "futurism", "ecology", "interstellar colonization"],
+  authors: [{ name: "Sojourn Collective" }],
   openGraph: {
-    title: "SolarPunk City — Life on Mars",
-    description: "Discover the future of human civilization on Mars through sustainable design and ecological harmony",
+    title: "Sojourn — Life on Kepler-442b",
+    description: "Discover the future of human civilization on a distant world through sustainable design and ecological harmony",
     type: "website",
-    images: ["/og-solarpunk.jpg"],
+    images: ["/og-sojourn.jpg"],
   },
-  metadataBase: new URL('https://solarpunk-mars.vercel.app'),
+  metadataBase: new URL('https://sojourn-kepler.vercel.app'),
 };
 
 export default function RootLayout({

@@ -1,13 +1,13 @@
-# 🌱 SolarPunk City - Life on Mars
+# 🌱 Sojourn - Life on Kepler-442b
 
-An immersive, award-worthy art project showcasing AI-generated visions of a sustainable future on a terraformed Mars. This interactive web experience combines stunning visuals, collaborative art creation, and atmospheric audio to imagine humanity's next chapter among the stars.
+An immersive, award-worthy art project showcasing AI-generated visions of a sustainable future on a terraformed exoplanet in the Kepler-442 system. This interactive web experience combines stunning visuals, collaborative art creation, and atmospheric audio to imagine humanity's next chapter among the stars.
 
 ![SolarPunk City Banner](public/banner.jpg)
 
 ## ✨ Features
 
 ### 🎨 **Vision Gallery**
-- Curated collection of AI-generated Martian solarpunk landscapes
+- Curated collection of AI-generated Kepler-442b solarpunk landscapes
 - Detailed view with Midjourney prompts
 - Filterable by categories (architecture, nature, technology, community)
 - Lightbox modal with download options
@@ -29,12 +29,12 @@ An immersive, award-worthy art project showcasing AI-generated visions of a sust
 - Save and share artwork functionality
 - Community gallery showcase
 
-### 📻 **SolarPunk Radio**
+### 📻 **Sojourn Radio**
 - Four themed radio stations:
-  - Mars Ambient - Ethereal soundscapes
-  - Solarpunk Beats - Uplifting electronic rhythms
+  - Kepler Ambient - Ethereal soundscapes
+  - Sojourn Beats - Uplifting electronic rhythms
   - Terraform FM - Progressive experimental sounds
-  - Colony Classics - Earth nostalgia meets Mars innovation
+  - Colony Classics - Earth nostalgia meets interstellar innovation
 - Real-time audio visualizer
 - Track queue and playlist management
 - Volume control and playback controls

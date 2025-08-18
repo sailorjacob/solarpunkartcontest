@@ -127,7 +127,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             <div className="flex items-center gap-4">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
               <span className="font-mono text-sm tracking-wider text-gray-400 uppercase">
-                CLASSIFIED PROJECT // MARS-2157
+                CLASSIFIED PROJECT // KEPLER-442B-2157
               </span>
             </div>
 
@@ -139,13 +139,9 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 className="text-7xl lg:text-9xl font-black leading-none"
               >
-                SOLAR
-                <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400">
-                  PUNK
+                  SOJOURN
                 </span>
-                <br />
-                CITY
               </motion.h1>
               
               <motion.div
@@ -154,7 +150,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                 transition={{ duration: 0.8, delay: 0.7 }}
                 className="text-xl text-gray-300 font-light"
               >
-                LIFE ON MARS — SUSTAINABLE CIVILIZATION
+                KEPLER-442B — SUSTAINABLE CIVILIZATION
               </motion.div>
             </div>
 
@@ -165,11 +161,11 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               transition={{ duration: 0.8, delay: 0.9 }}
               className="max-w-lg"
             >
-              <p className="text-lg text-gray-300 leading-relaxed">
-                Advanced terraforming technology meets sustainable urban planning. 
-                Witness humanity's greatest achievement: a thriving ecological 
-                metropolis on the Red Planet.
-              </p>
+                              <p className="text-lg text-gray-300 leading-relaxed">
+                  Advanced terraforming technology meets sustainable urban planning. 
+                  Witness humanity's greatest achievement: a thriving ecological 
+                  metropolis on a distant world beyond our solar system.
+                </p>
             </motion.div>
 
             {/* Technical Specs */}
@@ -271,18 +267,18 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
       {/* Bottom Status Bar */}
       <div className="absolute bottom-0 left-0 right-0 border-t border-gray-800 bg-black/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between text-xs font-mono text-gray-400">
-            <div className="flex items-center gap-6">
-              <div>MARS COLONY ALPHA</div>
-              <div>STATUS: ACTIVE</div>
-              <div>TEMP: -23°C</div>
+                      <div className="flex items-center justify-between text-xs font-mono text-gray-400">
+              <div className="flex items-center gap-6">
+                <div>SOJOURN COLONY ALPHA</div>
+                <div>STATUS: ACTIVE</div>
+                <div>TEMP: 18°C</div>
+              </div>
+              <div className="flex items-center gap-6">
+                <div>OXYGEN: 21.8%</div>
+                <div>PRESSURE: 1.03 ATM</div>
+                <div>LOCAL TIME: 26:47</div>
+              </div>
             </div>
-            <div className="flex items-center gap-6">
-              <div>OXYGEN: 21.2%</div>
-              <div>PRESSURE: 1.01 ATM</div>
-              <div>LOCAL TIME: 14:32</div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

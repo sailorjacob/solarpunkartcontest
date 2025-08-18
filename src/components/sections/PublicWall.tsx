@@ -200,7 +200,7 @@ export default function PublicWall() {
   const saveArt = () => {
     if (!canvasRef.current) return;
     const link = document.createElement('a');
-    link.download = 'solarpunk-neon-art.png';
+    link.download = 'sojourn-neon-art.png';
     link.href = canvasRef.current.toDataURL('image/png');
     link.click();
   };
@@ -219,7 +219,7 @@ export default function PublicWall() {
             COLLABORATIVE ART WALL
           </h2>
           <p className="text-xl text-stone-600 max-w-3xl mx-auto">
-            Express your vision of SolarPunk Mars with neon blue spraypaint. 
+            Express your vision of Sojourn with neon blue spraypaint. 
             Create stunning graffiti art with realistic spray patterns and glowing effects.
           </p>
         </motion.div>
@@ -264,7 +264,7 @@ export default function PublicWall() {
               <strong>Instructions:</strong> Click anywhere to initialize the canvas • 
               Click and drag to spray neon blue paint • 
               Paint glows with realistic neon lighting • 
-              Your art contributes to the collective SolarPunk vision
+              Your art contributes to the collective Sojourn vision
             </p>
           </div>
 
@@ -287,7 +287,7 @@ export default function PublicWall() {
             <p className="text-sm text-stone-500">
               🎨 Advanced neon spraypaint with realistic effects • 
               ✨ Glowing particles and spray patterns • 
-              🌱 Paint your vision of sustainable Mars civilization
+              🌱 Paint your vision of sustainable interstellar civilization
             </p>
           </div>
         </motion.div>

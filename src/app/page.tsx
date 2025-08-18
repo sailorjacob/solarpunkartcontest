@@ -107,12 +107,12 @@ export default function Home() {
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-400 rounded-sm" />
                 <div>
-                  <h3 className="font-bold text-xl">SOLARPUNK CITY</h3>
-                  <p className="text-xs font-mono text-gray-400">MARS-2157</p>
+                  <h3 className="font-bold text-xl">SOJOURN</h3>
+                  <p className="text-xs font-mono text-gray-400">KEPLER-442B</p>
                 </div>
               </div>
               <p className="text-gray-300 leading-relaxed mb-4">
-                Advanced sustainable civilization project. Terraforming Mars through 
+                Advanced sustainable civilization project. Terraforming Kepler-442b through 
                 ecological integration and cutting-edge technology.
               </p>
               <div className="text-xs font-mono text-gray-500">
@@ -165,7 +165,7 @@ export default function Home() {
           <div className="mt-12 pt-8 border-t border-gray-800">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-sm font-mono text-gray-500">
-                © 2157 MARS COLONY ALPHA • SOLARPUNK COLLECTIVE
+                © 2157 SOJOURN COLONY ALPHA • INTERSTELLAR COLLECTIVE
               </p>
               <div className="flex items-center gap-6 text-xs font-mono text-gray-500 uppercase">
                 <div>SECURITY PROTOCOL ACTIVE</div>

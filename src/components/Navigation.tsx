@@ -58,12 +58,12 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                     <h1 className={`font-bold text-xl tracking-tight transition-colors duration-300 ${
                       isScrolled ? 'text-white' : 'text-stone-800'
                     }`}>
-                      SOLARPUNK
+                      SOJOURN
                     </h1>
                     <p className={`text-xs font-mono tracking-wider -mt-1 transition-colors duration-300 ${
                       isScrolled ? 'text-gray-400' : 'text-stone-600'
                     }`}>
-                      MARS-2157
+                      KEPLER-442B
                     </p>
                   </div>
                 </div>
