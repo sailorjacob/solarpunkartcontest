@@ -46,7 +46,7 @@ export default function Home() {
       case 'radio':
         return <SolarRadio />;
       case 'about':
-        return <About />;
+        return <About onBack={() => handleSectionChange('home')} />;
       default:
         return (
           <Hero 

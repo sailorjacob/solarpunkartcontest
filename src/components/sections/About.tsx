@@ -1,208 +1,117 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 
-const sections = [
-  { id: 'process', label: 'Development Process' },
-  { id: 'tools', label: 'Tools & Technology' },
-];
+interface AboutProps {
+  onBack: () => void;
+}
 
-export default function About() {
-  const [activeSection, setActiveSection] = useState('process');
-
+export default function About({ onBack }: AboutProps) {
   return (
-    <section className="bg-stone-50 py-20">
-      <div className="max-w-5xl mx-auto px-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+    <section className="bg-white min-h-screen py-8">
+      <div className="max-w-4xl mx-auto px-6">
+        {/* Back Button */}
+        <motion.button
+          onClick={onBack}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mb-8 flex items-center gap-2 text-stone-600 hover:text-stone-800 transition-colors"
         >
-          <div className="inline-flex items-center gap-3 px-6 py-3 bg-white rounded-full shadow-lg mb-6">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-stone-700 tracking-wide uppercase">
-              PROJECT DOCUMENTATION
-            </span>
-          </div>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Sojourn
+        </motion.button>
+
+        {/* Simple Blog Content */}
+        <div className="prose prose-lg max-w-none">
+          <h1 className="text-2xl font-bold text-stone-800 mb-6">Development Notes</h1>
           
-          <h1 className="text-5xl font-bold text-stone-800 mb-6">
-            Building Sojourn
-          </h1>
-          
-          <p className="text-xl text-stone-600 leading-relaxed max-w-3xl mx-auto">
-            The journey from concept to completion of an interstellar civilization
+          <p className="text-stone-600 mb-8">
+            Quick documentation of the development process for this project. Started as a SolarPunk city concept, 
+            evolved into Sojourn on Kepler-442b through various iterations.
           </p>
-        </motion.div>
 
-        {/* Section Navigation */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-wrap gap-3 justify-center mb-16"
-        >
-          {sections.map((section) => (
-            <motion.button
-              key={section.id}
-              onClick={() => setActiveSection(section.id)}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className={`px-6 py-3 rounded-2xl font-medium transition-all duration-300 ${
-                activeSection === section.id
-                  ? 'bg-gradient-to-r from-green-400/20 to-blue-400/20 text-green-400 border-2 border-green-400/50'
-                  : 'bg-white text-stone-700 hover:bg-stone-100 shadow-lg border border-stone-200'
-              }`}
-            >
-              <div className="text-sm">{section.label}</div>
-            </motion.button>
-          ))}
-        </motion.div>
-
-        {/* Content Sections */}
-        <motion.div
-          key={activeSection}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="space-y-16"
-        >
-          {activeSection === 'process' && (
-            <>
-              <h2 className="text-3xl font-bold text-stone-800 mb-8">The Development Process</h2>
+          {/* Concept & Research */}
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Initial Research</h2>
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokinitialprompt.png"
+            alt="Initial concept development"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Early brainstorming with Grok for terraforming research
+          </p>
           
-          <div className="space-y-16">
-            {/* Concept & Research */}
-            <div className="space-y-6">
-              <figure>
-                <img 
-                  src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokinitialprompt.png"
-                  alt="Initial concept development"
-                  className="w-full rounded-lg"
-                />
-                <figcaption className="text-sm text-stone-500 mt-3 italic">
-                  Early concept development using Grok's research capabilities to explore terraforming possibilities
-                </figcaption>
-              </figure>
-              <h3 className="text-xl font-bold text-stone-800">Concept & Research</h3>
-              <p className="text-stone-600 leading-relaxed">
-                Started with brainstorming a SolarPunk city concept, later evolved to Sojourn on Kepler-442b. 
-                Used Perplexity for deep research into terraforming and sustainable city design.
-              </p>
-            </div>
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/Perplexity%20deep%20research.png"
+            alt="Perplexity research"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-6">
+            Used Perplexity for deep research into sustainable city design
+          </p>
 
-            {/* Visual Asset Creation */}
-            <div className="space-y-6">
-              <figure>
-                <img 
-                  src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/first%20midjourney%20inspiration.png"
-                  alt="Midjourney art generation"
-                  className="w-full rounded-lg"
-                />
-                <figcaption className="text-sm text-stone-500 mt-3 italic">
-                  First Midjourney experiments establishing the visual language for Sojourn's futuristic architecture
-                </figcaption>
-              </figure>
-              <h3 className="text-xl font-bold text-stone-800">Visual Asset Creation</h3>
-              <p className="text-stone-600 leading-relaxed">
-                Generated stunning AI artwork with Midjourney to create the visual narrative backbone. 
-                Multiple iterations and variations to capture the perfect aesthetic for each timeline phase.
-              </p>
-            </div>
-
-            {/* Frontend Development */}
-            <div className="space-y-6">
-              <figure>
-                <img 
-                  src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/roughstart.png"
-                  alt="Early development phase"
-                  className="w-full rounded-lg"
-                />
-                <figcaption className="text-sm text-stone-500 mt-3 italic">
-                  The rough beginning—basic layouts that would eventually evolve into the polished experience
-                </figcaption>
-              </figure>
-              <h3 className="text-xl font-bold text-stone-800">Frontend Development</h3>
-              <p className="text-stone-600 leading-relaxed">
-                Built with Next.js 14, TypeScript, and Tailwind CSS. Started rough and iteratively 
-                refined the design and functionality with Claude 4 Sonnet assistance.
-              </p>
-            </div>
-
-            {/* Interactive Art Wall */}
-            <div className="space-y-6">
-              <figure>
-                <img 
-                  src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokspraypaintstep.png"
-                  alt="Spraypaint tool development"
-                  className="w-full rounded-lg"
-                />
-                <figcaption className="text-sm text-stone-500 mt-3 italic">
-                  Developing the spraypaint mechanics—from basic mouse tracking to realistic spray patterns and neon glow
-                </figcaption>
-              </figure>
-              <h3 className="text-xl font-bold text-stone-800">Interactive Art Wall</h3>
-              <p className="text-stone-600 leading-relaxed">
-                Developed the collaborative neon spraypaint tool with realistic physics and glow effects. 
-                Multiple iterations to perfect the spray patterns and color intensity.
-              </p>
-            </div>
-          </div>
-
-                      </>
-          )}
+          {/* Visual Development */}
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Visual Asset Creation</h2>
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/first%20midjourney%20inspiration.png"
+            alt="Midjourney art generation"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            First Midjourney experiments for visual language
+          </p>
           
-          {activeSection === 'tools' && (
-            <>
-              <h2 className="text-3xl font-bold text-stone-800">Tools & Technology</h2>
-            
-            <div className="grid md:grid-cols-2 gap-12">
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-stone-800">AI Models</h3>
-                <ul className="space-y-2 text-stone-600">
-                  <li>• Claude 4 Sonnet</li>
-                  <li>• ChatGPT 5</li>
-                  <li>• Grok 4 Web</li>
-                  <li>• Perplexity Deep Research</li>
-                  <li>• Midjourney</li>
-                </ul>
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/midjourney%20prompting.png"
+            alt="Midjourney prompting process"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-6">
+            Iterative prompting process to refine the aesthetic
+          </p>
 
-                <h3 className="text-xl font-bold text-stone-800 mt-8">Creative Software</h3>
-                <ul className="space-y-2 text-stone-600">
-                  <li>• Ableton Live</li>
-                  <li>• Omnisphere</li>
-                  <li>• BFD Drums</li>
-                  <li>• Udio</li>
-                </ul>
-              </div>
+          {/* Development Process */}
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Frontend Development</h2>
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/roughstart.png"
+            alt="Early development phase"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Early rough layouts and basic structure
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/testingspray1%20black%20paint%20failure.png"
+            alt="Spraypaint testing failures"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-6">
+            Testing spray paint functionality - lots of failed attempts
+          </p>
 
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-stone-800">Tech Stack</h3>
-                <ul className="space-y-2 text-stone-600">
-                  <li>• Next.js 14 with App Router</li>
-                  <li>• TypeScript</li>
-                  <li>• Tailwind CSS</li>
-                  <li>• Framer Motion</li>
-                  <li>• HTML5 Canvas</li>
-                  <li>• Howler.js</li>
-                  <li>• Lucide React</li>
-                </ul>
+          {/* Interactive Features */}
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Interactive Features</h2>
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokspraypaintstep.png"
+            alt="Spraypaint tool development"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-6">
+            Working on spray paint mechanics with Grok assistance
+          </p>
 
-                <h3 className="text-xl font-bold text-stone-800 mt-8">Hardware</h3>
-                <ul className="space-y-2 text-stone-600">
-                  <li>• MacBook Pro 15" 2017</li>
-                  <li>• RODE USB Microphone</li>
-                  <li>• ATH-M50x Headphones</li>
-                </ul>
-                             </div>
-             </div>
-            </>
-          )}
-        </motion.div>
+          {/* Tools Used */}
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Tools Used</h2>
+          <p className="text-stone-600 mb-4">AI Models: Claude 4 Sonnet, ChatGPT 5, Grok 4 Web, Perplexity Deep Research, Midjourney, Udio</p>
+          <p className="text-stone-600 mb-4">Hardware: MacBook Pro 15" 2017, RODE USB Microphone, ATH-M50x Headphones</p>
+          <p className="text-stone-600 mb-4">Creative Software: Ableton Live, Omnisphere, BFD Drums, Udio</p>
+          <p className="text-stone-600 mb-4">Tech Stack: Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion, HTML5 Canvas, Howler.js, Lucide React</p>
+          <p className="text-stone-600">Other: GitHub, Vercel, AirDrop, Chrome DevTools</p>
+        </div>
       </div>
     </section>
   );
