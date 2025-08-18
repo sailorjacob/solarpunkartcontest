@@ -127,9 +127,9 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
           >
             {/* Project Classification */}
             <div className="flex items-center gap-4">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
               <span className="font-mono text-sm tracking-wider text-gray-400 uppercase">
-                CLASSIFIED PROJECT // KEPLER-442B-2157
+                SUCCESSFUL PROJECT // KEPLER-442B-2157
               </span>
             </div>
 
@@ -200,15 +200,15 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             >
               <button
                 onClick={onExploreClick}
-                className="px-8 py-4 bg-white text-black font-bold rounded-none hover:bg-gray-200 transition-colors uppercase tracking-wider"
+                className="px-6 py-3 bg-white text-black font-medium rounded-full hover:bg-gray-200 transition-colors tracking-wide"
               >
-                EXPLORE PROJECT
+                Explore Project
               </button>
               <button
                 onClick={onCreateClick}
-                className="px-8 py-4 border border-white text-white font-bold rounded-none hover:bg-white hover:text-black transition-colors uppercase tracking-wider"
+                className="px-6 py-3 border border-white text-white font-medium rounded-full hover:bg-white hover:text-black transition-colors tracking-wide"
               >
-                CREATE ART
+                Create Art
               </button>
             </motion.div>
           </motion.div>
@@ -257,7 +257,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             <div className="mt-4 p-4 bg-gray-900/50 border border-gray-700 font-mono text-xs">
               <div className="grid grid-cols-2 gap-4 text-gray-400">
                 <div>STATUS: OPERATIONAL</div>
-                <div>SECURITY: LEVEL 7</div>
+                <div>PURITY: LEVEL 7</div>
                 <div>COORDINATES: 14°S 175°W</div>
                 <div>ELEVATION: -2.5KM</div>
               </div>

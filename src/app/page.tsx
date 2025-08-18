@@ -102,7 +102,7 @@ export default function Home() {
 
       {/* Industrial Footer - Only on Home Page */}
       {activeSection === 'home' && (
-        <footer className="relative border-t border-gray-800 bg-black text-white">
+        <footer className="relative border-t border-slate-600 bg-gradient-to-br from-slate-800 via-slate-700 to-emerald-900 text-white">
         <div className="container-custom py-16">
           <div className="grid md:grid-cols-3 gap-12">
             {/* Project Info */}
@@ -119,7 +119,7 @@ export default function Home() {
                 ecological integration and cutting-edge technology.
               </p>
               <div className="text-xs font-mono text-gray-500">
-                CLASSIFICATION: LEVEL 7 CLEARANCE
+                PURITY: LEVEL 7 HARMONY
               </div>
             </div>
 
@@ -127,22 +127,14 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-white mb-4 uppercase tracking-wide">Sectors</h4>
               <ul className="space-y-2">
-                {[
-                  { id: 'journey', label: 'Project Timeline' },
-                  { id: 'gallery', label: 'Visual Archive' },
-                  { id: 'wall', label: 'Interactive Lab' },
-                  { id: 'radio', label: 'Communication Hub' },
-                  { id: 'about', label: 'Documentation' }
-                ].map((item) => (
-                  <li key={item.id}>
-                    <button 
-                      onClick={() => handleSectionChange(item.id)}
-                      className="text-gray-400 hover:text-green-400 transition-colors font-mono text-sm uppercase tracking-wide"
-                    >
-                      {item.label}
-                    </button>
-                  </li>
-                ))}
+                <li>
+                  <button 
+                    onClick={() => handleSectionChange('about')}
+                    className="text-gray-400 hover:text-green-400 transition-colors font-mono text-sm uppercase tracking-wide"
+                  >
+                    Documentation
+                  </button>
+                </li>
               </ul>
             </div>
 
@@ -172,9 +164,9 @@ export default function Home() {
                 © 2157 SOJOURN COLONY ALPHA • INTERSTELLAR COLLECTIVE
               </p>
               <div className="flex items-center gap-6 text-xs font-mono text-gray-500 uppercase">
-                <div>SECURITY PROTOCOL ACTIVE</div>
-                <div>DATA ENCRYPTED</div>
-                <div>TRANSMISSION SECURE</div>
+                <div>HARMONY PROTOCOL ACTIVE</div>
+                <div>DATA PROTECTED</div>
+                <div>TRANSMISSION PURE</div>
               </div>
             </div>
           </div>

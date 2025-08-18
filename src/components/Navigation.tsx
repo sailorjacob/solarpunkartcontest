@@ -87,7 +87,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                       ? "text-green-400 border-b-2 border-green-400"
                       : isScrolled 
                         ? "text-gray-400 hover:text-white"
-                        : "text-stone-600 hover:text-stone-800"
+                        : "text-slate-200 hover:text-white"
                   )}
                 >
 
@@ -104,10 +104,10 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => onSectionChange('wall')}
-                className={`px-6 py-3 font-bold rounded-none transition-colors uppercase tracking-wider ${
+                className={`px-4 py-2 font-medium rounded-full transition-colors tracking-wide ${
                   isScrolled 
                     ? 'bg-white text-black hover:bg-gray-200'
-                    : 'bg-stone-800 text-white hover:bg-stone-900'
+                    : 'bg-emerald-600 text-white hover:bg-emerald-700'
                 }`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
