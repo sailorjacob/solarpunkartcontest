@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Info, Download, X, Play, Pause, Palette, Eye } from 'lucide-react';
+import { saveArtworkToSupabase, getArtworksFromSupabase, type Artwork } from '@/lib/supabase';
 
 // Stunning visions of Sojourn on Kepler-442b
 const visionImages = [
@@ -144,14 +145,9 @@ export default function Gallery() {
   const [isMaskLoaded, setIsMaskLoaded] = useState(false);
   const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
   const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
-  const [savedArtworks, setSavedArtworks] = useState<Array<{
-    id: string;
-    title: string;
-    baseImage: string;
-    artwork: string;
-    timestamp: number;
-    frameIndex: number;
-  }>>([]);
+  const [savedArtworks, setSavedArtworks] = useState<Artwork[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   // Painting settings
   const neonBlue = '#1E40AF';
@@ -325,14 +321,14 @@ export default function Gallery() {
     return 0; // Fallback
   };
 
-  const saveArt = () => {
-    if (!canvasRef.current) return;
+  const saveArt = async () => {
+    if (!canvasRef.current || isLoading) return;
     
     // Get canvas as data URL
     const artworkData = canvasRef.current.toDataURL('image/png');
     
     // Save to database
-    const savedArtwork = saveArtworkToDatabase(artworkData);
+    const savedArtwork = await saveArtworkToDatabase(artworkData);
     if (!savedArtwork) return;
     
     // Add to submissions at current position
@@ -355,7 +351,6 @@ export default function Gallery() {
     
     console.log(`Art saved to canvas position ${currentCanvasIndex + 1}, moving to position ${nextIndex + 1}`);
     console.log(`Gallery frames in use: ${newSubmissions.filter(Boolean).length}/4`);
-    console.log('Artwork saved to public gallery!');
   };
 
   // Function to manually select a canvas frame
@@ -368,53 +363,65 @@ export default function Gallery() {
     }, 100);
   };
 
-  // Load saved artworks from localStorage (simulating database)
-  const loadSavedArtworks = () => {
+  // Load saved artworks from Supabase
+  const loadSavedArtworks = async () => {
     try {
-      const saved = localStorage.getItem('solarpunk-gallery-artworks');
-      if (saved) {
-        const artworks = JSON.parse(saved);
-        setSavedArtworks(artworks);
-        // Update artSubmissions to show which frames are used
-        const submissions = new Array(4).fill(null);
-        artworks.forEach((artwork: any) => {
-          if (artwork.frameIndex < 4) {
-            submissions[artwork.frameIndex] = artwork.artwork;
-          }
-        });
-        setArtSubmissions(submissions);
-      }
+      setIsLoading(true);
+      const artworks = await getArtworksFromSupabase();
+      setSavedArtworks(artworks);
+      
+      // Update artSubmissions to show which frames are used
+      const submissions = new Array(4).fill(null);
+      artworks.forEach((artwork) => {
+        if (artwork.frame_index < 4) {
+          submissions[artwork.frame_index] = artwork.artwork_data;
+        }
+      });
+      setArtSubmissions(submissions);
+      console.log(`Loaded ${artworks.length} artworks from Supabase`);
     } catch (error) {
       console.error('Error loading saved artworks:', error);
+      setSaveMessage('Error loading artworks from database');
+      setTimeout(() => setSaveMessage(null), 3000);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Save artwork to localStorage (simulating database save)
-  const saveArtworkToDatabase = (artworkData: string) => {
+  // Save artwork to Supabase
+  const saveArtworkToDatabase = async (artworkData: string) => {
     try {
+      setIsLoading(true);
+      setSaveMessage('Saving artwork...');
+      
       const currentImage = visionImages[currentIndex];
-      const newArtwork = {
-        id: `artwork_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      const artworkToSave = {
         title: `${currentImage.title} - Remix`,
-        baseImage: currentImage.src,
-        artwork: artworkData,
-        timestamp: Date.now(),
-        frameIndex: currentCanvasIndex
+        base_image: currentImage.src,
+        artwork_data: artworkData,
+        frame_index: currentCanvasIndex,
+        artist_name: 'Anonymous Artist' // Could be made dynamic later
       };
 
-      const existingArtworks = [...savedArtworks];
-      // Remove any existing artwork for this frame
-      const filteredArtworks = existingArtworks.filter(art => art.frameIndex !== currentCanvasIndex);
-      filteredArtworks.push(newArtwork);
+      const savedArtwork = await saveArtworkToSupabase(artworkToSave);
       
-      setSavedArtworks(filteredArtworks);
-      localStorage.setItem('solarpunk-gallery-artworks', JSON.stringify(filteredArtworks));
+      // Update local state
+      const updatedArtworks = savedArtworks.filter(art => art.frame_index !== currentCanvasIndex);
+      updatedArtworks.push(savedArtwork);
+      setSavedArtworks(updatedArtworks);
       
-      console.log('Artwork saved to gallery database:', newArtwork.title);
-      return newArtwork;
+      setSaveMessage('Artwork saved to public gallery! 🎨');
+      setTimeout(() => setSaveMessage(null), 3000);
+      
+      console.log('Artwork saved to Supabase:', savedArtwork.title);
+      return savedArtwork;
     } catch (error) {
-      console.error('Error saving artwork:', error);
+      console.error('Error saving artwork to Supabase:', error);
+      setSaveMessage('Error saving artwork. Please try again.');
+      setTimeout(() => setSaveMessage(null), 3000);
       return null;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -720,12 +727,17 @@ export default function Gallery() {
 
               {/* Submit Button */}
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: isLoading ? 1 : 1.05 }}
+                whileTap={{ scale: isLoading ? 1 : 0.95 }}
                 onClick={saveArt}
-                className="w-full px-4 py-2 bg-blue-500/20 border border-blue-400/30 rounded-lg text-blue-300 hover:bg-blue-500/30 transition-all"
+                disabled={isLoading}
+                className={`w-full px-4 py-2 border rounded-lg transition-all ${
+                  isLoading 
+                    ? 'bg-gray-500/20 border-gray-400/30 text-gray-400 cursor-not-allowed' 
+                    : 'bg-blue-500/20 border-blue-400/30 text-blue-300 hover:bg-blue-500/30'
+                }`}
               >
-                Submit to Gallery
+                {isLoading ? 'Saving...' : 'Submit to Gallery'}
               </motion.button>
 
               {/* Clear Button */}
@@ -779,9 +791,25 @@ export default function Gallery() {
                   onChange={(e) => setSprayRadius(Number(e.target.value))}
                   className="w-full accent-blue-400"
                 />
-                <div className="text-white/60 text-xs">{sprayRadius}px</div>
-              </div>
+                              <div className="text-white/60 text-xs">{sprayRadius}px</div>
             </div>
+
+            {/* Success/Error Message */}
+            {saveMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className={`px-3 py-2 rounded-lg text-sm ${
+                  saveMessage.includes('Error') 
+                    ? 'bg-red-500/20 border border-red-400/30 text-red-300'
+                    : 'bg-green-500/20 border border-green-400/30 text-green-300'
+                }`}
+              >
+                {saveMessage}
+              </motion.div>
+            )}
+          </div>
           </div>
 
           {/* Image Navigation for Create Mode */}

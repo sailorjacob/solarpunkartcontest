@@ -231,19 +231,40 @@ export default function About({ onBack }: AboutProps) {
           <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/groksprayappaftertextedit.png"
             alt="Spray app after text editing"
-            className="w-full mb-6"
+            className="w-full mb-3"
           />
           <p className="text-sm text-stone-500 mb-6">
             Final spray paint application after text editing and code refinements
+          </p>
+
+          {/* Image Editing & Canvas Constraints */}
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Image Editing & Canvas Constraints</h2>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/pixlr%20gallery%20edit.png"
+            alt="Pixlr gallery editing process"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Using Pixlr.com to edit and cut out canvas constraints for gallery images
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/pixlr%20gallery%20edit2.png"
+            alt="Advanced Pixlr editing techniques"
+            className="w-full mb-6"
+          />
+          <p className="text-sm text-stone-500 mb-6">
+            Advanced editing techniques in Pixlr to refine image composition and remove unwanted elements
           </p>
 
           {/* Tools Used */}
           <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Tools Used</h2>
           <p className="text-stone-600 mb-4">AI Models: Claude 4 Sonnet, ChatGPT 5, Grok 4 Web, Midjourney, Udio</p>
           <p className="text-stone-600 mb-4">Hardware: MacBook Pro 15" 2017, RODE USB Microphone, ATH-M50x Headphones</p>
-          <p className="text-stone-600 mb-4">Creative Software: Ableton Live, Omnisphere, BFD Drums, Udio</p>
-          <p className="text-stone-600 mb-4">Tech Stack: Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion, HTML5 Canvas, Howler.js, Lucide React</p>
-          <p className="text-stone-600">Other: GitHub, Vercel, AirDrop, Chrome DevTools</p>
+          <p className="text-stone-600 mb-4">Creative Software: Ableton Live, Omnisphere, BFD Drums, Udio, Pixlr.com</p>
+
+          <p className="text-stone-600">Other: GitHub, Vercel, AirDrop, Chrome DevTools, TextEdit</p>
         </div>
       </div>
     </section>
