@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 export default function PublicWall() {
@@ -16,7 +16,7 @@ export default function PublicWall() {
   // Ink blue color and settings  
   const neonBlue = '#1E40AF'; // Ink blue instead of cyan
   const sprayDensity = 80;
-  const [sprayRadius, setSprayRadius] = useState(8);
+  const [sprayRadius, setSprayRadius] = useState(5);
   const glowBlur = 15;
 
   // Gallery canvas frame URLs for mapping
@@ -39,7 +39,7 @@ export default function PublicWall() {
 
   // Initialize canvas when component first loads
   const initializeCanvas = () => {
-    if (!canvasRef.current || (isImageLoaded && isMaskLoaded)) return;
+    if (!canvasRef.current || isImageLoaded) return;
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -262,6 +262,11 @@ export default function PublicWall() {
     console.log(`Art saved to canvas position ${currentCanvasIndex + 1}, moving to position ${nextIndex + 1}`);
   };
 
+  // Initialize canvas on component mount
+  useEffect(() => {
+    initializeCanvas();
+  }, []);
+
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black">
       {/* Fullscreen Canvas */}
@@ -279,40 +284,43 @@ export default function PublicWall() {
 
       {/* Floating Controls Overlay - Top Right */}
       <motion.div 
-        className="absolute top-6 right-6 z-10"
+        className="absolute top-6 right-6 z-50 pointer-events-auto"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
       >
-        <div className="bg-black/80 backdrop-blur-md rounded-xl p-4 border border-white/20">
-          <div className="flex items-center gap-3 text-white">
+        <div className="bg-white/90 backdrop-blur-md rounded-xl p-4 border border-gray-200 shadow-lg">
+          <div className="flex items-center gap-3 text-gray-800">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono uppercase tracking-wide text-gray-300">Brush</span>
+              <span className="text-xs font-mono uppercase tracking-wide text-gray-600">Brush</span>
               <input
                 type="range"
-                min="3"
-                max="20"
+                min="2"
+                max="15"
                 value={sprayRadius}
                 onChange={(e) => setSprayRadius(Number(e.target.value))}
-                className="w-16 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                className="w-16 h-1 bg-red-500 rounded-lg appearance-none cursor-pointer"
+                style={{
+                  background: `linear-gradient(to right, #ef4444 0%, #ef4444 ${((sprayRadius - 2) / 13) * 100}%, #e5e7eb ${((sprayRadius - 2) / 13) * 100}%, #e5e7eb 100%)`
+                }}
               />
-              <span className="text-xs text-gray-400 w-6">{sprayRadius}</span>
+              <span className="text-xs text-gray-500 w-6">{sprayRadius}</span>
             </div>
             
-            <div className="h-4 w-px bg-gray-600" />
+            <div className="h-4 w-px bg-gray-300" />
             
             <div className="flex gap-2">
               <button
                 onClick={clearCanvas}
-                className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-mono uppercase tracking-wide rounded-lg transition-all duration-200 border border-white/20"
+                className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border border-gray-200"
               >
-                Clear
+                clear
               </button>
               <button
                 onClick={saveArt}
-                className="px-3 py-1.5 bg-blue-600/90 hover:bg-blue-500 text-white text-xs font-mono uppercase tracking-wide rounded-lg transition-all duration-200"
+                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border border-blue-200"
               >
-                Submit
+                submit
               </button>
             </div>
           </div>
@@ -321,30 +329,30 @@ export default function PublicWall() {
 
       {/* Floating Info Overlay - Bottom Center */}
       <motion.div 
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5 }}
       >
-        <div className="bg-black/80 backdrop-blur-md rounded-xl px-6 py-3 border border-white/20">
-          <div className="flex items-center gap-8 text-white">
+        <div className="bg-white/90 backdrop-blur-md rounded-xl px-6 py-3 border border-gray-200 shadow-lg">
+          <div className="flex items-center gap-8 text-gray-800">
             <div className="flex items-center gap-2">
               <div 
-                className="w-3 h-3 rounded-full border border-white/40"
+                className="w-3 h-3 rounded-full border border-gray-300"
                 style={{ backgroundColor: neonBlue }}
               />
-              <span className="text-sm font-mono text-gray-300">Ink Blue Paint</span>
+              <span className="text-sm font-mono text-gray-600">Ink Blue Paint</span>
             </div>
             
-            <div className="h-3 w-px bg-gray-600" />
+            <div className="h-3 w-px bg-gray-300" />
             
-            <span className="text-sm font-mono text-gray-300">
-              Canvas Position <span className="text-blue-400 font-bold">{currentCanvasIndex + 1}</span>/4
+            <span className="text-sm font-mono text-gray-600">
+              Canvas Position <span className="text-blue-600 font-bold">{currentCanvasIndex + 1}</span>/4
             </span>
             
-            <div className="h-3 w-px bg-gray-600" />
+            <div className="h-3 w-px bg-gray-300" />
             
-            <span className="text-xs font-mono text-gray-400 uppercase tracking-wide">
+            <span className="text-xs font-mono text-gray-500 uppercase tracking-wide">
               Click & Drag to Paint • Art Applied to Gallery Frame
             </span>
           </div>
@@ -353,12 +361,12 @@ export default function PublicWall() {
 
       {/* Canvas Position Indicator - Top Left */}
       <motion.div 
-        className="absolute top-6 left-6 z-10"
+        className="absolute top-6 left-6 z-50"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
       >
-        <div className="bg-black/80 backdrop-blur-md rounded-xl p-3 border border-white/20">
+        <div className="bg-white/90 backdrop-blur-md rounded-xl p-3 border border-gray-200 shadow-lg">
           <div className="flex items-center gap-3">
             <div className="flex gap-1">
               {[0, 1, 2, 3].map((index) => (
@@ -369,12 +377,12 @@ export default function PublicWall() {
                       ? 'bg-blue-500 border-blue-400' 
                       : artSubmissions[index] 
                         ? 'bg-green-500 border-green-400' 
-                        : 'bg-gray-700 border-gray-600'
+                        : 'bg-gray-300 border-gray-400'
                   }`}
                 />
               ))}
             </div>
-            <span className="text-xs font-mono text-gray-300 uppercase tracking-wide">
+            <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">
               Gallery Frames
             </span>
           </div>
