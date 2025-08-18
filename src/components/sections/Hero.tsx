@@ -203,13 +203,13 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                 onClick={onExploreClick}
                 className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-semibold rounded-lg hover:from-emerald-600 hover:to-cyan-600 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
               >
-                Explore Project
+                explore project
               </button>
               <button
                 onClick={onCreateClick}
                 className="px-6 py-3 border-2 border-white/70 text-white text-sm font-semibold rounded-lg hover:bg-white/20 hover:border-white hover:text-gray-100 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
               >
-                Create Art
+                create art
               </button>
             </motion.div>
           </motion.div>

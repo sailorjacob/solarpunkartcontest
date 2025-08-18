@@ -75,7 +75,7 @@ export default function Home() {
                 SOLARPUNK
               </h1>
               <p className="text-xs font-mono text-gray-400 tracking-wider -mt-1">
-                MARS-2157
+                KEPLER-2157
               </p>
             </div>
           </div>
