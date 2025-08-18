@@ -43,6 +43,15 @@ export default function About({ onBack }: AboutProps) {
           <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Initial Concept & Research</h2>
           
           <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/billboard%20on%20mars%20concept.png"
+            alt="Billboard on Mars concept"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            The original Mars billboard concept - visualizing futuristic advertising on a terraformed planet
+          </p>
+          
+          <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokinitialprompt.png"
             alt="Initial concept development"
             className="w-full mb-3"
@@ -75,10 +84,94 @@ export default function About({ onBack }: AboutProps) {
           <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/midjourney%20prompting.png"
             alt="Midjourney prompting process"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Iterative prompting process to refine the aesthetic and build a cohesive world
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/using%20midjourney%20variation.png"
+            alt="Midjourney variations"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Using Midjourney variations to explore different artistic interpretations
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/structure%20variations%20midjourney.png"
+            alt="Structure variations in Midjourney"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Exploring architectural structure variations for the Mars city concept
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/dwelling%20prompt.png"
+            alt="Dwelling prompting"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Developing residential dwelling concepts and community living spaces
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/editing%20midjourney%20generation.png"
+            alt="Editing Midjourney generations"
             className="w-full mb-6"
           />
           <p className="text-sm text-stone-500 mb-6">
-            Iterative prompting process to refine the aesthetic and build a cohesive world
+            Post-processing and editing Midjourney generations for the final gallery
+          </p>
+
+          {/* Art Gallery & Underground Concepts */}
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Art Gallery & Underground Spaces</h2>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/trying%20to%20generate%20an%20art%20gallery%20wall.png"
+            alt="Art gallery wall generation"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Attempting to generate an art gallery wall concept for the interactive painting feature
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/modern%20art%20entrance%20inside%20midjourney.png"
+            alt="Modern art entrance concept"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Modern art entrance concept for underground cultural spaces
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/underground%20mall.png"
+            alt="Underground mall concept"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Underground mall and community space design exploration
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/underground%20mall%20scene%20video%20looping%20selection.png"
+            alt="Underground mall video scene"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Video looping selection for dynamic underground mall scenes
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/random%20wall%20in%20planet%20.png"
+            alt="Random wall on planet"
+            className="w-full mb-6"
+          />
+          <p className="text-sm text-stone-500 mb-6">
+            Exploring random wall structures and surfaces for the interactive art component
           </p>
 
           {/* Development Process */}
@@ -94,6 +187,15 @@ export default function About({ onBack }: AboutProps) {
           </p>
           
           <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/textedit.png"
+            alt="Text editing and development"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Text editing and code development process - refining the interactive features
+          </p>
+          
+          <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/testingspray1%20black%20paint%20failure.png"
             alt="Spraypaint testing failures"
             className="w-full mb-3"
@@ -101,14 +203,41 @@ export default function About({ onBack }: AboutProps) {
           <p className="text-sm text-stone-500 mb-4">
             Testing spray paint functionality - many failed attempts before success
           </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/testingspray2,%20blue%20is%20too%20light.png"
+            alt="Blue spray paint too light"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Color testing - discovering that blue spray paint was too light for visibility
+          </p>
 
           <img 
             src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokspraypaintstep.png"
             alt="Spraypaint tool development"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Working on spray paint mechanics with AI assistance to achieve realistic effects
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokspraypaintstep2.png"
+            alt="Advanced spraypaint development"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-4">
+            Further development of spray paint mechanics with advanced particle effects
+          </p>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/groksprayappaftertextedit.png"
+            alt="Spray app after text editing"
             className="w-full mb-6"
           />
           <p className="text-sm text-stone-500 mb-6">
-            Working on spray paint mechanics with AI assistance to achieve realistic effects
+            Final spray paint application after text editing and code refinements
           </p>
 
           {/* Tools Used */}
