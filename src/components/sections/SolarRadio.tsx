@@ -4,6 +4,13 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Howl } from 'howler';
 
+interface Track {
+  title: string;
+  artist: string;
+  duration: string;
+  audioUrl?: string;
+}
+
 const radioStations = [
   {
     id: 1,
@@ -26,6 +33,7 @@ const radioStations = [
     color: 'from-punk-green to-punk-mint',
     frequency: '92.3',
     tracks: [
+      { title: 'Travel', artist: 'SolarPunk DJ', duration: '4:32', audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Travel.mp3' },
       { title: 'Green Revolution', artist: 'EcoBeats', duration: '4:15' },
       { title: 'Solar Powered', artist: 'Future Garden', duration: '3:48' },
       { title: 'Vertical Farm Groove', artist: 'Sustainable Sound', duration: '5:21' },
@@ -39,6 +47,7 @@ const radioStations = [
     color: 'from-solar-gold to-solar-warm',
     frequency: '101.7',
     tracks: [
+      { title: 'Terraform', artist: 'SolarPunk DJ', duration: '5:18', audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Terraform.mp3' },
       { title: 'Atmosphere Genesis', artist: 'Planet Builders', duration: '8:30' },
       { title: 'Ice Cap Melodies', artist: 'Climate Shift', duration: '6:45' },
       { title: 'First Rain', artist: 'New Eden', duration: '5:12' },
@@ -59,14 +68,21 @@ const radioStations = [
   },
 ];
 
+const djVideos = [
+  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj.mp4',
+  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj2.mp4'
+];
+
 export default function SolarRadio() {
   const [selectedStation, setSelectedStation] = useState(radioStations[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(0);
   const [volume, setVolume] = useState(70);
   const [visualizerData, setVisualizerData] = useState<number[]>(new Array(20).fill(0));
+  const [currentDjVideo, setCurrentDjVideo] = useState(0);
   const audioRef = useRef<Howl | null>(null);
   const visualizerInterval = useRef<NodeJS.Timeout | null>(null);
+  const djVideoInterval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Cleanup on unmount
@@ -76,6 +92,9 @@ export default function SolarRadio() {
       }
       if (visualizerInterval.current) {
         clearInterval(visualizerInterval.current);
+      }
+      if (djVideoInterval.current) {
+        clearInterval(djVideoInterval.current);
       }
     };
   }, []);
@@ -88,9 +107,17 @@ export default function SolarRadio() {
           new Array(20).fill(0).map(() => Math.random() * 100)
         );
       }, 100);
+      
+      // Start DJ video transitions when playing
+      djVideoInterval.current = setInterval(() => {
+        setCurrentDjVideo((prev) => (prev + 1) % djVideos.length);
+      }, 8000); // Change video every 8 seconds
     } else {
       if (visualizerInterval.current) {
         clearInterval(visualizerInterval.current);
+      }
+      if (djVideoInterval.current) {
+        clearInterval(djVideoInterval.current);
       }
       setVisualizerData(new Array(20).fill(0));
     }
@@ -99,23 +126,80 @@ export default function SolarRadio() {
       if (visualizerInterval.current) {
         clearInterval(visualizerInterval.current);
       }
+      if (djVideoInterval.current) {
+        clearInterval(djVideoInterval.current);
+      }
     };
   }, [isPlaying]);
 
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-    // In a real app, you would control actual audio playback here
+    const currentTrackData = selectedStation.tracks[currentTrack];
+    
+    if (!isPlaying) {
+      // Start playing
+      if (currentTrackData.audioUrl) {
+        // Stop any existing audio
+        if (audioRef.current) {
+          audioRef.current.stop();
+          audioRef.current.unload();
+        }
+        
+        // Create new Howl instance for the track
+        audioRef.current = new Howl({
+          src: [currentTrackData.audioUrl],
+          volume: volume / 100,
+          onend: () => {
+            setIsPlaying(false);
+            nextTrack();
+          },
+          onloaderror: (id, error) => {
+            console.error('Audio load error:', error);
+            setIsPlaying(false);
+          },
+          onplayerror: (id, error) => {
+            console.error('Audio play error:', error);
+            setIsPlaying(false);
+          }
+        });
+        
+        audioRef.current.play();
+      }
+      setIsPlaying(true);
+    } else {
+      // Stop playing
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      setIsPlaying(false);
+    }
   };
 
   const nextTrack = () => {
+    if (audioRef.current) {
+      audioRef.current.stop();
+      audioRef.current.unload();
+    }
+    setIsPlaying(false);
     setCurrentTrack((prev) => (prev + 1) % selectedStation.tracks.length);
   };
 
   const prevTrack = () => {
+    if (audioRef.current) {
+      audioRef.current.stop();
+      audioRef.current.unload();
+    }
+    setIsPlaying(false);
     setCurrentTrack((prev) => 
       prev === 0 ? selectedStation.tracks.length - 1 : prev - 1
     );
   };
+
+  // Update volume when volume state changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume(volume / 100);
+    }
+  }, [volume]);
 
   return (
     <section className="min-h-screen py-20 px-4 sm:px-6 lg:px-8">
@@ -156,6 +240,11 @@ export default function SolarRadio() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => {
+                      if (audioRef.current) {
+                        audioRef.current.stop();
+                        audioRef.current.unload();
+                      }
+                      setIsPlaying(false);
                       setSelectedStation(station);
                       setCurrentTrack(0);
                     }}
@@ -213,6 +302,47 @@ export default function SolarRadio() {
                 </div>
                 <h3 className="text-3xl font-bold mb-2">{selectedStation.name}</h3>
                 <p className="text-gray-400">{selectedStation.description}</p>
+              </div>
+
+              {/* DJ Video Section */}
+              <div className="mb-8">
+                <div className="relative w-full h-64 rounded-xl overflow-hidden bg-black/20">
+                  <AnimatePresence mode="wait">
+                    <motion.video
+                      key={currentDjVideo}
+                      initial={{ opacity: 0, scale: 1.1 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 1 }}
+                      src={djVideos[currentDjVideo]}
+                      autoPlay
+                      loop
+                      muted
+                      className="w-full h-full object-cover"
+                    />
+                  </AnimatePresence>
+                  
+                  {/* Video overlay with station info */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white text-sm font-medium opacity-90">
+                          Live from Mars Studio
+                        </p>
+                        <p className="text-white/70 text-xs">
+                          SolarPunk DJ • Now Playing
+                        </p>
+                      </div>
+                      {isPlaying && (
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                          <span className="text-white text-xs font-medium">LIVE</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Visualizer */}
@@ -308,12 +438,26 @@ export default function SolarRadio() {
                           ? 'bg-white/10'
                           : 'hover:bg-white/5'
                       }`}
-                      onClick={() => setCurrentTrack(index)}
+                      onClick={() => {
+                        if (audioRef.current) {
+                          audioRef.current.stop();
+                          audioRef.current.unload();
+                        }
+                        setIsPlaying(false);
+                        setCurrentTrack(index);
+                      }}
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-gray-500 w-6">{index + 1}</span>
                         <div>
-                          <p className="font-semibold">{track.title}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold">{track.title}</p>
+                            {track.audioUrl && (
+                              <span className="text-xs bg-punk-green text-black px-2 py-1 rounded-full font-bold">
+                                PLAYABLE
+                              </span>
+                            )}
+                          </div>
                           <p className="text-sm text-gray-500">{track.artist}</p>
                         </div>
                       </div>

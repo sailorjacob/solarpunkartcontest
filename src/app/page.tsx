@@ -170,7 +170,7 @@ export default function Home() {
                       <div className="mt-6">
                         <p className="text-stone-600 text-sm mb-1">By</p>
                         <div 
-                          className="text-blue-400 text-3xl font-light inline-block relative"
+                          className="text-stone-500 text-3xl font-light inline-block relative opacity-70"
                           style={{
                             fontFamily: '"Brush Script MT", "Lucida Handwriting", cursive',
                             fontWeight: '300',
@@ -188,16 +188,16 @@ export default function Home() {
                       <h4 className="font-bold text-stone-800 mb-4 uppercase tracking-wide">System Status</h4>
                       <div className="space-y-3 text-sm font-mono">
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                          <span className="text-stone-600">All Systems Operational</span>
+                          <div className="w-2 h-2 bg-stone-200 rounded-full animate-pulse shadow-sm" />
+                          <span className="text-stone-600 animate-fade-in">All Systems Operational</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full" />
-                          <span className="text-stone-600">Atmospheric Processors Online</span>
+                          <div className="w-2 h-2 bg-stone-300 rounded-full animate-ping shadow-sm" style={{ animationDuration: '2s' }} />
+                          <span className="text-stone-600 animate-fade-in-delay-1">Atmospheric Processors Online</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-orange-400 rounded-full" />
-                          <span className="text-stone-600">Terraforming Progress: 89.3%</span>
+                          <div className="w-2 h-2 bg-stone-400 rounded-full animate-pulse shadow-sm" style={{ animationDuration: '3s' }} />
+                          <span className="text-stone-600 animate-fade-in-delay-2">Terraforming Progress: 89.3%</span>
                         </div>
                       </div>
                     </div>

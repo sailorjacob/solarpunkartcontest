@@ -122,6 +122,29 @@
     50% { transform: translateY(-10px); }
   }
 
+  .animate-fade-in {
+    animation: fadeIn 2s ease-in-out;
+  }
+
+  .animate-fade-in-delay-1 {
+    animation: fadeIn 2s ease-in-out 0.5s both;
+  }
+
+  .animate-fade-in-delay-2 {
+    animation: fadeIn 2s ease-in-out 1s both;
+  }
+
+  @keyframes fadeIn {
+    0% { 
+      opacity: 0; 
+      transform: translateX(-10px);
+    }
+    100% { 
+      opacity: 1; 
+      transform: translateX(0);
+    }
+  }
+
   /* Earth tone color utilities */
   .bg-mars-500 { background-color: #8B7355; }
   .bg-mars-400 { background-color: #A0956B; }
