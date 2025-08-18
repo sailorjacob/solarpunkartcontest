@@ -1,207 +1,332 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { ChevronLeft, ChevronRight, Info, Download, X } from 'lucide-react';
 
-// Gallery showcasing various aspects of SolarPunk City
-const galleryImages = [
+// Stunning visions of Sojourn on Kepler-442b
+const visionImages = [
   {
     id: 1,
     src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/cityoverheadview.png',
-    title: 'Metropolitan Marvel',
-    description: 'Aerial view of the complete SolarPunk metropolis',
-    prompt: 'Overhead view of sustainable Mars city, green architecture, solar panels, organized districts --v 6',
+    title: 'Metropolitan Overview',
+    description: 'Aerial perspective of the complete Sojourn metropolis, showcasing the integrated harmony between advanced sustainable technology and natural ecosystem restoration.',
     category: 'urban'
   },
   {
     id: 2,
     src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/lushcityview2.png',
-    title: 'Ecological Paradise',
-    description: 'Lush vegetation integrated with advanced technology',
-    prompt: 'Futuristic Mars city with abundant greenery, clean technology, harmony between nature and urban development --v 6',
+    title: 'Verdant Cityscape',
+    description: 'Lush vegetation cascades through architectural marvels, demonstrating the successful integration of Terran flora with Keplerian soil enhancement protocols.',
     category: 'nature'
   },
   {
     id: 3,
-    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/greenhouse.png',
-    title: 'Agricultural Revolution',
-    description: 'Advanced greenhouse technology feeding the city',
-    prompt: 'Massive greenhouse domes on Mars, vertical farming, sustainable agriculture, glass architecture --v 6',
-    category: 'agriculture'
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Capital%20Building.png',
+    title: 'Governance Spire',
+    description: 'The Capital Building serves as the democratic heart of Sojourn, designed with bio-integrated architecture that reflects our collective commitment to ecological stewardship.',
+    category: 'civic'
   },
   {
     id: 4,
-    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/dwelling%20neighborhood.png',
-    title: 'Community Living',
-    description: 'Thoughtfully designed residential neighborhoods',
-    prompt: 'Martian residential district, sustainable homes, community spaces, human-scale architecture --v 6',
-    category: 'residential'
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Capital%20City%201.png',
+    title: 'Capital District',
+    description: 'The administrative center of Sojourn showcases advanced urban planning, with atmospheric processors seamlessly integrated into the civic landscape.',
+    category: 'urban'
   },
   {
     id: 5,
-    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/dwellingneighborhood2.png',
-    title: 'Urban Integration',
-    description: 'Seamless blend of public and private spaces',
-    prompt: 'Mixed-use Mars neighborhood, integrated living spaces, walkable communities, green infrastructure --v 6',
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/City%20neighborhood%20river.png',
+    title: 'Riverside Commons',
+    description: 'Engineered waterways flow through residential districts, providing both ecological balance and communal gathering spaces for the citizens of Sojourn.',
     category: 'residential'
   },
   {
     id: 6,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Composting%20eco%20sewage.png',
+    title: 'Cycle Processing Center',
+    description: 'Advanced composting and waste processing facilities transform organic matter into fertile soil, maintaining the closed-loop ecosystem that sustains all life in Sojourn.',
+    category: 'infrastructure'
+  },
+  {
+    id: 7,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/early%20farm.png',
+    title: 'Pioneer Agricultural Station',
+    description: 'Early farming installations that established the foundation for Sojourn\'s food security, using innovative hydroponic and soil regeneration techniques.',
+    category: 'agriculture'
+  },
+  {
+    id: 8,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/lush%20rocket%20station.png',
+    title: 'Verdant Spaceport',
+    description: 'The interplanetary transit hub seamlessly blends transportation infrastructure with abundant botanical life, welcoming visitors to our green sanctuary.',
+    category: 'transportation'
+  },
+  {
+    id: 9,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Lush%20Wetlands%20Neighborhood.png',
+    title: 'Wetlands Habitat',
+    description: 'Restored wetland ecosystems provide natural water filtration while creating diverse habitats for both Terran and indigenous Keplerian species.',
+    category: 'nature'
+  },
+  {
+    id: 10,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Skyline%20Metropolis%20City.png',
+    title: 'Sojourn Skyline',
+    description: 'The magnificent skyline of Sojourn rises majestically, with bio-integrated towers that breathe with the rhythm of the planet while reaching toward the twin suns.',
+    category: 'urban'
+  },
+  {
+    id: 11,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Terraforming%20eco%20bubbles.png',
+    title: 'Atmospheric Genesis Domes',
+    description: 'Terraforming eco-bubbles accelerate atmospheric transformation, creating protected microclimates that gradually expand the breathable zones of Kepler-442b.',
+    category: 'technology'
+  },
+  {
+    id: 12,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/the%20paris%20of%20sojourn.png',
+    title: 'Cultural Quarter',
+    description: 'Known as "The Paris of Sojourn," this artistic district celebrates human creativity while honoring the natural beauty of our new world.',
+    category: 'culture'
+  },
+  {
+    id: 13,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Underground%20Greenhouse%20Farming.png',
+    title: 'Subterranean Gardens',
+    description: 'Underground greenhouse networks utilize geothermal energy and advanced LED systems to ensure year-round food production regardless of surface conditions.',
+    category: 'agriculture'
+  },
+  {
+    id: 14,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/underground%20mall.png',
+    title: 'Underground Commons',
+    description: 'Subterranean commercial and social spaces provide climate-controlled environments for community gathering and commerce during extreme weather periods.',
+    category: 'commercial'
+  },
+  {
+    id: 15,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/greenhouse.png',
+    title: 'Atmospheric Gardens',
+    description: 'Massive greenhouse installations serve as both agricultural centers and atmospheric processors, converting carbon dioxide while producing fresh oxygen.',
+    category: 'agriculture'
+  },
+  {
+    id: 16,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/dwelling%20neighborhood.png',
+    title: 'Residential Harmony',
+    description: 'Thoughtfully designed residential neighborhoods where human-scale architecture promotes community connection while maintaining harmony with the landscape.',
+    category: 'residential'
+  },
+  {
+    id: 17,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/dwellingneighborhood2.png',
+    title: 'Community Living',
+    description: 'Mixed-use neighborhoods where living, working, and recreational spaces flow seamlessly together, embodying the principles of sustainable urban design.',
+    category: 'residential'
+  },
+  {
+    id: 18,
     src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/underground%20art%20museum%20entrance.png',
-    title: 'Cultural Heritage',
-    description: 'Underground spaces preserving art and culture',
-    prompt: 'Underground art museum entrance on Mars, cultural preservation, modern gallery architecture --v 6',
+    title: 'Cultural Preservation Vault',
+    description: 'Underground galleries preserve and celebrate both Terran heritage and the emerging artistic expressions of our new world, ensuring cultural continuity across worlds.',
     category: 'culture'
   }
 ];
 
 export default function Gallery() {
-  const [selectedImage, setSelectedImage] = useState<typeof galleryImages[0] | null>(null);
-  const [filter, setFilter] = useState('all');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showInfo, setShowInfo] = useState(false);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // Auto-advance slideshow
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % visionImages.length);
+    }, 8000); // 8 seconds per image
+    
+    return () => clearInterval(interval);
+  }, [isAutoPlaying]);
+
+  const nextImage = () => {
+    setCurrentIndex((prev) => (prev + 1) % visionImages.length);
+    setIsAutoPlaying(false);
+  };
+
+  const prevImage = () => {
+    setCurrentIndex((prev) => (prev - 1 + visionImages.length) % visionImages.length);
+    setIsAutoPlaying(false);
+  };
+
+  const currentImage = visionImages[currentIndex];
 
   return (
-    <section className="min-h-screen py-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
+    <section className="relative w-full h-screen overflow-hidden bg-black">
+      {/* Fullscreen Image Display */}
+      <AnimatePresence mode="wait">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          key={currentIndex}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0"
         >
-          <h2 className="text-5xl sm:text-6xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-punk-green to-solar-gold text-gradient">
-              Vision Gallery
-            </span>
-          </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            AI-generated glimpses of sustainable life on the Red Planet
-          </p>
+          <Image
+            src={currentImage.src}
+            alt={currentImage.title}
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+          {/* Gradient Overlay for Better Text Readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
         </motion.div>
+      </AnimatePresence>
 
-        {/* Filter Buttons */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
+      {/* Navigation Controls */}
+      <div className="absolute inset-0 flex items-center justify-between p-8 z-10">
+        <motion.button
+          whileHover={{ scale: 1.1, x: -5 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={prevImage}
+          className="p-4 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all"
         >
-          {['all', 'architecture', 'nature', 'technology', 'community'].map((category) => (
+          <ChevronLeft size={24} />
+        </motion.button>
+
+        <motion.button
+          whileHover={{ scale: 1.1, x: 5 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={nextImage}
+          className="p-4 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all"
+        >
+          <ChevronRight size={24} />
+        </motion.button>
+      </div>
+
+      {/* Image Counter */}
+      <div className="absolute top-8 left-8 z-20">
+        <div className="bg-black/30 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-white font-mono text-sm">
+          {String(currentIndex + 1).padStart(2, '0')} / {String(visionImages.length).padStart(2, '0')}
+        </div>
+      </div>
+
+      {/* Info Toggle */}
+      <div className="absolute top-8 right-8 z-20 flex gap-3">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+          className={`p-3 backdrop-blur-sm border border-white/20 rounded-full text-white transition-all ${
+            isAutoPlaying ? 'bg-emerald-500/30' : 'bg-black/30'
+          }`}
+        >
+          {isAutoPlaying ? '⏸️' : '▶️'}
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowInfo(!showInfo)}
+          className="p-3 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all"
+        >
+          <Info size={20} />
+        </motion.button>
+      </div>
+
+      {/* Progress Indicators */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="flex gap-2">
+          {visionImages.map((_, index) => (
             <motion.button
-              key={category}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setFilter(category)}
-              className={`px-6 py-2 rounded-full capitalize transition-all duration-300 ${
-                filter === category
-                  ? 'bg-gradient-to-r from-punk-green to-solar-gold text-black font-semibold'
-                  : 'glass hover:bg-white/20'
+              key={index}
+              whileHover={{ scale: 1.2 }}
+              onClick={() => {
+                setCurrentIndex(index);
+                setIsAutoPlaying(false);
+              }}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                index === currentIndex 
+                  ? 'bg-white w-8' 
+                  : 'bg-white/40 hover:bg-white/60'
               }`}
-            >
-              {category}
-            </motion.button>
+            />
           ))}
-        </motion.div>
+        </div>
+      </div>
 
-        {/* Gallery Grid */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {galleryImages.map((image, index) => (
-            <motion.div
-              key={image.id}
-              layout
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -10 }}
-              onClick={() => setSelectedImage(image)}
-              className="group cursor-pointer"
-            >
-              <div className="relative overflow-hidden rounded-2xl glass">
-                <div className="aspect-[4/3] bg-gradient-to-br from-mars-orange/20 to-punk-green/20">
-                  {/* Replace with actual images */}
-                  <div className="w-full h-full flex items-center justify-center text-6xl">
-                    🌆
-                  </div>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-xl font-bold mb-2">{image.title}</h3>
-                    <p className="text-sm text-gray-300">{image.description}</p>
-                  </div>
-                </div>
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="glass px-3 py-1 rounded-full text-xs">
-                    View Details
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Lightbox Modal */}
-        {selectedImage && (
+      {/* Image Information Panel */}
+      <AnimatePresence>
+        {showInfo && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute bottom-24 left-8 right-8 z-20"
           >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              onClick={(e) => e.stopPropagation()}
-              className="max-w-5xl w-full glass rounded-2xl p-6"
-            >
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="aspect-[4/3] bg-gradient-to-br from-mars-orange/20 to-punk-green/20 rounded-xl flex items-center justify-center text-9xl">
-                  🌆
-                </div>
-                <div className="flex flex-col justify-center">
-                  <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-punk-green to-solar-gold text-gradient">
-                    {selectedImage.title}
+            <div className="max-w-2xl bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-white">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-2xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">
+                    {currentImage.title}
                   </h3>
-                  <p className="text-lg text-gray-300 mb-6">
-                    {selectedImage.description}
-                  </p>
-                  <div className="glass rounded-lg p-4 mb-6">
-                    <p className="text-sm text-gray-400 mb-2">Midjourney Prompt:</p>
-                    <code className="text-xs text-punk-green">
-                      {selectedImage.prompt}
-                    </code>
+                  <div className="inline-block px-3 py-1 bg-emerald-500/20 rounded-full text-emerald-300 text-sm font-medium capitalize">
+                    {currentImage.category}
                   </div>
-                  <div className="flex gap-3">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-6 py-2 bg-gradient-to-r from-punk-green to-solar-gold text-black font-semibold rounded-full"
-                    >
-                      Download
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setSelectedImage(null)}
-                      className="px-6 py-2 glass rounded-full hover:bg-white/20"
-                    >
-                      Close
-                    </motion.button>
-                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+                  >
+                    <Download size={16} />
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowInfo(false)}
+                    className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+                  >
+                    <X size={16} />
+                  </motion.button>
                 </div>
               </div>
-            </motion.div>
+              <p className="text-gray-200 leading-relaxed">
+                {currentImage.description}
+              </p>
+            </div>
           </motion.div>
         )}
+      </AnimatePresence>
+
+      {/* Keyboard Instructions */}
+      <div className="absolute bottom-8 right-8 z-20">
+        <div className="bg-black/30 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-2 text-white/60 text-xs font-mono">
+          ← → arrows • space • i for info
+        </div>
       </div>
+
+      {/* Keyboard Navigation */}
+      <div 
+        className="absolute inset-0 z-0"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowLeft') prevImage();
+          if (e.key === 'ArrowRight') nextImage();
+          if (e.key === ' ') {
+            e.preventDefault();
+            setIsAutoPlaying(!isAutoPlaying);
+          }
+          if (e.key === 'i') setShowInfo(!showInfo);
+        }}
+      />
     </section>
   );
 }
