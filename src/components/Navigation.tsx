@@ -61,7 +61,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                       SOJOURN
                     </h1>
                     <p className={`text-xs font-mono tracking-wider -mt-1 transition-colors duration-300 ${
-                      isScrolled ? 'text-gray-400' : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio' ? 'text-slate-600' : activeSection === 'home' ? 'text-green-500' : 'text-gray-300'
+                      isScrolled ? 'text-gray-400' : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio' ? 'text-slate-600' : activeSection === 'home' ? 'text-red-500' : 'text-gray-300'
                     }`}>
                       KEPLER-442B
                     </p>
@@ -84,13 +84,13 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                   className={cn(
                     "relative px-6 py-3 font-medium tracking-wider transition-all duration-300 uppercase text-sm",
                     activeSection === item.id
-                      ? "text-green-400 border-b-2 border-green-400"
+                      ? activeSection === 'home' ? "text-red-500 border-b-2 border-red-500" : "text-green-400 border-b-2 border-green-400"
                       : isScrolled 
                         ? "text-gray-400 hover:text-white"
                         : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio'
                           ? "text-slate-800 hover:text-slate-600"
                           : activeSection === 'home'
-                            ? "text-blue-500 hover:text-green-400"
+                            ? "text-blue-500 hover:text-red-500"
                             : "text-slate-200 hover:text-white"
                   )}
                 >

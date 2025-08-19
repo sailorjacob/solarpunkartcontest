@@ -49,7 +49,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative min-h-screen bg-gray-200 text-black overflow-hidden">
+    <section className="relative min-h-screen bg-gray-300 text-black overflow-hidden">
       {/* Background Image Carousel */}
       <div className="absolute inset-0">
         {heroImages.map((image, index) => (
@@ -142,7 +142,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 className="text-7xl lg:text-9xl font-black leading-none"
               >
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-green-500">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">
                   SOJOURN
                 </span>
               </motion.h1>
@@ -179,12 +179,12 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-400"
             >
               <div>
-                <div className="text-3xl font-bold text-blue-500">2.4B</div>
-                <div className="text-sm text-blue-600 font-mono">POPULATION</div>
+                <div className="text-3xl font-bold text-red-500">2.4B</div>
+                <div className="text-sm text-red-600 font-mono">POPULATION</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-green-500">100%</div>
-                <div className="text-sm text-green-600 font-mono">RENEWABLE</div>
+                <div className="text-3xl font-bold text-blue-500">100%</div>
+                <div className="text-sm text-blue-600 font-mono">RENEWABLE</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-black">2157</div>
@@ -201,7 +201,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             >
               <button
                 onClick={onExploreClick}
-                className="px-8 py-2 bg-blue-500 text-white text-sm font-medium tracking-wide uppercase rounded-full hover:bg-blue-600 transition-all duration-300 hover:scale-105"
+                className="px-8 py-2 bg-red-500 text-white text-sm font-medium tracking-wide uppercase rounded-full hover:bg-red-600 transition-all duration-300 hover:scale-105"
               >
                 explore
               </button>
@@ -268,7 +268,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
       </div>
 
       {/* Bottom Status Bar */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-gray-300 bg-gray-200/80 backdrop-blur-sm">
+      <div className="absolute bottom-0 left-0 right-0 border-t border-gray-400 bg-gray-300/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
                       <div className="flex items-center justify-between text-xs font-mono text-gray-600">
               <div className="flex items-center gap-6">
