@@ -3,23 +3,28 @@
 ## The Problem
 Supabase is blocking requests from `www.sojourn.city` due to CORS policy.
 
-## The Solution
-Add your production domain to Supabase's allowed origins:
+## The Solution - EXACT STEPS:
 
-### Steps:
+### Method 1: API Settings (MOST LIKELY)
 1. Go to your Supabase Dashboard: https://supabase.com/dashboard
 2. Select your project: `twejikjgxkzmphocbvpt`
-3. Go to **Settings** → **API**
-4. Scroll down to **CORS Configuration**
-5. Add these domains to the allowed origins:
+3. In the left sidebar, click **Settings** (gear icon at bottom)
+4. Click **API** in the settings menu
+5. Scroll down until you see **"Additional URLs"** or **"Site URL"** or **"CORS"**
+6. Add these domains:
    ```
    https://www.sojourn.city
    https://sojourn.city
    ```
 
-### Alternative Quick Fix:
-If you can't find CORS settings, go to:
-**Settings** → **Database** → **Extensions** → Find `pg_net` or similar and check CORS settings there.
+### Method 2: Authentication Settings  
+1. Go to **Authentication** → **Settings** 
+2. Look for **"Site URL"** or **"Additional redirect URLs"**
+3. Add: `https://www.sojourn.city`
+
+### Method 3: If Above Don't Work
+1. Go to **Settings** → **General**
+2. Look for **"Custom domain"** or **"Allowed origins"**
 
 ## Why This Happened
 - Your app works on localhost (http://localhost:3000) 
