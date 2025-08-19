@@ -283,7 +283,7 @@ export default function About({ onBack }: AboutProps) {
             className="w-full mb-3"
           />
           <p className="text-sm text-stone-500 mb-6">
-            The completed collaborative art wall - interactive spray painting on a terraformed Mars gallery
+            The completed collaborative art wall - interactive spray painting in a terraformed art gallery
           </p>
         </div>
       </div>
