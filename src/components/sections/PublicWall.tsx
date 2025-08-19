@@ -253,10 +253,6 @@ export default function PublicWall() {
   };
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isImageLoaded) {
-      initializeCanvas();
-      return;
-    }
     setIsDrawing(true);
     setHasUserPainted(true); // Track that user has started painting
     const pos = getMousePos(e);
@@ -750,22 +746,36 @@ export default function PublicWall() {
 
 
 
-      {/* Collaborative Info - Bottom Left */}
+      {/* Collaborative Info & Download - Bottom Left */}
       <motion.div 
         className="absolute bottom-6 left-6 z-50"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
       >
-        <button
-          onClick={() => setShowDescription(!showDescription)}
-          className="bg-white/90 backdrop-blur-md rounded-xl px-3 py-2 border border-gray-200 shadow-lg hover:bg-white transition-all duration-200"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">Collaborative Art Wall</span>
-            <Info size={12} className="text-gray-500" />
-          </div>
-        </button>
+        <div className="flex gap-3">
+          {/* Download Button */}
+          <button
+            onClick={downloadArtwork}
+            className="bg-white/90 backdrop-blur-md rounded-xl px-3 py-2 border border-gray-200 shadow-lg hover:bg-white transition-all duration-200"
+            title="Download current artwork as PNG"
+          >
+            <Download size={14} className="text-gray-600" />
+          </button>
+          
+          {/* Info Button */}
+          <button
+            onClick={() => setShowDescription(!showDescription)}
+            className="bg-white/90 backdrop-blur-md rounded-xl px-3 py-2 border border-gray-200 shadow-lg hover:bg-white transition-all duration-200"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">Collaborative Art Wall</span>
+              <span className="text-xs text-gray-400">•</span>
+              <span className="text-xs font-mono text-gray-500">Canvas 1/4</span>
+              <Info size={12} className="text-gray-500" />
+            </div>
+          </button>
+        </div>
       </motion.div>
 
       {/* Color Picker - Bottom Right */}
