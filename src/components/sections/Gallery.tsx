@@ -163,8 +163,17 @@ export default function Gallery() {
 
   const currentImage = visionImages[currentIndex];
 
+  // Auto-focus the section when mounted for keyboard navigation
+  useEffect(() => {
+    const section = document.querySelector('[data-gallery-section]') as HTMLElement;
+    if (section) {
+      section.focus();
+    }
+  }, []);
+
   return (
     <section 
+      data-gallery-section
       className="relative w-full h-screen overflow-hidden bg-black"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -255,6 +264,7 @@ export default function Gallery() {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            console.log('Play/Pause button clicked, current state:', isAutoPlaying);
             setIsAutoPlaying(!isAutoPlaying);
           }}
           className={`p-3 backdrop-blur-sm border border-white/20 rounded-full text-white transition-all ${
@@ -271,6 +281,7 @@ export default function Gallery() {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            console.log('Info button clicked, current state:', showInfo);
             setShowInfo(!showInfo);
           }}
           className="p-3 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all"

@@ -171,8 +171,11 @@ export default function Home() {
                       
                       <div className="mt-6">
                         <p className="text-stone-600 text-sm mb-1">By</p>
-                        <div 
-                          className="text-stone-500 text-3xl font-light inline-block relative opacity-70"
+                        <a 
+                          href="https://sailorjacob.github.io"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-stone-500 text-3xl font-light inline-block relative opacity-70 hover:opacity-100 transition-opacity duration-300"
                           style={{
                             fontFamily: '"Brush Script MT", "Lucida Handwriting", cursive',
                             fontWeight: '300',
@@ -181,7 +184,7 @@ export default function Home() {
                           }}
                         >
                           Jacob
-                        </div>
+                        </a>
                       </div>
                     </div>
 

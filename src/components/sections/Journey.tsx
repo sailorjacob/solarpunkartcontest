@@ -115,71 +115,80 @@ export default function Journey() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Story Content - Bottom Left */}
-        <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 lg:p-16">
-          <div className="max-w-2xl">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeStory}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                {/* Period Badge */}
+        {/* Story Content - Bottom Left with improved layout */}
+        <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 lg:p-16 pb-32">
+          <div className="max-w-6xl flex flex-col lg:flex-row gap-8">
+            {/* Main Content Column */}
+            <div className="flex-1 max-w-2xl">
+              <AnimatePresence mode="wait">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: 0.3 }}
-                  className="inline-block bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-4 py-2 mb-4"
+                  key={activeStory}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -30 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                  <span className="text-white/90 text-sm font-mono tracking-wider">
-                    {currentStory.period}
-                  </span>
+                  {/* Period Badge */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4, delay: 0.3 }}
+                    className="inline-block bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-4 py-2 mb-4"
+                  >
+                    <span className="text-white/90 text-sm font-mono tracking-wider">
+                      {currentStory.period}
+                    </span>
+                  </motion.div>
+
+                  {/* Title */}
+                  <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight"
+                  >
+                    {currentStory.title}
+                  </motion.h2>
+
+                  {/* Description */}
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                    className="text-lg md:text-xl text-white/90 leading-relaxed mb-6"
+                  >
+                    {currentStory.description}
+                  </motion.p>
                 </motion.div>
+              </AnimatePresence>
+            </div>
 
-                {/* Title */}
-                <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight"
-                >
-                  {currentStory.title}
-                </motion.h2>
-
-                {/* Description */}
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
-                  className="text-lg md:text-xl text-white/90 leading-relaxed mb-6 max-w-xl"
-                >
-                  {currentStory.description}
-                </motion.p>
-
-                {/* Details */}
+            {/* Details Column - Positioned to the right */}
+            <div className="flex-shrink-0 lg:w-80">
+              <AnimatePresence mode="wait">
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  key={activeStory}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-xl"
+                  className="grid grid-cols-1 gap-3 lg:mt-16"
                 >
                   {currentStory.details.map((detail, index) => (
                     <motion.div
                       key={index}
-                      initial={{ opacity: 0, x: -10 }}
+                      initial={{ opacity: 0, x: 10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
-                      className="flex items-center gap-2 text-white/80 text-sm"
+                      className="flex items-center gap-3 text-white/90 text-sm bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20"
                     >
-                      <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-                      {detail}
+                      <div className="w-2 h-2 bg-emerald-400 rounded-full flex-shrink-0" />
+                      <span className="leading-relaxed">{detail}</span>
                     </motion.div>
                   ))}
                 </motion.div>
-              </motion.div>
-            </AnimatePresence>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
 

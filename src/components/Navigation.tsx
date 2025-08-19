@@ -158,7 +158,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                   className={cn(
                     "w-full px-6 py-4 rounded-2xl transition-all duration-300 text-left font-medium",
                     activeSection === item.id
-                      ? "bg-stone-900 text-cream-50 shadow-elevation-1"
+                      ? "bg-emerald-600 text-white shadow-lg"
                       : "text-stone-700 hover:bg-white/60 hover:text-stone-900"
                   )}
                 >

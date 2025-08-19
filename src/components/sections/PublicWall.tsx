@@ -13,8 +13,9 @@ export default function PublicWall() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isMaskLoaded, setIsMaskLoaded] = useState(false);
-  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
-  const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
+  // Remove frame switching - just one collaborative canvas
+  // const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
+  // const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
   const [savedArtworks, setSavedArtworks] = useState<Artwork[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -111,13 +112,13 @@ export default function PublicWall() {
     img.src = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png';
   };
 
-  // Load existing submitted artwork for the current frame
+  // Load the latest collaborative artwork
   const loadExistingArtwork = async () => {
     try {
       const artworks = await getArtworksFromSupabase();
-      const currentFrameArtwork = artworks.find((artwork: Artwork) => artwork.frame_index === currentCanvasIndex);
+      const latestArtwork = artworks[0]; // Get the most recent artwork
       
-      if (currentFrameArtwork && canvasRef.current) {
+      if (latestArtwork && canvasRef.current) {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
@@ -129,16 +130,16 @@ export default function PublicWall() {
         return new Promise<void>((resolve) => {
           artworkImg.onload = () => {
             ctx.drawImage(artworkImg, 0, 0, canvas.width, canvas.height);
-            console.log(`Loaded existing artwork for frame ${currentCanvasIndex}`);
+            console.log(`Loaded latest collaborative artwork`);
             resolve();
           };
           
           artworkImg.onerror = () => {
-            console.error(`Failed to load existing artwork for frame ${currentCanvasIndex}`);
+            console.error(`Failed to load collaborative artwork`);
             resolve();
           };
           
-          artworkImg.src = currentFrameArtwork.artwork_data;
+          artworkImg.src = latestArtwork.artwork_data;
         });
       }
     } catch (error) {
@@ -168,8 +169,8 @@ export default function PublicWall() {
       setIsMaskLoaded(true); // Continue without mask
     };
     
-    // Load the current canvas frame as mask
-    maskImg.src = galleryFrames[currentCanvasIndex];
+    // Load the single collaborative canvas frame as mask
+    maskImg.src = galleryFrames[0]; // Use first frame for single collaborative canvas
   };
 
   // Check if a point is on a paintable area (has pixels in the mask)
@@ -334,16 +335,7 @@ export default function PublicWall() {
     loadExistingArtwork();
   };
 
-  // Find the first empty frame for new users
-  const findFirstEmptyFrame = () => {
-    for (let i = 0; i < 4; i++) {
-      if (!artSubmissions[i]) {
-        return i;
-      }
-    }
-    // If all frames have art, return 0 (they'll replace existing art)
-    return 0;
-  };
+  // Remove frame switching logic - single collaborative canvas
 
   // Load saved artworks from Supabase
   const loadSavedArtworks = async () => {
@@ -352,31 +344,9 @@ export default function PublicWall() {
       const artworks = await getArtworksFromSupabase();
       setSavedArtworks(artworks);
       
-      // Update artSubmissions to show which frames are used
-      const submissions = new Array(4).fill(null);
-      artworks.forEach((artwork: Artwork) => {
-        if (artwork.frame_index < 4) {
-          submissions[artwork.frame_index] = artwork.artwork_data;
-        }
-      });
-      setArtSubmissions(submissions);
-      
-      // Find first empty frame from the submissions array
-      let emptyFrame = 0;
-      for (let i = 0; i < 4; i++) {
-        if (!submissions[i]) {
-          emptyFrame = i;
-          break;
-        }
-      }
-      
-      // Set current canvas to first empty frame
-      if (emptyFrame !== currentCanvasIndex) {
-        setCurrentCanvasIndex(emptyFrame);
-      }
+      // Just store the artworks - no frame switching needed
       
       console.log(`Loaded ${artworks.length} artworks from Supabase`);
-      console.log(`Selected frame ${emptyFrame + 1} (first empty frame)`);
     } catch (error) {
       console.error('Error loading saved artworks:', error);
       setSaveMessage('Error loading artworks from database');
@@ -393,18 +363,16 @@ export default function PublicWall() {
       setSaveMessage('Saving artwork...');
       
       const artworkToSave = {
-        title: `Art Gallery Frame ${currentCanvasIndex + 1} - Community Art`,
+        title: `Collaborative Art Gallery - Community Creation`,
         base_image: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png',
         artwork_data: artworkData,
-        frame_index: currentCanvasIndex,
+        frame_index: 0, // Single collaborative canvas
         artist_name: 'Anonymous Artist'
       };
 
-      console.log('Attempting to save artwork:', {
-        frame_index: currentCanvasIndex,
+      console.log('Attempting to save collaborative artwork:', {
         title: artworkToSave.title,
-        dataLength: artworkData.length,
-        currentFrame: `Frame ${currentCanvasIndex + 1}`
+        dataLength: artworkData.length
       });
 
       const savedArtwork = await saveArtworkToSupabase(artworkToSave);
@@ -454,31 +422,13 @@ export default function PublicWall() {
       
       console.log('Artwork saved successfully:', savedArtwork);
       
-      // Update local submissions
-    const newSubmissions = [...artSubmissions];
-    newSubmissions[currentCanvasIndex] = artworkData;
-    setArtSubmissions(newSubmissions);
-    
-      // Show success for 2 seconds before clearing
-      setSaveMessage('Artwork submitted successfully');
+            // Show success message
+      setSaveMessage('Artwork added to collaborative gallery');
       
-      // Wait before moving to next frame
+      // Clear success message after 3 seconds
       setTimeout(() => {
-        // Move to next empty canvas position
-        const nextIndex = findFirstEmptyFrame();
-        setCurrentCanvasIndex(nextIndex);
-        
-        // Don't clear - let user see the new frame's existing art
-        // clearCanvas();
-    
-    // Load new mask for next canvas
-    setIsMaskLoaded(false);
-    setTimeout(() => {
-      loadCurrentMask();
-    }, 100);
-    
-        console.log(`Moved to frame ${nextIndex + 1} for next artwork`);
-      }, 2000);
+        setSaveMessage(null);
+      }, 3000);
       
     } catch (error) {
       console.error('Error in saveArt:', error);
@@ -510,7 +460,7 @@ export default function PublicWall() {
       
       // Download the combined image
       const link = document.createElement('a');
-      link.download = `Art_Gallery_Frame_${currentCanvasIndex + 1}_artwork.png`;
+      link.download = `Collaborative_Art_Gallery_artwork.png`;
       link.href = combinedCanvas.toDataURL('image/png');
       link.click();
     };
@@ -536,30 +486,7 @@ export default function PublicWall() {
 
 
 
-  // Function to change canvas frame
-  const changeCanvasFrame = async (newIndex: number) => {
-    setCurrentCanvasIndex(newIndex);
-    setIsMaskLoaded(false);
-    
-    // Immediately reinitialize canvas with new frame (no delay)
-    if (canvasRef.current && backgroundImageRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        // Clear and redraw background
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(backgroundImageRef.current, 0, 0, canvas.width, canvas.height);
-        
-        // Load existing artwork for this frame immediately
-        await loadExistingArtwork();
-      }
-    }
-    
-    // Load mask after a short delay
-    setTimeout(() => {
-      loadCurrentMask();
-    }, 50);
-  };
+  // Remove frame switching - single collaborative canvas
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black">
@@ -659,7 +586,7 @@ export default function PublicWall() {
 
 
 
-      {/* Canvas Position Indicator - Top Left */}
+      {/* Collaborative Info */}
       <motion.div 
         className="absolute top-6 left-6 z-50"
         initial={{ opacity: 0, x: -20 }}
@@ -668,31 +595,9 @@ export default function PublicWall() {
       >
         <div className="bg-white/90 backdrop-blur-md rounded-xl p-3 border border-gray-200 shadow-lg">
           <div className="flex items-center gap-3">
-            <div className="flex gap-2">
-              {[0, 1, 2, 3].map((index) => (
-                <button
-                  key={index}
-                  onClick={() => changeCanvasFrame(index)}
-                  className={`w-6 h-6 rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer flex items-center justify-center text-xs font-mono ${
-                    index === currentCanvasIndex 
-                      ? 'bg-blue-500 border-blue-400 text-white' 
-                      : artSubmissions[index] 
-                        ? 'bg-gray-500 border-gray-400 text-white' 
-                        : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">
-                Frame {currentCanvasIndex + 1}/4
-              </span>
-              <span className="text-xs text-gray-500">
-                {artSubmissions[currentCanvasIndex] ? 'Has Art' : 'Empty'}
-              </span>
-            </div>
+            <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">
+              Collaborative Art Wall
+            </span>
           </div>
         </div>
       </motion.div>
