@@ -219,7 +219,7 @@ export default function Gallery() {
       </AnimatePresence>
 
       {/* Navigation Controls */}
-      <div className="absolute inset-0 flex items-center justify-between p-8 z-10 pointer-events-none">
+      <div className="absolute inset-0 flex items-center justify-between p-8 z-[55] pointer-events-none">
         <motion.button
           whileHover={{ scale: 1.1, x: -5 }}
           whileTap={{ scale: 0.9 }}
@@ -250,21 +250,20 @@ export default function Gallery() {
       </div>
 
       {/* Image Counter */}
-      <div className="absolute top-8 left-8 z-20">
+      <div className="absolute top-8 left-8 z-[60]">
         <div className="bg-black/30 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-white font-mono text-sm">
           {String(currentIndex + 1).padStart(2, '0')} / {String(visionImages.length).padStart(2, '0')}
         </div>
       </div>
 
       {/* Info Toggle */}
-      <div className="absolute top-8 right-8 z-20 flex gap-3">
+      <div className="absolute top-8 right-8 z-[60] flex gap-3">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Play/Pause button clicked, current state:', isAutoPlaying);
             setIsAutoPlaying(!isAutoPlaying);
           }}
           className={`p-3 backdrop-blur-sm border border-white/20 rounded-full text-white transition-all ${
@@ -281,7 +280,6 @@ export default function Gallery() {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Info button clicked, current state:', showInfo);
             setShowInfo(!showInfo);
           }}
           className="p-3 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all"
@@ -292,7 +290,7 @@ export default function Gallery() {
       </div>
 
       {/* Progress Indicators */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-[60]">
         <div className="flex gap-2">
           {visionImages.map((_, index) => (
             <motion.button
@@ -373,7 +371,7 @@ export default function Gallery() {
       </AnimatePresence>
 
       {/* Keyboard Instructions */}
-      <div className="absolute bottom-8 right-8 z-20">
+      <div className="absolute bottom-8 right-8 z-[60]">
         <div className="bg-black/30 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-2 text-white/60 text-xs font-mono">
           ← → arrows • space • i for info
         </div>

@@ -116,7 +116,7 @@ export default function Journey() {
         </AnimatePresence>
 
         {/* Story Content - Bottom Left */}
-        <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 lg:p-16 pb-40">
+        <div className="absolute bottom-20 left-0 right-0 p-8 md:p-12 lg:p-16">
           <div className="max-w-2xl">
             <AnimatePresence mode="wait">
               <motion.div
