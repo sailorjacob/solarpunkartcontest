@@ -12,7 +12,7 @@ import SolarRadio from '@/components/sections/SolarRadio';
 import About from '@/components/sections/About';
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeSection, setActiveSection] = useState('gallery');
   const [isLoading, setIsLoading] = useState(true);
   const [showFooter, setShowFooter] = useState(false);
 
@@ -45,13 +45,6 @@ export default function Home() {
 
   const renderSection = () => {
     switch (activeSection) {
-      case 'home':
-  return (
-          <Hero 
-            onExploreClick={() => handleSectionChange('journey')}
-            onCreateClick={() => handleSectionChange('wall')}
-          />
-        );
       case 'journey':
         return <Journey />;
       case 'gallery':
@@ -60,15 +53,17 @@ export default function Home() {
         return <PublicWall />;
       case 'radio':
         return <SolarRadio />;
-      case 'about':
-        return <About onBack={() => handleSectionChange('home')} />;
-      default:
+      case 'hero':
         return (
           <Hero 
             onExploreClick={() => handleSectionChange('journey')}
             onCreateClick={() => handleSectionChange('wall')}
           />
         );
+      case 'about':
+        return <About onBack={() => handleSectionChange('gallery')} />;
+      default:
+        return <Gallery />;
     }
   };
 
@@ -117,8 +112,8 @@ export default function Home() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Footer Toggle Button - Only on Home Page */}
-      {activeSection === 'home' && (
+      {/* Footer Toggle Button - Only on Gallery (Home) Page */}
+      {activeSection === 'gallery' && (
         <div className="relative">
           {/* Toggle Button */}
           <motion.div 
