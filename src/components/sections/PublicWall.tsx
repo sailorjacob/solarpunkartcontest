@@ -24,11 +24,51 @@ export default function PublicWall() {
   const [hasUserPainted, setHasUserPainted] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
 
-  // Ink blue color and settings  
-  const neonBlue = '#1E40AF'; // Ink blue instead of cyan
+  // Brush settings  
   const sprayDensity = 80;
   const [sprayRadius, setSprayRadius] = useState(5);
+  const [brushColor, setBrushColor] = useState('#1E40AF'); // Default ink blue
+  const [hue, setHue] = useState(220); // Default blue hue
   const glowBlur = 15;
+
+  // Convert hue to hex color
+  const hueToColor = (hueValue: number) => {
+    const saturation = 100;
+    const lightness = 50;
+    
+    const c = (1 - Math.abs(2 * lightness / 100 - 1)) * saturation / 100;
+    const x = c * (1 - Math.abs((hueValue / 60) % 2 - 1));
+    const m = lightness / 100 - c / 2;
+    
+    let r, g, b;
+    
+    if (hueValue >= 0 && hueValue < 60) {
+      r = c; g = x; b = 0;
+    } else if (hueValue >= 60 && hueValue < 120) {
+      r = x; g = c; b = 0;
+    } else if (hueValue >= 120 && hueValue < 180) {
+      r = 0; g = c; b = x;
+    } else if (hueValue >= 180 && hueValue < 240) {
+      r = 0; g = x; b = c;
+    } else if (hueValue >= 240 && hueValue < 300) {
+      r = x; g = 0; b = c;
+    } else {
+      r = c; g = 0; b = x;
+    }
+    
+    const toHex = (val: number) => {
+      const hex = Math.round((val + m) * 255).toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    };
+    
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  };
+
+  // Update brush color when hue changes
+  const handleHueChange = (newHue: number) => {
+    setHue(newHue);
+    setBrushColor(hueToColor(newHue));
+  };
 
   // Gallery background images to paint on
   const galleryImages = [
@@ -60,10 +100,10 @@ export default function PublicWall() {
 
   // Set base drawing styles
   const setBaseStyles = (ctx: CanvasRenderingContext2D) => {
-    ctx.shadowColor = neonBlue;
+    ctx.shadowColor = brushColor;
     ctx.shadowBlur = glowBlur;
-    ctx.fillStyle = neonBlue;
-    ctx.strokeStyle = neonBlue;
+    ctx.fillStyle = brushColor;
+    ctx.strokeStyle = brushColor;
     ctx.globalCompositeOperation = 'source-over';
     ctx.globalAlpha = 1;
   };
@@ -297,8 +337,8 @@ export default function PublicWall() {
     ctx.globalCompositeOperation = 'lighter';
     ctx.globalAlpha = 0.2; // Much reduced glow
     ctx.shadowBlur = glowBlur * 0.5; // Smaller glow radius
-    ctx.shadowColor = neonBlue;
-    ctx.fillStyle = neonBlue;
+    ctx.shadowColor = brushColor;
+    ctx.fillStyle = brushColor;
     
     for (let i = 0; i < sprayDensity * 0.2; i++) {
       const offsetX = (Math.random() * 2 - 1) * sprayRadius * 0.4;
@@ -540,7 +580,7 @@ export default function PublicWall() {
           width: 16px;
           height: 16px;
           border-radius: 50%;
-          background: #10b981;
+          background: #dc2626;
           cursor: pointer;
           border: 2px solid white;
           box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -549,10 +589,49 @@ export default function PublicWall() {
           width: 16px;
           height: 16px;
           border-radius: 50%;
-          background: #10b981;
+          background: #dc2626;
           cursor: pointer;
           border: 2px solid white;
           box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .color-picker {
+          width: 120px;
+          height: 8px;
+          border-radius: 4px;
+          background: linear-gradient(to right, 
+            #ff0000 0%, 
+            #ff8000 16.66%, 
+            #ffff00 33.33%, 
+            #80ff00 50%, 
+            #00ff80 66.66%, 
+            #0080ff 83.33%, 
+            #8000ff 100%
+          );
+          appearance: none;
+          cursor: pointer;
+          outline: none;
+        }
+        
+        .color-picker::-webkit-slider-thumb {
+          appearance: none;
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: ${brushColor};
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        
+        .color-picker::-moz-range-thumb {
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: ${brushColor};
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
       `}</style>
     <section className="relative w-full h-screen overflow-hidden bg-black">
@@ -605,6 +684,14 @@ export default function PublicWall() {
                 }}
               />
               <span className="text-xs text-gray-500 w-6">{sprayRadius}</span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <div 
+                className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                style={{ backgroundColor: brushColor }}
+                title="Current brush color"
+              />
             </div>
             
             <div className="h-4 w-px bg-gray-300" />
@@ -665,13 +752,39 @@ export default function PublicWall() {
           onClick={() => setShowDescription(!showDescription)}
           className="bg-white/90 backdrop-blur-md rounded-xl px-3 py-2 border border-gray-200 shadow-lg hover:bg-white transition-all duration-200"
         >
-                     <div className="flex items-center gap-2">
-             <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">
-               Frame {currentCanvasIndex + 1}/4
-             </span>
-             <Info size={12} className="text-gray-500" />
-           </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">Collaborative Art Wall</span>
+            <Info size={12} className="text-gray-500" />
+          </div>
         </button>
+      </motion.div>
+
+      {/* Color Picker - Bottom Right */}
+      <motion.div 
+        className="absolute bottom-6 right-6 z-50"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+      >
+        <div className="bg-white/90 backdrop-blur-md rounded-xl px-4 py-3 border border-gray-200 shadow-lg">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">Color</span>
+              <div 
+                className="w-5 h-5 rounded-full border-2 border-gray-300 shadow-sm"
+                style={{ backgroundColor: brushColor }}
+              />
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="360"
+              value={hue}
+              onChange={(e) => handleHueChange(Number(e.target.value))}
+              className="color-picker"
+            />
+          </div>
+        </div>
       </motion.div>
 
       {/* Description Modal */}
