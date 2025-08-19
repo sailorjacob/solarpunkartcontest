@@ -233,13 +233,13 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             >
               <button
                 onClick={onExploreClick}
-                className="px-6 py-1.5 border border-red-500 text-red-500 text-sm font-medium tracking-wide rounded-full hover:bg-red-500 hover:text-white transition-all duration-300 hover:scale-105"
+                className="px-6 py-1.5 bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-medium tracking-wide rounded-full hover:opacity-90 transition-opacity duration-200"
               >
                 explore
               </button>
               <button
                 onClick={onCreateClick}
-                className="px-6 py-1.5 border border-white/70 text-white text-sm font-medium tracking-wide rounded-full hover:bg-white/20 hover:border-white transition-all duration-300 hover:scale-105"
+                className="px-6 py-1.5 border border-white/70 text-white text-sm font-medium tracking-wide rounded-full hover:opacity-90 transition-opacity duration-200"
               >
                 create
               </button>
@@ -309,11 +309,11 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
         {/* Red Circle Trail */}
         {isHoveringFooter && (
           <div 
-            className="absolute w-6 h-6 bg-red-500 rounded-full pointer-events-none z-70 transition-opacity duration-200 shadow-lg"
+            className="absolute w-8 h-8 bg-red-500 rounded-full pointer-events-none z-70 transition-opacity duration-200 shadow-lg border-2 border-white"
             style={{
-              left: trailPosition.x - 12,
-              top: trailPosition.y - 12,
-              opacity: 0.9
+              left: trailPosition.x - 16,
+              top: trailPosition.y - 16,
+              opacity: 1
             }}
           />
         )}
