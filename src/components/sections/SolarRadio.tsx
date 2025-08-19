@@ -49,11 +49,9 @@ export default function SolarRadio() {
   const [currentTrack, setCurrentTrack] = useState(0);
   const [volume, setVolume] = useState(70);
   const [visualizerData, setVisualizerData] = useState<number[]>(new Array(20).fill(0));
-  const [currentDjVideo, setCurrentDjVideo] = useState(0);
   const [progress, setProgress] = useState(0);
   const audioRef = useRef<Howl | null>(null);
   const visualizerInterval = useRef<NodeJS.Timeout | null>(null);
-  const djVideoInterval = useRef<NodeJS.Timeout | null>(null);
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -65,9 +63,6 @@ export default function SolarRadio() {
       if (visualizerInterval.current) {
         clearInterval(visualizerInterval.current);
       }
-      if (djVideoInterval.current) {
-        clearInterval(djVideoInterval.current);
-      }
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
@@ -75,18 +70,13 @@ export default function SolarRadio() {
   }, []);
 
   useEffect(() => {
-    // Simulate visualizer and DJ video transitions when playing
+    // Simulate visualizer when playing
     if (isPlaying) {
       visualizerInterval.current = setInterval(() => {
         setVisualizerData(
           new Array(20).fill(0).map(() => Math.random() * 100)
         );
       }, 100);
-      
-      // Start DJ video transitions when playing
-      djVideoInterval.current = setInterval(() => {
-        setCurrentDjVideo((prev) => (prev + 1) % djVideos.length);
-      }, 8000); // Change video every 8 seconds
 
       // Progress tracking
       progressInterval.current = setInterval(() => {
@@ -102,9 +92,6 @@ export default function SolarRadio() {
       if (visualizerInterval.current) {
         clearInterval(visualizerInterval.current);
       }
-      if (djVideoInterval.current) {
-        clearInterval(djVideoInterval.current);
-      }
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
@@ -115,9 +102,6 @@ export default function SolarRadio() {
     return () => {
       if (visualizerInterval.current) {
         clearInterval(visualizerInterval.current);
-      }
-      if (djVideoInterval.current) {
-        clearInterval(djVideoInterval.current);
       }
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
@@ -283,17 +267,19 @@ export default function SolarRadio() {
             <div className="mb-8">
               <div className="relative w-full h-80 rounded-xl overflow-hidden">
                 <video
-                  src={djVideos[currentDjVideo]}
+                  src={djVideos[currentTrack]}
                   autoPlay
                   loop
                   muted
                   className="w-full h-full object-cover"
                 />
-                {/* LIVE indicator in top right */}
-                <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/70 px-3 py-1 rounded-full">
-                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                  <span className="text-white text-sm font-bold">LIVE</span>
-                </div>
+                {/* LIVE indicator in top right - only shows when playing */}
+                {isPlaying && (
+                  <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/70 px-3 py-1 rounded-full">
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                    <span className="text-white text-sm font-bold">LIVE</span>
+                  </div>
+                )}
                 <div className="absolute bottom-4 left-4">
                   <p className="text-white text-lg font-bold">
                     {selectedStation.tracks[currentTrack]?.title}
