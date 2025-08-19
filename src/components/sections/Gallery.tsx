@@ -388,7 +388,7 @@ export default function Gallery() {
       
       // Update artSubmissions to show which frames are used
       const submissions = new Array(4).fill(null);
-      artworks.forEach((artwork) => {
+      artworks.forEach((artwork: Artwork) => {
         if (artwork.frame_index < 4) {
           submissions[artwork.frame_index] = artwork.artwork_data;
         }
