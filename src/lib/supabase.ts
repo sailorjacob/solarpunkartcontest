@@ -3,6 +3,9 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://twejikjgxkzmphocbvpt.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key-here'
 
+console.log('Supabase URL:', supabaseUrl)
+console.log('Supabase Key exists:', supabaseAnonKey !== 'your-anon-key-here')
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Database types
@@ -19,6 +22,11 @@ export interface Artwork {
 // Artwork functions
 export const saveArtworkToSupabase = async (artwork: Omit<Artwork, 'id' | 'created_at'>) => {
   try {
+    console.log('Attempting to save artwork to Supabase...')
+    console.log('Frame index:', artwork.frame_index)
+    console.log('Title:', artwork.title)
+    console.log('Data length:', artwork.artwork_data?.length)
+    
     // First, delete any existing artwork for this frame_index
     const { error: deleteError } = await supabase
       .from('artworks')
@@ -27,6 +35,7 @@ export const saveArtworkToSupabase = async (artwork: Omit<Artwork, 'id' | 'creat
     
     if (deleteError) {
       console.error('Error deleting old artwork:', deleteError)
+      // Continue anyway - might be no existing artwork
     }
 
     // Then insert the new artwork
@@ -36,11 +45,16 @@ export const saveArtworkToSupabase = async (artwork: Omit<Artwork, 'id' | 'creat
       .select()
       .single()
 
-    if (error) throw error
-    console.log('Artwork saved successfully:', data)
+    if (error) {
+      console.error('Supabase insert error:', error)
+      throw error
+    }
+    
+    console.log('Artwork saved successfully to Supabase:', data)
     return data
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error saving artwork to Supabase:', error)
+    console.error('Error details:', error.message, error.details, error.hint)
     throw error
   }
 }

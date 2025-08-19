@@ -324,33 +324,53 @@ export default function Gallery() {
   const saveArt = async () => {
     if (!canvasRef.current || isLoading) return;
     
-    // Get canvas as data URL (fresh artwork only)
-    const artworkData = canvasRef.current.toDataURL('image/png');
+    console.log('Starting save process...');
     
-    // Save to database - this REPLACES any existing artwork on this frame
-    const savedArtwork = await saveArtworkToDatabase(artworkData);
-    if (!savedArtwork) return;
-    
-    // Update submissions at current position with the NEW artwork (replaces old)
-    const newSubmissions = [...artSubmissions];
-    newSubmissions[currentCanvasIndex] = artworkData;
-    setArtSubmissions(newSubmissions);
-    
-    // Move to next available canvas position so they can create fresh art
-    const nextIndex = findNextAvailableCanvas();
-    setCurrentCanvasIndex(nextIndex);
-    
-    // Clear and reset for next artist to start fresh
-    clearCanvas();
-    
-    // Load new mask for next canvas
-    setIsMaskLoaded(false);
-    setTimeout(() => {
-      loadCurrentMask();
-    }, 100);
-    
-    console.log(`New art submitted to frame ${currentCanvasIndex + 1}! Moving to frame ${nextIndex + 1}`);
-    console.log(`Gallery frames with art: ${newSubmissions.filter(Boolean).length}/4`);
+    try {
+      // Get canvas as data URL (fresh artwork only)
+      const artworkData = canvasRef.current.toDataURL('image/png');
+      console.log('Canvas data captured, length:', artworkData.length);
+      
+      // Save to database - this REPLACES any existing artwork on this frame
+      const savedArtwork = await saveArtworkToDatabase(artworkData);
+      
+      if (!savedArtwork) {
+        console.error('Failed to save artwork - no data returned');
+        return;
+      }
+      
+      console.log('Artwork saved successfully:', savedArtwork);
+      
+      // Update submissions at current position with the NEW artwork (replaces old)
+      const newSubmissions = [...artSubmissions];
+      newSubmissions[currentCanvasIndex] = artworkData;
+      setArtSubmissions(newSubmissions);
+      
+      // Show success for 2 seconds before clearing
+      setSaveMessage('Artwork submitted successfully! 🎨');
+      
+      // Wait before moving to next frame
+      setTimeout(() => {
+        // Move to next available canvas position
+        const nextIndex = findNextAvailableCanvas();
+        setCurrentCanvasIndex(nextIndex);
+        
+        // Clear and reset for next artist
+        clearCanvas();
+        
+        // Load new mask for next canvas
+        setIsMaskLoaded(false);
+        setTimeout(() => {
+          loadCurrentMask();
+        }, 100);
+        
+        console.log(`Moved to frame ${nextIndex + 1} for next artwork`);
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error in saveArt:', error);
+      setSaveMessage('Failed to save artwork. Check console for details.');
+    }
   };
 
   // Function to manually select a canvas frame (starts clean)
