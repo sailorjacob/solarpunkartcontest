@@ -2,6 +2,9 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Download } from 'lucide-react';
+import { saveArtworkToSupabase, getArtworksFromSupabase, type Artwork } from '@/lib/supabase';
+import Image from 'next/image';
 
 export default function PublicWall() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -10,14 +13,38 @@ export default function PublicWall() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isMaskLoaded, setIsMaskLoaded] = useState(false);
-  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(() => Math.floor(Math.random() * 4));
+  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
   const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
+  const [savedArtworks, setSavedArtworks] = useState<Artwork[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Ink blue color and settings  
   const neonBlue = '#1E40AF'; // Ink blue instead of cyan
   const sprayDensity = 80;
   const [sprayRadius, setSprayRadius] = useState(5);
   const glowBlur = 15;
+
+  // Gallery background images to paint on
+  const galleryImages = [
+    {
+      src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/cityoverheadview.png',
+      title: 'Metropolitan Overview'
+    },
+    {
+      src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/lushcityview2.png',
+      title: 'Verdant Cityscape'
+    },
+    {
+      src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/greenhouse.png',
+      title: 'Atmospheric Gardens'
+    },
+    {
+      src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/dwelling%20neighborhood.png',
+      title: 'Residential Harmony'
+    }
+  ];
 
   // Gallery canvas frame URLs for mapping
   const galleryFrames = [
@@ -266,37 +293,168 @@ export default function PublicWall() {
     ctx.drawImage(backgroundImageRef.current, 0, 0, canvas.width, canvas.height);
   };
 
-  const saveArt = () => {
-    if (!canvasRef.current) return;
+  // Load saved artworks from Supabase
+  const loadSavedArtworks = async () => {
+    try {
+      setIsLoading(true);
+      const artworks = await getArtworksFromSupabase();
+      setSavedArtworks(artworks);
+      
+      // Update artSubmissions to show which frames are used
+      const submissions = new Array(4).fill(null);
+      artworks.forEach((artwork: Artwork) => {
+        if (artwork.frame_index < 4) {
+          submissions[artwork.frame_index] = artwork.artwork_data;
+        }
+      });
+      setArtSubmissions(submissions);
+      console.log(`Loaded ${artworks.length} artworks from Supabase`);
+    } catch (error) {
+      console.error('Error loading saved artworks:', error);
+      setSaveMessage('Error loading artworks from database');
+      setTimeout(() => setSaveMessage(null), 3000);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Save artwork to Supabase
+  const saveArtworkToDatabase = async (artworkData: string) => {
+    try {
+      setIsLoading(true);
+      setSaveMessage('Saving artwork...');
+      
+      const currentImage = galleryImages[currentImageIndex];
+      const artworkToSave = {
+        title: `${currentImage.title} - Community Art`,
+        base_image: currentImage.src,
+        artwork_data: artworkData,
+        frame_index: currentCanvasIndex,
+        artist_name: 'Anonymous Artist'
+      };
+
+      console.log('Attempting to save artwork:', {
+        frame_index: currentCanvasIndex,
+        title: artworkToSave.title,
+        dataLength: artworkData.length
+      });
+
+      const savedArtwork = await saveArtworkToSupabase(artworkToSave);
+      
+      if (!savedArtwork) {
+        throw new Error('No artwork returned from Supabase');
+      }
+      
+      setSaveMessage('Artwork saved to public gallery! 🎨');
+      setTimeout(() => setSaveMessage(null), 3000);
+      
+      console.log('Artwork saved successfully to Supabase:', savedArtwork);
+      
+      // Reload artworks to ensure sync
+      setTimeout(() => {
+        loadSavedArtworks();
+      }, 500);
+      
+      return savedArtwork;
+    } catch (error: any) {
+      console.error('Error saving artwork to Supabase:', error);
+      setSaveMessage(`Error: ${error.message || 'Failed to save artwork'}`);
+      setTimeout(() => setSaveMessage(null), 5000);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const saveArt = async () => {
+    if (!canvasRef.current || isLoading) return;
     
-    // Get canvas as data URL
-    const artworkData = canvasRef.current.toDataURL('image/png');
+    console.log('Starting save process...');
     
-    // Add to submissions and cycle canvas position
-    const newSubmissions = [...artSubmissions];
-    newSubmissions[currentCanvasIndex] = artworkData;
-    setArtSubmissions(newSubmissions);
+    try {
+      // Get canvas as data URL
+      const artworkData = canvasRef.current.toDataURL('image/png');
+      console.log('Canvas data captured, length:', artworkData.length);
+      
+      // Save to database
+      const savedArtwork = await saveArtworkToDatabase(artworkData);
+      
+      if (!savedArtwork) {
+        console.error('Failed to save artwork - no data returned');
+        return;
+      }
+      
+      console.log('Artwork saved successfully:', savedArtwork);
+      
+      // Update local submissions
+      const newSubmissions = [...artSubmissions];
+      newSubmissions[currentCanvasIndex] = artworkData;
+      setArtSubmissions(newSubmissions);
+      
+      // Show success for 2 seconds before clearing
+      setSaveMessage('Artwork submitted successfully! 🎨');
+      
+      // Wait before moving to next frame
+      setTimeout(() => {
+        // Move to next canvas position
+        const nextIndex = (currentCanvasIndex + 1) % 4;
+        setCurrentCanvasIndex(nextIndex);
+        
+        // Clear and reset for next artist
+        clearCanvas();
+        
+        // Load new mask for next canvas
+        setIsMaskLoaded(false);
+        setTimeout(() => {
+          loadCurrentMask();
+        }, 100);
+        
+        console.log(`Moved to frame ${nextIndex + 1} for next artwork`);
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error in saveArt:', error);
+      setSaveMessage('Failed to save artwork. Check console for details.');
+    }
+  };
+
+  // Download combined artwork
+  const downloadArtwork = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const combinedCanvas = document.createElement('canvas');
+    const combinedCtx = combinedCanvas.getContext('2d');
+    if (!combinedCtx) return;
+
+    const currentImage = galleryImages[currentImageIndex];
+    const img = new window.Image();
+    img.crossOrigin = 'anonymous';
     
-    // Move to next canvas position (1 -> 2 -> 3 -> 4 -> 1)
-    const nextIndex = (currentCanvasIndex + 1) % 4;
-    setCurrentCanvasIndex(nextIndex);
+    img.onload = () => {
+      combinedCanvas.width = img.width;
+      combinedCanvas.height = img.height;
+      
+      // Draw the original image
+      combinedCtx.drawImage(img, 0, 0);
+      
+      // Draw the painted overlay
+      combinedCtx.drawImage(canvas, 0, 0, combinedCanvas.width, combinedCanvas.height);
+      
+      // Download the combined image
+      const link = document.createElement('a');
+      link.download = `${currentImage.title.replace(/\s+/g, '_')}_artwork.png`;
+      link.href = combinedCanvas.toDataURL('image/png');
+      link.click();
+    };
     
-    // Clear and reset for next artist
-    clearCanvas();
-    
-    // Load new mask for next canvas
-    setIsMaskLoaded(false);
-    setTimeout(() => {
-      loadCurrentMask();
-    }, 100);
-    
-    // In a real app, you would send artworkData to your backend here
-    console.log(`Art saved to canvas position ${currentCanvasIndex + 1}, moving to position ${nextIndex + 1}`);
+    img.src = currentImage.src;
   };
 
   // Initialize canvas on component mount
   useEffect(() => {
     initializeCanvas();
+    loadSavedArtworks();
   }, []);
 
   // Function to change canvas frame
@@ -310,17 +468,30 @@ export default function PublicWall() {
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Fullscreen Canvas */}
+      {/* Background Gallery Image */}
+      <div className="absolute inset-0">
+        <Image
+          src={galleryImages[currentImageIndex].src}
+          alt={galleryImages[currentImageIndex].title}
+          fill
+          priority
+          className="object-cover opacity-90"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-black/10" />
+      </div>
+
+      {/* Canvas Overlay */}
       <canvas
         ref={canvasRef}
         width={1400}
         height={800}
-        className="absolute inset-0 w-full h-full object-cover cursor-crosshair"
+        className="absolute inset-0 w-full h-full object-cover cursor-crosshair z-10"
         onMouseDown={startDrawing}
         onMouseMove={draw}
         onMouseUp={stopDrawing}
         onMouseLeave={stopDrawing}
-        style={{ backgroundColor: '#000000' }}
+        style={{ background: 'transparent' }}
       />
 
       {/* Floating Controls Overlay - Top Right */}
@@ -358,17 +529,47 @@ export default function PublicWall() {
                 clear
               </button>
               <button
-                onClick={saveArt}
-                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border border-blue-200"
+                onClick={downloadArtwork}
+                className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border border-emerald-200 flex items-center gap-1"
               >
-                submit
+                <Download size={12} />
+                download
+              </button>
+              <button
+                onClick={saveArt}
+                disabled={isLoading}
+                className={`px-3 py-1.5 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border ${
+                  isLoading 
+                    ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed' 
+                    : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200'
+                }`}
+              >
+                {isLoading ? 'saving...' : 'submit to public'}
               </button>
             </div>
           </div>
         </div>
       </motion.div>
 
-      {/* Floating Info Overlay - Bottom Center */}
+      {/* Save Message */}
+      {saveMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50"
+        >
+          <div className={`px-4 py-2 rounded-lg text-sm font-medium ${
+            saveMessage.includes('Error') 
+              ? 'bg-red-100 text-red-700 border border-red-200'
+              : 'bg-green-100 text-green-700 border border-green-200'
+          }`}>
+            {saveMessage}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Image Selector - Bottom Center */}
       <motion.div 
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50"
         initial={{ opacity: 0, y: 20 }}
@@ -376,25 +577,33 @@ export default function PublicWall() {
         transition={{ duration: 0.8, delay: 0.5 }}
       >
         <div className="bg-white/90 backdrop-blur-md rounded-xl px-6 py-3 border border-gray-200 shadow-lg">
-          <div className="flex items-center gap-8 text-gray-800">
-            <div className="flex items-center gap-2">
-              <div 
-                className="w-3 h-3 rounded-full border border-gray-300"
-                style={{ backgroundColor: neonBlue }}
-              />
-              <span className="text-sm font-mono text-gray-600">Ink Blue Paint</span>
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-mono text-gray-600 uppercase">Background:</span>
+            <div className="flex gap-2">
+              {galleryImages.map((img, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentImageIndex(index);
+                    clearCanvas();
+                  }}
+                  className={`px-3 py-1 text-xs font-mono rounded-lg transition-all ${
+                    currentImageIndex === index
+                      ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                      : 'bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200'
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
             </div>
-            
             <div className="h-3 w-px bg-gray-300" />
-            
-            <span className="text-sm font-mono text-gray-600">
-              Canvas Position <span className="text-blue-600 font-bold">{currentCanvasIndex + 1}</span>/4
+            <span className="text-xs font-mono text-gray-600">
+              Frame <span className="text-blue-600 font-bold">{currentCanvasIndex + 1}</span>/4
             </span>
-            
             <div className="h-3 w-px bg-gray-300" />
-            
-            <span className="text-xs font-mono text-gray-500 uppercase tracking-wide">
-              Click & Drag to Paint • Art Applied to Gallery Frame
+            <span className="text-xs font-mono text-gray-500">
+              {galleryImages[currentImageIndex].title}
             </span>
           </div>
         </div>

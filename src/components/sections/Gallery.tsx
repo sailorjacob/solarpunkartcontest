@@ -1,10 +1,9 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, Info, Download, X, Play, Pause, Palette, Eye } from 'lucide-react';
-import { saveArtworkToSupabase, getArtworksFromSupabase, type Artwork } from '@/lib/supabase';
+import { ChevronLeft, ChevronRight, Info, Download, X, Play, Pause } from 'lucide-react';
 
 // Stunning visions of Sojourn on Kepler-442b
 const visionImages = [
@@ -22,7 +21,13 @@ const visionImages = [
     description: 'Lush vegetation cascades through architectural marvels, demonstrating the successful integration of Terran flora with Keplerian soil enhancement protocols.',
     category: 'nature'
   },
-
+  {
+    id: 3,
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Capital%20Building.png',
+    title: 'Governance Spire',
+    description: 'The Capital Building serves as the democratic heart of Sojourn, designed with bio-integrated architecture that reflects our collective commitment to ecological stewardship.',
+    category: 'civic'
+  },
   {
     id: 4,
     src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/Capital%20City%201.png',
@@ -134,372 +139,10 @@ export default function Gallery() {
   const [currentIndex, setCurrentIndex] = useState(6); // Start with image 07 (lush rocket station)
   const [showInfo, setShowInfo] = useState(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [activeTab, setActiveTab] = useState<'view' | 'create'>('view');
-  
-  // Canvas and painting state (from PublicWall)
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const backgroundImageRef = useRef<HTMLImageElement | null>(null);
-  const maskCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [isMaskLoaded, setIsMaskLoaded] = useState(false);
-  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
-  const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
-  const [savedArtworks, setSavedArtworks] = useState<Artwork[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
-
-  // Painting settings
-  const neonBlue = '#1E40AF';
-  const sprayDensity = 80;
-  const [sprayRadius, setSprayRadius] = useState(5);
-  const glowBlur = 15;
-
-  // Gallery canvas frame URLs for mapping
-  const galleryFrames = [
-    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe1.png',
-    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe2.png',
-    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe3.png',
-    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe4.png'
-  ];
-
-  // Set base drawing styles
-  const setBaseStyles = (ctx: CanvasRenderingContext2D) => {
-    ctx.shadowColor = neonBlue;
-    ctx.shadowBlur = glowBlur;
-    ctx.fillStyle = neonBlue;
-    ctx.strokeStyle = neonBlue;
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.globalAlpha = 1;
-  };
-
-  // Initialize canvas when component first loads
-  const initializeCanvas = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    canvas.width = 800;
-    canvas.height = 600;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    setBaseStyles(ctx);
-    loadCurrentMask();
-  };
-
-  // Load current mask image for the canvas frame
-  const loadCurrentMask = () => {
-    const canvas = canvasRef.current;
-    const maskCanvas = maskCanvasRef.current;
-    if (!canvas || !maskCanvas) return;
-
-    const ctx = canvas.getContext('2d');
-    const maskCtx = maskCanvas.getContext('2d');
-    if (!ctx || !maskCtx) return;
-
-    // Set mask canvas dimensions
-    maskCanvas.width = canvas.width;
-    maskCanvas.height = canvas.height;
-
-    // Clear mask canvas
-    maskCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
-
-    const maskImage = new window.Image();
-    maskImage.crossOrigin = 'anonymous';
-    maskImage.onload = () => {
-      maskCtx.drawImage(maskImage, 0, 0, maskCanvas.width, maskCanvas.height);
-      setIsMaskLoaded(true);
-    };
-    maskImage.src = galleryFrames[currentCanvasIndex];
-  };
-
-  // Drawing functions
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    setIsDrawing(true);
-    draw(e);
-  };
-
-  const stopDrawing = () => {
-    setIsDrawing(false);
-  };
-
-  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing) return;
-    
-    const canvas = canvasRef.current;
-    const maskCanvas = maskCanvasRef.current;
-    if (!canvas || !maskCanvas) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const ctx = canvas.getContext('2d');
-    const maskCtx = maskCanvas.getContext('2d');
-    if (!ctx || !maskCtx) return;
-
-    // Check if we're drawing in the allowed area (where mask is transparent/white)
-    const maskData = maskCtx.getImageData(x, y, 1, 1);
-    const [r, g, b, a] = maskData.data;
-    
-    // Only draw if the mask area is transparent or white (allowing drawing)
-    if (a === 0 || (r > 200 && g > 200 && b > 200)) {
-      setBaseStyles(ctx);
-      
-      // Create spray paint effect
-      for (let i = 0; i < sprayDensity; i++) {
-        const offsetX = (Math.random() - 0.5) * sprayRadius * 2;
-        const offsetY = (Math.random() - 0.5) * sprayRadius * 2;
-        const distance = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
-        
-        if (distance <= sprayRadius) {
-          const alpha = Math.max(0, 1 - (distance / sprayRadius));
-          ctx.globalAlpha = alpha * 0.3;
-          ctx.fillRect(x + offsetX, y + offsetY, 1, 1);
-        }
-      }
-    }
-  };
-
-  const clearCanvas = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  };
-
-  const downloadArtwork = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    // Create a new canvas to combine the background image with the painted overlay
-    const combinedCanvas = document.createElement('canvas');
-    const combinedCtx = combinedCanvas.getContext('2d');
-    if (!combinedCtx) return;
-
-    // Set dimensions to match the original image
-    const currentImage = visionImages[currentIndex];
-    const img = new window.Image();
-    img.crossOrigin = 'anonymous';
-    
-    img.onload = () => {
-      combinedCanvas.width = img.width;
-      combinedCanvas.height = img.height;
-      
-      // Draw the original image
-      combinedCtx.drawImage(img, 0, 0);
-      
-      // Draw the painted overlay (scale to match image dimensions)
-      combinedCtx.drawImage(canvas, 0, 0, combinedCanvas.width, combinedCanvas.height);
-      
-      // Download the combined image
-      const link = document.createElement('a');
-      link.download = `${currentImage.title.replace(/\s+/g, '_')}_artwork.png`;
-      link.href = combinedCanvas.toDataURL('image/png');
-      link.click();
-    };
-    
-    img.src = currentImage.src;
-  };
-
-  // Find next available canvas slot
-  const findNextAvailableCanvas = () => {
-    // If all canvases are full, start overwriting from the beginning
-    if (artSubmissions.length >= 4) {
-      return 0;
-    }
-    // Otherwise, find the first empty slot
-    for (let i = 0; i < 4; i++) {
-      if (!artSubmissions[i]) {
-        return i;
-      }
-    }
-    return 0; // Fallback
-  };
-
-  const saveArt = async () => {
-    if (!canvasRef.current || isLoading) return;
-    
-    console.log('Starting save process...');
-    
-    try {
-      // Get canvas as data URL (fresh artwork only)
-      const artworkData = canvasRef.current.toDataURL('image/png');
-      console.log('Canvas data captured, length:', artworkData.length);
-      
-      // Save to database - this REPLACES any existing artwork on this frame
-      const savedArtwork = await saveArtworkToDatabase(artworkData);
-      
-      if (!savedArtwork) {
-        console.error('Failed to save artwork - no data returned');
-        return;
-      }
-      
-      console.log('Artwork saved successfully:', savedArtwork);
-      
-      // Update submissions at current position with the NEW artwork (replaces old)
-      const newSubmissions = [...artSubmissions];
-      newSubmissions[currentCanvasIndex] = artworkData;
-      setArtSubmissions(newSubmissions);
-      
-      // Show success for 2 seconds before clearing
-      setSaveMessage('Artwork submitted successfully! 🎨');
-      
-      // Wait before moving to next frame
-      setTimeout(() => {
-        // Move to next available canvas position
-        const nextIndex = findNextAvailableCanvas();
-        setCurrentCanvasIndex(nextIndex);
-        
-        // Clear and reset for next artist
-        clearCanvas();
-        
-        // Load new mask for next canvas
-        setIsMaskLoaded(false);
-        setTimeout(() => {
-          loadCurrentMask();
-        }, 100);
-        
-        console.log(`Moved to frame ${nextIndex + 1} for next artwork`);
-      }, 2000);
-      
-    } catch (error) {
-      console.error('Error in saveArt:', error);
-      setSaveMessage('Failed to save artwork. Check console for details.');
-    }
-  };
-
-  // Function to manually select a canvas frame (starts clean)
-  const selectCanvasFrame = (frameIndex: number) => {
-    setCurrentCanvasIndex(frameIndex);
-    clearCanvas();
-    setIsMaskLoaded(false);
-    setTimeout(() => {
-      loadCurrentMask();
-      // Don't load existing artwork - start with clean canvas for new art
-    }, 100);
-  };
-
-  // Load existing collaborative artwork for a frame
-  const loadExistingArtwork = (frameIndex: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas || !artSubmissions[frameIndex]) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const img = new window.Image();
-    img.onload = () => {
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    };
-    img.src = artSubmissions[frameIndex];
-  };
-
-  // Load saved artworks from Supabase
-  const loadSavedArtworks = async () => {
-    try {
-      setIsLoading(true);
-      const artworks = await getArtworksFromSupabase();
-      setSavedArtworks(artworks);
-      
-      // Update artSubmissions to show which frames are used
-      const submissions = new Array(4).fill(null);
-      artworks.forEach((artwork: Artwork) => {
-        if (artwork.frame_index < 4) {
-          submissions[artwork.frame_index] = artwork.artwork_data;
-        }
-      });
-      setArtSubmissions(submissions);
-      console.log(`Loaded ${artworks.length} artworks from Supabase`);
-    } catch (error) {
-      console.error('Error loading saved artworks:', error);
-      setSaveMessage('Error loading artworks from database');
-      setTimeout(() => setSaveMessage(null), 3000);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Save artwork to Supabase
-  const saveArtworkToDatabase = async (artworkData: string) => {
-    try {
-      setIsLoading(true);
-      setSaveMessage('Saving artwork...');
-      
-      const currentImage = visionImages[currentIndex];
-      const artworkToSave = {
-        title: `${currentImage.title} - Remix`,
-        base_image: currentImage.src,
-        artwork_data: artworkData,
-        frame_index: currentCanvasIndex,
-        artist_name: 'Anonymous Artist' // Could be made dynamic later
-      };
-
-      console.log('Attempting to save artwork:', {
-        frame_index: currentCanvasIndex,
-        title: artworkToSave.title,
-        dataLength: artworkData.length
-      });
-
-      const savedArtwork = await saveArtworkToSupabase(artworkToSave);
-      
-      if (!savedArtwork) {
-        throw new Error('No artwork returned from Supabase');
-      }
-      
-      // Update local state
-      const updatedArtworks = savedArtworks.filter(art => art.frame_index !== currentCanvasIndex);
-      updatedArtworks.push(savedArtwork);
-      setSavedArtworks(updatedArtworks);
-      
-      setSaveMessage('Artwork saved to public gallery! 🎨');
-      setTimeout(() => setSaveMessage(null), 3000);
-      
-      console.log('Artwork saved successfully to Supabase:', savedArtwork);
-      
-      // Reload artworks to ensure sync
-      setTimeout(() => {
-        loadSavedArtworks();
-      }, 500);
-      
-      return savedArtwork;
-    } catch (error: any) {
-      console.error('Error saving artwork to Supabase:', error);
-      setSaveMessage(`Error: ${error.message || 'Failed to save artwork'}`);
-      setTimeout(() => setSaveMessage(null), 5000);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Initialize canvas on component mount
-  useEffect(() => {
-    if (activeTab === 'create') {
-      initializeCanvas();
-      // Start with clean canvas - don't load existing artwork
-    }
-  }, [activeTab]);
-
-  // Load saved artworks on component mount and when switching to view tab
-  useEffect(() => {
-    loadSavedArtworks();
-  }, []);
-
-  // Refresh artworks when switching to view tab
-  useEffect(() => {
-    if (activeTab === 'view') {
-      loadSavedArtworks();
-    }
-  }, [activeTab]);
 
   // Auto-advance slideshow
   useEffect(() => {
-    if (!isAutoPlaying || activeTab !== 'view') return;
+    if (!isAutoPlaying) return;
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % visionImages.length);
@@ -525,7 +168,6 @@ export default function Gallery() {
       className="relative w-full h-screen overflow-hidden bg-black"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (activeTab === 'view') {
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
           prevImage();
@@ -541,45 +183,10 @@ export default function Gallery() {
         if (e.key === 'i' || e.key === 'I') {
           e.preventDefault();
           setShowInfo(!showInfo);
-          }
         }
       }}
     >
-      {/* Tab Navigation */}
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-30">
-        <div className="flex bg-black/30 backdrop-blur-sm border border-white/20 rounded-full p-1">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setActiveTab('view')}
-            className={`px-6 py-2 rounded-full flex items-center gap-2 transition-all ${
-              activeTab === 'view' 
-                ? 'bg-white/20 text-white' 
-                : 'text-white/60 hover:text-white/80'
-            }`}
-          >
-            <Eye size={16} />
-            View Gallery
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setActiveTab('create')}
-            className={`px-6 py-2 rounded-full flex items-center gap-2 transition-all ${
-              activeTab === 'create' 
-                ? 'bg-white/20 text-white' 
-                : 'text-white/60 hover:text-white/80'
-            }`}
-          >
-            <Palette size={16} />
-            Create Art
-          </motion.button>
-        </div>
-      </div>
-
-      {/* VIEW TAB - Fullscreen Image Display */}
-      {activeTab === 'view' && (
-        <>
+      {/* Fullscreen Image Display */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
@@ -597,18 +204,6 @@ export default function Gallery() {
             className="object-cover"
             sizes="100vw"
           />
-          
-          {/* Show submitted artwork overlay if it exists for current image */}
-          {artSubmissions[currentIndex % 4] && (
-            <div className="absolute inset-0">
-              <img
-                src={artSubmissions[currentIndex % 4]}
-                alt={`Community artwork`}
-                className="w-full h-full object-cover opacity-80 mix-blend-screen"
-              />
-            </div>
-          )}
-          
           {/* Gradient Overlay for Better Text Readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
         </motion.div>
@@ -738,197 +333,7 @@ export default function Gallery() {
           ← → arrows • space • i for info
         </div>
       </div>
-      </>
-      )}
 
-      {/* CREATE TAB - Art Creation Interface */}
-      {activeTab === 'create' && (
-        <div className="relative w-full h-full">
-          {/* Background Image - Current gallery image */}
-          <div className="absolute inset-0">
-            <Image
-              src={currentImage.src}
-              alt={currentImage.title}
-              fill
-              priority
-              className="object-cover opacity-80"
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-black/20" />
-          </div>
-
-          {/* Canvas Container */}
-          <div className="absolute inset-0 flex items-center justify-center z-10">
-            <div className="relative">
-              {/* Main Canvas */}
-              <canvas
-                ref={canvasRef}
-                className="border border-white/20 rounded-lg cursor-crosshair"
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseLeave={stopDrawing}
-                style={{
-                  background: 'transparent',
-                  maxWidth: '90vw',
-                  maxHeight: '70vh'
-                }}
-              />
-              
-              {/* Hidden mask canvas */}
-              <canvas
-                ref={maskCanvasRef}
-                className="hidden"
-              />
-            </div>
-          </div>
-
-          {/* Controls Panel */}
-          <div className="absolute top-20 right-8 z-20">
-            <div className="bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl p-4 space-y-4">
-              
-              {/* Collaborative Info */}
-              <div className="text-white/80 text-xs bg-white/10 rounded-lg p-3 border border-white/20">
-                <div className="font-semibold text-emerald-300 mb-1">🎨 Ever-Changing Gallery</div>
-                <div>Paint on a clean canvas, download your art, then submit to replace the current frame. The gallery evolves as new artists contribute!</div>
-              </div>
-
-              {/* Main Action Buttons - Side by Side */}
-              <div className="flex gap-2">
-                {/* Download Button */}
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={downloadArtwork}
-                  className="flex-1 px-3 py-2 bg-emerald-500/20 border border-emerald-400/30 rounded-lg text-emerald-300 hover:bg-emerald-500/30 transition-all flex items-center justify-center gap-2 text-sm"
-                >
-                  <Download size={14} />
-                  Download
-                </motion.button>
-
-                {/* Submit Button */}
-                <motion.button
-                  whileHover={{ scale: isLoading ? 1 : 1.05 }}
-                  whileTap={{ scale: isLoading ? 1 : 0.95 }}
-                  onClick={saveArt}
-                  disabled={isLoading}
-                  className={`flex-1 px-3 py-2 border rounded-lg transition-all flex items-center justify-center gap-2 text-sm ${
-                    isLoading 
-                      ? 'bg-gray-500/20 border-gray-400/30 text-gray-400 cursor-not-allowed' 
-                      : 'bg-blue-500/20 border-blue-400/30 text-blue-300 hover:bg-blue-500/30'
-                  }`}
-                >
-                  {isLoading ? 'Saving...' : 'Submit to Public'}
-                </motion.button>
-              </div>
-
-              {/* Clear Button */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={clearCanvas}
-                className="w-full px-4 py-2 bg-red-500/20 border border-red-400/30 rounded-lg text-red-300 hover:bg-red-500/30 transition-all"
-              >
-                Clear Canvas
-              </motion.button>
-
-              {/* Canvas Frame Selector */}
-              <div className="space-y-2">
-                <label className="text-white/80 text-sm">Select Canvas Frame</label>
-                <div className="text-white/60 text-xs mb-2">
-                  Each frame shows the latest artwork. Submit yours to replace it!
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {galleryFrames.map((_, index) => (
-                    <motion.button
-                      key={index}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => selectCanvasFrame(index)}
-                      className={`p-2 rounded border text-xs transition-all ${
-                        currentCanvasIndex === index
-                          ? 'bg-blue-500/30 border-blue-400/50 text-blue-300'
-                          : artSubmissions[index]
-                          ? 'bg-green-500/20 border-green-400/30 text-green-300'
-                          : 'bg-gray-500/20 border-gray-400/30 text-gray-300 hover:border-gray-300/50'
-                      }`}
-                    >
-                      Frame {index + 1}
-                      {artSubmissions[index] ? (
-                        <div className="text-xs opacity-75">🎨 Active</div>
-                      ) : (
-                        <div className="text-xs opacity-75">Empty</div>
-                      )}
-                    </motion.button>
-                  ))}
-                </div>
-                <div className="text-white/60 text-xs">
-                  {artSubmissions.filter(Boolean).length}/4 frames have public art
-                </div>
-              </div>
-
-              {/* Brush Size Control */}
-              <div className="space-y-2">
-                <label className="text-white/80 text-sm">Brush Size</label>
-                <input
-                  type="range"
-                  min="2"
-                  max="20"
-                  value={sprayRadius}
-                  onChange={(e) => setSprayRadius(Number(e.target.value))}
-                  className="w-full accent-blue-400"
-                />
-                              <div className="text-white/60 text-xs">{sprayRadius}px</div>
-            </div>
-
-            {/* Success/Error Message */}
-            {saveMessage && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className={`px-3 py-2 rounded-lg text-sm ${
-                  saveMessage.includes('Error') 
-                    ? 'bg-red-500/20 border border-red-400/30 text-red-300'
-                    : 'bg-green-500/20 border border-green-400/30 text-green-300'
-                }`}
-              >
-                {saveMessage}
-              </motion.div>
-            )}
-          </div>
-          </div>
-
-          {/* Image Navigation for Create Mode */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-            <div className="flex gap-2">
-              {visionImages.map((_, index) => (
-                <motion.button
-                  key={index}
-                  whileHover={{ scale: 1.2 }}
-                  onClick={() => {
-                    setCurrentIndex(index);
-                    clearCanvas(); // Clear when switching images
-                  }}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    index === currentIndex 
-                      ? 'bg-white w-8' 
-                      : 'bg-white/40 hover:bg-white/60'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Image Info */}
-          <div className="absolute bottom-8 left-8 z-20">
-            <div className="bg-black/60 backdrop-blur-md border border-white/20 rounded-lg p-3">
-              <h3 className="text-white font-semibold text-sm">{currentImage.title}</h3>
-              <p className="text-white/60 text-xs capitalize">{currentImage.category}</p>
-            </div>
-          </div>
-        </div>
-      )}
 
     </section>
   );
