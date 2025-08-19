@@ -217,43 +217,61 @@ export default function SolarRadio() {
         <div className="absolute inset-0 border-2 border-punk-green/50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </motion.div>
 
-      {/* Spinning DJ Record - Bottom Left Corner */}
-      <div className="absolute bottom-8 left-8 w-48 h-48 pointer-events-none">
+      {/* Spinning DJ Record - Large Partial View */}
+      <div className="absolute -bottom-32 -left-32 w-96 h-96 pointer-events-none overflow-hidden">
         <motion.div
           animate={{ 
             rotate: isPlaying ? 360 : 0 
           }}
           transition={{
-            duration: isPlaying ? 3 : 0,
+            duration: isPlaying ? 4 : 0,
             repeat: isPlaying ? Infinity : 0,
             ease: "linear"
           }}
           className="w-full h-full relative"
         >
-          {/* Outer Record */}
-          <div className="absolute inset-0 rounded-full border-4 border-punk-green/60 bg-gradient-to-br from-gray-900 to-black">
-            {/* Record Grooves */}
-            <div className="absolute inset-4 rounded-full border-2 border-punk-green/40"></div>
-            <div className="absolute inset-8 rounded-full border border-punk-green/30"></div>
-            <div className="absolute inset-12 rounded-full border border-punk-green/20"></div>
+          {/* Outer Record - Inverted Colors */}
+          <div className="absolute inset-0 rounded-full border-4 border-gray-300/80 bg-gradient-to-br from-white to-gray-200">
+            {/* Record Grooves - Inverted */}
+            <div className="absolute inset-8 rounded-full border-2 border-gray-400/60"></div>
+            <div className="absolute inset-16 rounded-full border border-gray-500/50"></div>
+            <div className="absolute inset-24 rounded-full border border-gray-600/40"></div>
+            <div className="absolute inset-32 rounded-full border border-gray-700/30"></div>
             
-            {/* Center Label */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-br from-punk-green to-punk-mint flex items-center justify-center">
-              <div className="w-3 h-3 rounded-full bg-black"></div>
+            {/* Center Label - Inverted */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
+              <div className="w-4 h-4 rounded-full bg-white"></div>
             </div>
             
-            {/* Spinning indicator dots */}
-            <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full bg-punk-mint"></div>
-            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full bg-punk-mint"></div>
-            <div className="absolute left-6 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-punk-mint"></div>
-            <div className="absolute right-6 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-punk-mint"></div>
+            {/* Spinning indicator dots - Inverted */}
+            <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-3 h-3 rounded-full bg-gray-700"></div>
+            <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-3 h-3 rounded-full bg-gray-700"></div>
+            <div className="absolute left-12 top-1/2 transform -translate-y-1/2 w-3 h-3 rounded-full bg-gray-700"></div>
+            <div className="absolute right-12 top-1/2 transform -translate-y-1/2 w-3 h-3 rounded-full bg-gray-700"></div>
           </div>
           
-          {/* Energy glow when playing */}
+          {/* Red Ball Orbiting Edge */}
+          {isPlaying && (
+            <motion.div
+              animate={{ 
+                rotate: 360 
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+              className="absolute inset-0"
+            >
+              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-red-500 shadow-lg shadow-red-500/50"></div>
+            </motion.div>
+          )}
+          
+          {/* Energy glow when playing - Inverted */}
           {isPlaying && (
             <>
-              <div className="absolute -inset-2 rounded-full bg-punk-green/10 animate-pulse"></div>
-              <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-punk-green/5 to-punk-mint/5 animate-ping"></div>
+              <div className="absolute -inset-4 rounded-full bg-gray-300/20 animate-pulse"></div>
+              <div className="absolute -inset-8 rounded-full bg-gradient-to-r from-gray-400/10 to-gray-500/10 animate-ping"></div>
             </>
           )}
         </motion.div>
