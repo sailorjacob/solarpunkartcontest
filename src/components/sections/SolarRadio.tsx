@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Howl } from 'howler';
+import { SkipBack, Play, Pause, SkipForward } from 'lucide-react';
 
 interface Track {
   title: string;
@@ -336,7 +337,7 @@ export default function SolarRadio() {
                 onClick={prevTrack}
                 className="w-12 h-12 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
               >
-                <span className="text-xl text-gray-700">⏮</span>
+                <SkipBack size={20} className="text-gray-700" />
               </motion.button>
               
               <motion.button
@@ -345,7 +346,7 @@ export default function SolarRadio() {
                 onClick={togglePlay}
                 className="w-16 h-16 rounded-full bg-gradient-to-r from-punk-green to-punk-mint text-white flex items-center justify-center shadow-lg"
               >
-                <span className="text-2xl">{isPlaying ? '⏸' : '▶'}</span>
+                {isPlaying ? <Pause size={24} /> : <Play size={24} />}
               </motion.button>
               
               <motion.button
@@ -354,7 +355,7 @@ export default function SolarRadio() {
                 onClick={nextTrack}
                 className="w-12 h-12 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
               >
-                <span className="text-xl text-gray-700">⏭</span>
+                <SkipForward size={20} className="text-gray-700" />
               </motion.button>
             </div>
 
