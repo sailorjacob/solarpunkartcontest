@@ -210,12 +210,17 @@ export default function Gallery() {
       </AnimatePresence>
 
       {/* Navigation Controls */}
-      <div className="absolute inset-0 flex items-center justify-between p-8 z-10">
+      <div className="absolute inset-0 flex items-center justify-between p-8 z-10 pointer-events-none">
         <motion.button
           whileHover={{ scale: 1.1, x: -5 }}
           whileTap={{ scale: 0.9 }}
-          onClick={prevImage}
-          className="p-4 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            prevImage();
+          }}
+          className="p-4 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all pointer-events-auto"
+          aria-label="Previous image"
         >
           <ChevronLeft size={24} />
         </motion.button>
@@ -223,8 +228,13 @@ export default function Gallery() {
         <motion.button
           whileHover={{ scale: 1.1, x: 5 }}
           whileTap={{ scale: 0.9 }}
-          onClick={nextImage}
-          className="p-4 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            nextImage();
+          }}
+          className="p-4 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all pointer-events-auto"
+          aria-label="Next image"
         >
           <ChevronRight size={24} />
         </motion.button>
@@ -242,10 +252,15 @@ export default function Gallery() {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsAutoPlaying(!isAutoPlaying);
+          }}
           className={`p-3 backdrop-blur-sm border border-white/20 rounded-full text-white transition-all ${
             isAutoPlaying ? 'bg-emerald-500/30' : 'bg-black/30'
           }`}
+          aria-label={isAutoPlaying ? 'Pause slideshow' : 'Play slideshow'}
         >
           {isAutoPlaying ? <Pause size={20} /> : <Play size={20} />}
         </motion.button>
@@ -253,8 +268,13 @@ export default function Gallery() {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => setShowInfo(!showInfo)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowInfo(!showInfo);
+          }}
           className="p-3 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all"
+          aria-label="Toggle image information"
         >
           <Info size={20} />
         </motion.button>
@@ -267,7 +287,9 @@ export default function Gallery() {
             <motion.button
               key={index}
               whileHover={{ scale: 1.2 }}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 setCurrentIndex(index);
                 setIsAutoPlaying(false);
               }}
@@ -276,6 +298,7 @@ export default function Gallery() {
                   ? 'bg-white w-8' 
                   : 'bg-white/40 hover:bg-white/60'
               }`}
+              aria-label={`Go to image ${index + 1}`}
             />
           ))}
         </div>
@@ -305,17 +328,28 @@ export default function Gallery() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                    className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // Download functionality could be added here
+                      }}
+                      className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+                      aria-label="Download image"
                     >
-                    <Download size={16} />
+                      <Download size={16} />
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowInfo(false)}
-                    className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowInfo(false);
+                      }}
+                      className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+                      aria-label="Close info panel"
                     >
-                    <X size={16} />
+                      <X size={16} />
                     </motion.button>
                 </div>
               </div>

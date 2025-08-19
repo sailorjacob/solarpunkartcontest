@@ -18,7 +18,6 @@ export default function PublicWall() {
   const [savedArtworks, setSavedArtworks] = useState<Artwork[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Ink blue color and settings  
   const neonBlue = '#1E40AF'; // Ink blue instead of cyan
@@ -108,8 +107,8 @@ export default function PublicWall() {
       setIsImageLoaded(true);
     };
     
-    // Use the selected gallery image as the painting background
-    img.src = galleryImages[currentImageIndex].src;
+    // Use the fixed Gallery2 image as the art wall background
+    img.src = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png';
   };
 
   // Load existing submitted artwork for the current frame
@@ -363,10 +362,9 @@ export default function PublicWall() {
       setIsLoading(true);
       setSaveMessage('Saving artwork...');
       
-      const currentImage = galleryImages[currentImageIndex];
       const artworkToSave = {
-        title: `${currentImage.title} - Community Art`,
-        base_image: currentImage.src,
+        title: `Art Gallery Frame ${currentCanvasIndex + 1} - Community Art`,
+        base_image: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png',
         artwork_data: artworkData,
         frame_index: currentCanvasIndex,
         artist_name: 'Anonymous Artist'
@@ -466,7 +464,6 @@ export default function PublicWall() {
     const combinedCtx = combinedCanvas.getContext('2d');
     if (!combinedCtx) return;
 
-    const currentImage = galleryImages[currentImageIndex];
     const img = new window.Image();
     img.crossOrigin = 'anonymous';
     
@@ -482,12 +479,12 @@ export default function PublicWall() {
       
       // Download the combined image
       const link = document.createElement('a');
-      link.download = `${currentImage.title.replace(/\s+/g, '_')}_artwork.png`;
+      link.download = `Art_Gallery_Frame_${currentCanvasIndex + 1}_artwork.png`;
       link.href = combinedCanvas.toDataURL('image/png');
       link.click();
     };
     
-    img.src = currentImage.src;
+    img.src = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png';
   };
 
   // Initialize canvas on component mount
@@ -496,12 +493,7 @@ export default function PublicWall() {
     loadSavedArtworks();
   }, []);
 
-  // Reinitialize canvas when background image changes
-  useEffect(() => {
-    if (isImageLoaded) {
-      initializeCanvas();
-    }
-  }, [currentImageIndex]);
+
 
   // Function to change canvas frame
   const changeCanvasFrame = async (newIndex: number) => {
@@ -528,11 +520,11 @@ export default function PublicWall() {
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Background Gallery Image */}
+      {/* Art Gallery Wall Background */}
       <div className="absolute inset-0">
         <Image
-          src={galleryImages[currentImageIndex].src}
-          alt={galleryImages[currentImageIndex].title}
+          src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png"
+          alt="Art Gallery Wall"
           fill
           priority
           className="object-cover opacity-90"
@@ -622,45 +614,7 @@ export default function PublicWall() {
         </motion.div>
       )}
 
-      {/* Image Selector - Bottom Center */}
-      <motion.div 
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-      >
-        <div className="bg-white/90 backdrop-blur-md rounded-xl px-6 py-3 border border-gray-200 shadow-lg">
-          <div className="flex items-center gap-4">
-            <span className="text-xs font-mono text-gray-600 uppercase">Background:</span>
-            <div className="flex gap-2">
-              {galleryImages.map((img, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setCurrentImageIndex(index);
-                    clearCanvas();
-                  }}
-                  className={`px-3 py-1 text-xs font-mono rounded-lg transition-all ${
-                    currentImageIndex === index
-                      ? 'bg-blue-100 text-blue-700 border border-blue-300'
-                      : 'bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200'
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-            <div className="h-3 w-px bg-gray-300" />
-            <span className="text-xs font-mono text-gray-600">
-              Frame <span className="text-blue-600 font-bold">{currentCanvasIndex + 1}</span>/4
-            </span>
-            <div className="h-3 w-px bg-gray-300" />
-            <span className="text-xs font-mono text-gray-500">
-              {galleryImages[currentImageIndex].title}
-            </span>
-          </div>
-        </div>
-      </motion.div>
+
 
       {/* Canvas Position Indicator - Top Left */}
       <motion.div 
