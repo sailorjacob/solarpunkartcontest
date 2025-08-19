@@ -142,7 +142,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 className="text-7xl lg:text-9xl font-black leading-none"
               >
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">
                   SOJOURN
                 </span>
               </motion.h1>
@@ -179,12 +179,12 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-400"
             >
               <div>
-                <div className="text-3xl font-bold text-emerald-600">2.4B</div>
-                <div className="text-sm text-emerald-700 font-mono">POPULATION</div>
+                <div className="text-3xl font-bold text-red-600">2.4B</div>
+                <div className="text-sm text-red-700 font-mono">POPULATION</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-cyan-600">100%</div>
-                <div className="text-sm text-cyan-700 font-mono">RENEWABLE</div>
+                <div className="text-3xl font-bold text-orange-600">100%</div>
+                <div className="text-sm text-orange-700 font-mono">RENEWABLE</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-black">2157</div>
@@ -201,7 +201,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             >
               <button
                 onClick={onExploreClick}
-                className="px-8 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-medium tracking-wide uppercase rounded-full hover:from-emerald-600 hover:to-cyan-600 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
+                className="px-8 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-medium tracking-wide uppercase rounded-full hover:from-red-600 hover:to-orange-600 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
               >
                 explore
               </button>
