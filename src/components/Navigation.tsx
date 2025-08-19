@@ -100,22 +100,26 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
               ))}
             </div>
 
-            {/* Art Wall Button */}
-            <div className="hidden lg:block">
-              <motion.button
-                onClick={() => onSectionChange('wall')}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-6 py-2 text-sm font-medium tracking-wide rounded-full hover:opacity-80 transition-all duration-200 relative overflow-hidden border"
-                style={{
-                  background: 'linear-gradient(135deg, rgb(59 130 246 / 0.1), rgb(96 165 250 / 0.1))',
-                  borderColor: 'rgb(59 130 246 / 0.3)',
-                  color: 'rgb(59 130 246)'
-                }}
-              >
-                art wall
-              </motion.button>
-            </div>
+            {/* Art Wall Button - Only visible on home page */}
+            {activeSection === 'home' ? (
+              <div className="hidden lg:block">
+                <motion.button
+                  onClick={() => onSectionChange('wall')}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-6 py-2 text-sm font-medium tracking-wide rounded-full hover:opacity-80 transition-all duration-200 relative overflow-hidden border"
+                  style={{
+                    background: 'linear-gradient(135deg, rgb(245 245 220 / 0.15), rgb(238 232 213 / 0.1))',
+                    borderColor: 'rgb(210 180 140 / 0.4)',
+                    color: 'rgb(160 130 98)'
+                  }}
+                >
+                  art wall
+                </motion.button>
+              </div>
+            ) : (
+              <div className="hidden lg:block w-32"></div>
+            )}
 
             {/* Mobile Menu Button */}
             <button
