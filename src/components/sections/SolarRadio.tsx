@@ -54,7 +54,7 @@ export default function SolarRadio() {
   const router = useRouter();
   const [selectedStation, setSelectedStation] = useState(radioStations[0]);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(1); // Default to Terraform track
+  const [currentTrack, setCurrentTrack] = useState(0); // Default to Travel track
   const [volume, setVolume] = useState(70);
   const [visualizerData, setVisualizerData] = useState<number[]>(new Array(20).fill(0));
   const [progress, setProgress] = useState(0);
@@ -299,7 +299,7 @@ export default function SolarRadio() {
                   <img
                     src={djPlayerImages[currentTrack]}
                     alt={`DJ Player for ${selectedStation.tracks[currentTrack]?.title}`}
-                    className="w-48 h-auto relative z-10"
+                    className="w-72 h-auto relative z-10"
                   />
                 </div>
               </motion.div>
