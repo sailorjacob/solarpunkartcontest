@@ -30,6 +30,19 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleFooterToggle = () => {
+    setShowFooter(!showFooter);
+    // If opening footer, scroll to bottom to reveal it
+    if (!showFooter) {
+      setTimeout(() => {
+        window.scrollTo({ 
+          top: document.documentElement.scrollHeight, 
+          behavior: 'smooth' 
+        });
+      }, 100); // Small delay to allow animation to start
+    }
+  };
+
   const renderSection = () => {
     switch (activeSection) {
       case 'home':
@@ -114,7 +127,7 @@ export default function Home() {
             animate={{ y: showFooter ? -8 : 0 }}
           >
             <button
-              onClick={() => setShowFooter(!showFooter)}
+              onClick={handleFooterToggle}
               className="p-3 bg-stone-800/80 backdrop-blur-sm text-stone-200 rounded-t-lg hover:bg-stone-700/80 transition-all duration-300 border border-stone-600/50"
             >
               <ChevronDownIcon 

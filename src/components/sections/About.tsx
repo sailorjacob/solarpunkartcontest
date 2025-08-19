@@ -262,9 +262,29 @@ export default function About({ onBack }: AboutProps) {
           <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Tools Used</h2>
           <p className="text-stone-600 mb-4">AI Models: Claude 4 Sonnet, ChatGPT 5, Grok 4 Web, Midjourney, Udio</p>
           <p className="text-stone-600 mb-4">Hardware: MacBook Pro 15" 2017, RODE USB Microphone, ATH-M50x Headphones</p>
-          <p className="text-stone-600 mb-4">Creative Software: Ableton Live, Omnisphere, BFD Drums, Udio, Pixlr.com</p>
+          <p className="text-stone-600 mb-4">Creative Software: Ableton Live, Udio, Pixlr.com</p>
+          <p className="text-stone-600 mb-6">Other: GitHub, Vercel, AirDrop, Chrome DevTools, TextEdit</p>
 
-          <p className="text-stone-600">Other: GitHub, Vercel, AirDrop, Chrome DevTools, TextEdit</p>
+          {/* Usage Policies */}
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Usage Policies</h2>
+          <p className="text-stone-600 mb-2">
+            All content created by Jacob. Visual content follows <a href="https://docs.midjourney.com/docs/terms-of-service" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">Midjourney usage policy</a>.
+          </p>
+          <p className="text-stone-600 mb-6">
+            Audio content follows <a href="https://www.udio.com/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">Udio usage policy</a>.
+          </p>
+
+          {/* Final Product */}
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Final Product</h2>
+          
+          <img 
+            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/final%20product.png"
+            alt="Final collaborative art wall product"
+            className="w-full mb-3"
+          />
+          <p className="text-sm text-stone-500 mb-6">
+            The completed collaborative art wall - interactive spray painting on a terraformed Mars gallery
+          </p>
         </div>
       </div>
     </section>

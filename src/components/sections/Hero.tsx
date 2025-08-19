@@ -130,7 +130,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             <div className="flex items-center gap-4">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
               <span className="font-mono text-sm tracking-wider text-gray-400 uppercase">
-                SUCCESSFUL PROJECT // KEPLER-442B-2157
+                SUCCESSFUL TERRAFORM // KEPLER-442B-2157
               </span>
             </div>
 
