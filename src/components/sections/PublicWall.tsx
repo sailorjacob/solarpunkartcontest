@@ -326,9 +326,12 @@ export default function PublicWall() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Clear canvas and redraw background image
+    // Clear everything and restart fresh
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(backgroundImageRef.current, 0, 0, canvas.width, canvas.height);
+    
+    // Reload existing artwork for this frame (so public art stays visible)
+    loadExistingArtwork();
   };
 
   // Find the first empty frame for new users
@@ -400,7 +403,8 @@ export default function PublicWall() {
       console.log('Attempting to save artwork:', {
         frame_index: currentCanvasIndex,
         title: artworkToSave.title,
-        dataLength: artworkData.length
+        dataLength: artworkData.length,
+        currentFrame: `Frame ${currentCanvasIndex + 1}`
       });
 
       const savedArtwork = await saveArtworkToSupabase(artworkToSave);
@@ -464,8 +468,8 @@ export default function PublicWall() {
         const nextIndex = findFirstEmptyFrame();
         setCurrentCanvasIndex(nextIndex);
         
-        // Clear and reset for next artist
-        clearCanvas();
+        // Don't clear - let user see the new frame's existing art
+        // clearCanvas();
     
     // Load new mask for next canvas
     setIsMaskLoaded(false);
@@ -517,10 +521,14 @@ export default function PublicWall() {
   // Initialize canvas on component mount
   useEffect(() => {
     const initAndLoad = async () => {
-      // First load artwork data to know which frames have art
-      await loadSavedArtworks();
-      // Then initialize canvas (which will load existing artwork for the selected frame)
-      initializeCanvas();
+      // Load artwork data and initialize canvas simultaneously for faster loading
+      const [_] = await Promise.all([
+        loadSavedArtworks(),
+        new Promise(resolve => {
+          initializeCanvas();
+          resolve(null);
+        })
+      ]);
     };
     
     initAndLoad();
@@ -533,22 +541,24 @@ export default function PublicWall() {
     setCurrentCanvasIndex(newIndex);
     setIsMaskLoaded(false);
     
-    // Reinitialize canvas with new frame
-    setTimeout(async () => {
-      if (canvasRef.current && backgroundImageRef.current) {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          // Clear and redraw background
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(backgroundImageRef.current, 0, 0, canvas.width, canvas.height);
-          
-          // Load existing artwork for this frame
-          await loadExistingArtwork();
-        }
+    // Immediately reinitialize canvas with new frame (no delay)
+    if (canvasRef.current && backgroundImageRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        // Clear and redraw background
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(backgroundImageRef.current, 0, 0, canvas.width, canvas.height);
+        
+        // Load existing artwork for this frame immediately
+        await loadExistingArtwork();
       }
+    }
+    
+    // Load mask after a short delay
+    setTimeout(() => {
       loadCurrentMask();
-    }, 100);
+    }, 50);
   };
 
   return (
@@ -658,19 +668,21 @@ export default function PublicWall() {
       >
         <div className="bg-white/90 backdrop-blur-md rounded-xl p-3 border border-gray-200 shadow-lg">
           <div className="flex items-center gap-3">
-            <div className="flex gap-1">
+            <div className="flex gap-2">
               {[0, 1, 2, 3].map((index) => (
                 <button
                   key={index}
                   onClick={() => changeCanvasFrame(index)}
-                  className={`w-2 h-2 rounded-full border transition-all duration-200 hover:scale-125 cursor-pointer ${
+                  className={`w-6 h-6 rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer flex items-center justify-center text-xs font-mono ${
                     index === currentCanvasIndex 
-                      ? 'bg-blue-500 border-blue-400' 
+                      ? 'bg-blue-500 border-blue-400 text-white' 
                       : artSubmissions[index] 
-                        ? 'bg-gray-500 border-gray-400' 
-                        : 'bg-gray-300 border-gray-400 hover:bg-gray-400'
+                        ? 'bg-gray-500 border-gray-400 text-white' 
+                        : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200'
                   }`}
-                />
+                >
+                  {index + 1}
+                </button>
               ))}
             </div>
             <div className="flex flex-col">
