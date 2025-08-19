@@ -324,34 +324,43 @@ export default function Gallery() {
   const saveArt = async () => {
     if (!canvasRef.current || isLoading) return;
     
-    // Get canvas as data URL (this includes any existing artwork + new additions)
+    // Get canvas as data URL (fresh artwork only)
     const artworkData = canvasRef.current.toDataURL('image/png');
     
-    // Save to database
+    // Save to database - this REPLACES any existing artwork on this frame
     const savedArtwork = await saveArtworkToDatabase(artworkData);
     if (!savedArtwork) return;
     
-    // Update submissions at current position with the new collaborative artwork
+    // Update submissions at current position with the NEW artwork (replaces old)
     const newSubmissions = [...artSubmissions];
     newSubmissions[currentCanvasIndex] = artworkData;
     setArtSubmissions(newSubmissions);
     
-    // Don't automatically move to next frame - let user choose
-    // This allows them to continue building on the same frame or switch manually
+    // Move to next available canvas position so they can create fresh art
+    const nextIndex = findNextAvailableCanvas();
+    setCurrentCanvasIndex(nextIndex);
     
-    // Show success message without clearing
-    console.log(`Collaborative art updated on frame ${currentCanvasIndex + 1}!`);
+    // Clear and reset for next artist to start fresh
+    clearCanvas();
+    
+    // Load new mask for next canvas
+    setIsMaskLoaded(false);
+    setTimeout(() => {
+      loadCurrentMask();
+    }, 100);
+    
+    console.log(`New art submitted to frame ${currentCanvasIndex + 1}! Moving to frame ${nextIndex + 1}`);
     console.log(`Gallery frames with art: ${newSubmissions.filter(Boolean).length}/4`);
   };
 
-  // Function to manually select a canvas frame and load existing art
+  // Function to manually select a canvas frame (starts clean)
   const selectCanvasFrame = (frameIndex: number) => {
     setCurrentCanvasIndex(frameIndex);
     clearCanvas();
     setIsMaskLoaded(false);
     setTimeout(() => {
       loadCurrentMask();
-      loadExistingArtwork(frameIndex);
+      // Don't load existing artwork - start with clean canvas for new art
     }, 100);
   };
 
@@ -436,12 +445,9 @@ export default function Gallery() {
   useEffect(() => {
     if (activeTab === 'create') {
       initializeCanvas();
-      // Load existing artwork for current frame after a brief delay
-      setTimeout(() => {
-        loadExistingArtwork(currentCanvasIndex);
-      }, 200);
+      // Start with clean canvas - don't load existing artwork
     }
-  }, [activeTab, currentCanvasIndex]);
+  }, [activeTab]);
 
   // Load saved artworks on component mount
   useEffect(() => {
@@ -728,8 +734,8 @@ export default function Gallery() {
               
               {/* Collaborative Info */}
               <div className="text-white/80 text-xs bg-white/10 rounded-lg p-3 border border-white/20">
-                <div className="font-semibold text-emerald-300 mb-1">🎨 Public Collaborative Canvas</div>
-                <div>Paint on any frame, download your art, then submit to add it permanently to the public gallery!</div>
+                <div className="font-semibold text-emerald-300 mb-1">🎨 Ever-Changing Gallery</div>
+                <div>Paint on a clean canvas, download your art, then submit to replace the current frame. The gallery evolves as new artists contribute!</div>
               </div>
 
               {/* Main Action Buttons - Side by Side */}
@@ -775,7 +781,7 @@ export default function Gallery() {
               <div className="space-y-2">
                 <label className="text-white/80 text-sm">Select Canvas Frame</label>
                 <div className="text-white/60 text-xs mb-2">
-                  Each frame builds up over time as people add their art!
+                  Each frame shows the latest artwork. Submit yours to replace it!
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {galleryFrames.map((_, index) => (
