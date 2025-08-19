@@ -136,7 +136,13 @@ const visionImages = [
 ];
 
 export default function Gallery() {
-  const [currentIndex, setCurrentIndex] = useState(6); // Start with image 07 (lush rocket station)
+  // Random start between images 03 (index 2), 07 (index 6), and 10 (index 9)
+  const getRandomStartIndex = () => {
+    const startOptions = [2, 6, 9]; // Images 03, 07, 10
+    return startOptions[Math.floor(Math.random() * startOptions.length)];
+  };
+  
+  const [currentIndex, setCurrentIndex] = useState(getRandomStartIndex());
   const [showInfo, setShowInfo] = useState(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -323,25 +329,13 @@ export default function Gallery() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="absolute bottom-24 left-8 right-8 z-20"
           >
-            <div className="max-w-2xl bg-stone-50/95 backdrop-blur-md border border-stone-200/60 rounded-2xl p-6 text-stone-800 shadow-xl">
+            <div className="max-w-2xl bg-white/75 backdrop-blur-md border border-white/40 rounded-2xl p-6 text-stone-800 shadow-xl">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="text-2xl font-bold mb-2 text-stone-800">
                     {currentImage.title}
                   </h3>
-                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium capitalize ${
-                    currentImage.category === 'nature' ? 'bg-emerald-100 text-emerald-700' :
-                    currentImage.category === 'urban' ? 'bg-slate-100 text-slate-700' :
-                    currentImage.category === 'culture' ? 'bg-amber-100 text-amber-700' :
-                    currentImage.category === 'agriculture' ? 'bg-green-100 text-green-700' :
-                    currentImage.category === 'technology' ? 'bg-blue-100 text-blue-700' :
-                    currentImage.category === 'infrastructure' ? 'bg-orange-100 text-orange-700' :
-                    currentImage.category === 'transportation' ? 'bg-purple-100 text-purple-700' :
-                    currentImage.category === 'civic' ? 'bg-red-100 text-red-700' :
-                    currentImage.category === 'commercial' ? 'bg-yellow-100 text-yellow-700' :
-                    currentImage.category === 'residential' ? 'bg-teal-100 text-teal-700' :
-                    'bg-stone-100 text-stone-700'
-                  }`}>
+                  <div className="inline-block px-3 py-1 rounded-full text-sm font-medium capitalize bg-slate-100 text-slate-700">
                     {currentImage.category}
                   </div>
                 </div>
