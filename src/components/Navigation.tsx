@@ -10,6 +10,7 @@ interface NavigationProps {
 }
 
 const navItems = [
+  { id: 'home', label: 'Home' },
   { id: 'gallery', label: 'Visions' },
   { id: 'journey', label: 'The Journey' },
   { id: 'wall', label: 'Create' },

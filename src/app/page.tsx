@@ -45,6 +45,13 @@ export default function Home() {
 
   const renderSection = () => {
     switch (activeSection) {
+      case 'home':
+        return (
+          <Hero 
+            onExploreClick={() => handleSectionChange('journey')}
+            onCreateClick={() => handleSectionChange('wall')}
+          />
+        );
       case 'journey':
         return <Journey />;
       case 'gallery':
@@ -53,13 +60,6 @@ export default function Home() {
         return <PublicWall />;
       case 'radio':
         return <SolarRadio />;
-      case 'hero':
-        return (
-          <Hero 
-            onExploreClick={() => handleSectionChange('journey')}
-            onCreateClick={() => handleSectionChange('wall')}
-          />
-        );
       case 'about':
         return <About onBack={() => handleSectionChange('gallery')} />;
       default:
@@ -112,8 +112,8 @@ export default function Home() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Footer Toggle Button - Only on Gallery (Home) Page */}
-      {activeSection === 'gallery' && (
+      {/* Footer Toggle Button - Only on Home and Gallery Pages */}
+      {(activeSection === 'home' || activeSection === 'gallery') && (
         <div className="relative">
           {/* Toggle Button */}
           <motion.div 
