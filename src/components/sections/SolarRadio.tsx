@@ -54,7 +54,7 @@ export default function SolarRadio() {
   const router = useRouter();
   const [selectedStation, setSelectedStation] = useState(radioStations[0]);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(0);
+  const [currentTrack, setCurrentTrack] = useState(1); // Default to Terraform track
   const [volume, setVolume] = useState(70);
   const [visualizerData, setVisualizerData] = useState<number[]>(new Array(20).fill(0));
   const [progress, setProgress] = useState(0);
@@ -285,16 +285,23 @@ export default function SolarRadio() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.5 }}
-                className="text-center"
+                className="text-center relative"
               >
-                <img
-                  src={djPlayerImages[currentTrack]}
-                  alt={`DJ Player for ${selectedStation.tracks[currentTrack]?.title}`}
-                  className="w-full h-auto"
-                />
-                <p className="text-gray-500 text-sm mt-2">
-                  DJ Equipment - {selectedStation.tracks[currentTrack]?.title}
-                </p>
+                <div className="relative inline-block">
+                  {/* Energy Pulse Effect */}
+                  {isPlaying && (
+                    <>
+                      <div className="absolute inset-0 bg-punk-green/20 rounded-lg animate-pulse" />
+                      <div className="absolute -inset-2 bg-gradient-to-r from-punk-green/10 to-punk-mint/10 rounded-lg animate-ping" />
+                      <div className="absolute -inset-4 bg-gradient-to-r from-solar-gold/5 to-mars-orange/5 rounded-lg animate-pulse" style={{ animationDuration: '2s' }} />
+                    </>
+                  )}
+                  <img
+                    src={djPlayerImages[currentTrack]}
+                    alt={`DJ Player for ${selectedStation.tracks[currentTrack]?.title}`}
+                    className="w-48 h-auto relative z-10"
+                  />
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>
