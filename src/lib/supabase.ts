@@ -19,6 +19,17 @@ export interface Artwork {
 // Artwork functions
 export const saveArtworkToSupabase = async (artwork: Omit<Artwork, 'id' | 'created_at'>) => {
   try {
+    // First, delete any existing artwork for this frame_index
+    const { error: deleteError } = await supabase
+      .from('artworks')
+      .delete()
+      .eq('frame_index', artwork.frame_index)
+    
+    if (deleteError) {
+      console.error('Error deleting old artwork:', deleteError)
+    }
+
+    // Then insert the new artwork
     const { data, error } = await supabase
       .from('artworks')
       .insert([artwork])
@@ -26,6 +37,7 @@ export const saveArtworkToSupabase = async (artwork: Omit<Artwork, 'id' | 'creat
       .single()
 
     if (error) throw error
+    console.log('Artwork saved successfully:', data)
     return data
   } catch (error) {
     console.error('Error saving artwork to Supabase:', error)
@@ -35,13 +47,25 @@ export const saveArtworkToSupabase = async (artwork: Omit<Artwork, 'id' | 'creat
 
 export const getArtworksFromSupabase = async () => {
   try {
+    // Get only the latest artwork for each frame_index
     const { data, error } = await supabase
       .from('artworks')
       .select('*')
       .order('created_at', { ascending: false })
 
     if (error) throw error
-    return data
+    
+    // Group by frame_index and keep only the latest for each
+    const latestByFrame = data ? data.reduce((acc: Artwork[], artwork: Artwork) => {
+      const existingIndex = acc.findIndex(a => a.frame_index === artwork.frame_index)
+      if (existingIndex === -1) {
+        acc.push(artwork)
+      }
+      return acc
+    }, []) : []
+    
+    console.log('Loaded artworks from Supabase:', latestByFrame.length)
+    return latestByFrame
   } catch (error) {
     console.error('Error fetching artworks from Supabase:', error)
     throw error

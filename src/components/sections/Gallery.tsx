@@ -419,7 +419,17 @@ export default function Gallery() {
         artist_name: 'Anonymous Artist' // Could be made dynamic later
       };
 
+      console.log('Attempting to save artwork:', {
+        frame_index: currentCanvasIndex,
+        title: artworkToSave.title,
+        dataLength: artworkData.length
+      });
+
       const savedArtwork = await saveArtworkToSupabase(artworkToSave);
+      
+      if (!savedArtwork) {
+        throw new Error('No artwork returned from Supabase');
+      }
       
       // Update local state
       const updatedArtworks = savedArtworks.filter(art => art.frame_index !== currentCanvasIndex);
@@ -429,12 +439,18 @@ export default function Gallery() {
       setSaveMessage('Artwork saved to public gallery! 🎨');
       setTimeout(() => setSaveMessage(null), 3000);
       
-      console.log('Artwork saved to Supabase:', savedArtwork.title);
+      console.log('Artwork saved successfully to Supabase:', savedArtwork);
+      
+      // Reload artworks to ensure sync
+      setTimeout(() => {
+        loadSavedArtworks();
+      }, 500);
+      
       return savedArtwork;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving artwork to Supabase:', error);
-      setSaveMessage('Error saving artwork. Please try again.');
-      setTimeout(() => setSaveMessage(null), 3000);
+      setSaveMessage(`Error: ${error.message || 'Failed to save artwork'}`);
+      setTimeout(() => setSaveMessage(null), 5000);
       return null;
     } finally {
       setIsLoading(false);
