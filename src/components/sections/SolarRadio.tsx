@@ -217,8 +217,8 @@ export default function SolarRadio() {
         <div className="absolute inset-0 border-2 border-punk-green/50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </motion.div>
 
-      {/* Spinning DJ Record - Large Partial View */}
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 pointer-events-none overflow-hidden">
+      {/* Spinning DJ Record - Large Partial View - Fixed behind content */}
+      <div className="fixed -bottom-48 -left-48 w-96 h-96 pointer-events-none z-0">
         <motion.div
           animate={{ 
             rotate: isPlaying ? 360 : 0 
@@ -267,18 +267,18 @@ export default function SolarRadio() {
             </motion.div>
           )}
           
-          {/* Energy glow when playing - Inverted */}
+          {/* Energy glow when playing - Fixed to prevent square glitch */}
           {isPlaying && (
             <>
-              <div className="absolute -inset-4 rounded-full bg-gray-300/20 animate-pulse"></div>
-              <div className="absolute -inset-8 rounded-full bg-gradient-to-r from-gray-400/10 to-gray-500/10 animate-ping"></div>
+              <div className="absolute -inset-4 rounded-full bg-gray-300/10 animate-pulse"></div>
+              <div className="absolute -inset-8 rounded-full bg-gradient-to-r from-gray-400/5 to-gray-500/5 animate-ping"></div>
             </>
           )}
         </motion.div>
       </div>
 
       
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="mb-12">
           <h2 className="text-4xl font-bold mb-3 text-left">
