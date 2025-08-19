@@ -49,7 +49,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative min-h-screen bg-black text-white overflow-hidden">
+    <section className="relative min-h-screen bg-white text-black overflow-hidden">
       {/* Background Image Carousel */}
       <div className="absolute inset-0">
         {heroImages.map((image, index) => (
@@ -68,7 +68,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               alt={image.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/80" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/40 to-white/80" />
           </motion.div>
         ))}
       </div>
@@ -77,8 +77,8 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
       <div className="absolute inset-0 opacity-20">
         <div className="w-full h-full" style={{
           backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+            linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)
           `,
           backgroundSize: '50px 50px'
         }} />
@@ -100,15 +100,15 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               className="w-20 h-14 cursor-pointer"
               onClick={() => setCurrentImageIndex(index)}
             >
-              <div className="relative w-full h-full rounded-md overflow-hidden border border-white/30 hover:border-white/60 transition-all duration-300">
+              <div className="relative w-full h-full rounded-md overflow-hidden border border-black/30 hover:border-black/60 transition-all duration-300">
                 <img
                   src={image.src}
                   alt={image.title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/40 hover:bg-black/20 transition-all duration-300" />
+                <div className="absolute inset-0 bg-white/40 hover:bg-white/20 transition-all duration-300" />
                 <div className="absolute bottom-0 left-0 right-0 p-1">
-                  <div className="text-xs font-mono text-white/80 truncate">{image.title}</div>
+                  <div className="text-xs font-mono text-black/80 truncate">{image.title}</div>
                 </div>
               </div>
             </motion.div>
@@ -129,7 +129,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             {/* Project Classification */}
             <div className="flex items-center gap-4">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="font-mono text-sm tracking-wider text-gray-400 uppercase">
+              <span className="font-mono text-sm tracking-wider text-gray-600 uppercase">
                 SUCCESSFUL TERRAFORM // KEPLER-442B-2157
               </span>
             </div>
@@ -151,7 +151,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.7 }}
-                className="text-xl text-gray-300 font-light"
+                className="text-xl text-gray-700 font-light"
               >
                 KEPLER-442B — SUSTAINABLE CIVILIZATION
               </motion.div>
@@ -164,7 +164,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               transition={{ duration: 0.8, delay: 0.9 }}
               className="max-w-lg"
             >
-              <p className="text-lg text-gray-300 leading-relaxed">
+              <p className="text-lg text-gray-700 leading-relaxed">
                 Advanced terraforming technology meets sustainable urban planning. 
                 Witness humanity's greatest achievement: a thriving ecological 
                 metropolis on a distant world beyond our solar system.
@@ -176,19 +176,19 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.1 }}
-              className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-600"
+              className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-400"
             >
               <div>
-                <div className="text-3xl font-bold text-emerald-400">2.4B</div>
-                <div className="text-sm text-emerald-300 font-mono">POPULATION</div>
+                <div className="text-3xl font-bold text-emerald-600">2.4B</div>
+                <div className="text-sm text-emerald-700 font-mono">POPULATION</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-cyan-400">100%</div>
-                <div className="text-sm text-cyan-300 font-mono">RENEWABLE</div>
+                <div className="text-3xl font-bold text-cyan-600">100%</div>
+                <div className="text-sm text-cyan-700 font-mono">RENEWABLE</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-white">2157</div>
-                <div className="text-sm text-gray-300 font-mono">EST. YEAR</div>
+                <div className="text-3xl font-bold text-black">2157</div>
+                <div className="text-sm text-gray-700 font-mono">EST. YEAR</div>
               </div>
             </motion.div>
 
@@ -197,17 +197,17 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.3 }}
-              className="flex flex-wrap gap-4 pt-6"
+              className="flex flex-wrap gap-6 pt-6"
             >
               <button
                 onClick={onExploreClick}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-semibold rounded-lg hover:from-emerald-600 hover:to-cyan-600 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+                className="px-8 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-medium tracking-wide uppercase rounded-full hover:from-emerald-600 hover:to-cyan-600 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
               >
                 explore
               </button>
               <button
                 onClick={onCreateClick}
-                className="px-6 py-3 border-2 border-white/70 text-white text-sm font-semibold rounded-lg hover:bg-white/20 hover:border-white hover:text-gray-100 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+                className="px-8 py-2 border border-black/60 text-black text-sm font-medium tracking-wide uppercase rounded-full hover:bg-black hover:text-white hover:border-black transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
               >
                 create art
               </button>
@@ -221,22 +221,22 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             transition={{ duration: 1, delay: 0.5 }}
             className="relative"
           >
-            <div className="relative aspect-[4/3] rounded-lg overflow-hidden border border-gray-700">
+            <div className="relative aspect-[4/3] rounded-lg overflow-hidden border border-gray-300">
               <img
                 src={heroImages[currentImageIndex].src}
                 alt={heroImages[currentImageIndex].title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-transparent to-transparent" />
               
               {/* Image Info Overlay */}
               <div className="absolute bottom-4 left-4 right-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-lg font-bold text-white">
+                    <div className="text-lg font-bold text-black">
                       {heroImages[currentImageIndex].title}
                     </div>
-                    <div className="text-sm text-gray-300 font-mono">
+                    <div className="text-sm text-gray-700 font-mono">
                       SECTOR {currentImageIndex + 1}/3 — ACTIVE
                     </div>
                   </div>
@@ -245,7 +245,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                       <div
                         key={index}
                         className={`w-2 h-2 rounded-full ${
-                          index === currentImageIndex ? 'bg-white' : 'bg-white/30'
+                          index === currentImageIndex ? 'bg-black' : 'bg-black/30'
                         }`}
                       />
                     ))}
@@ -255,8 +255,8 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             </div>
             
             {/* Technical Data */}
-            <div className="mt-4 p-4 bg-gray-900/50 border border-gray-700 font-mono text-xs">
-              <div className="grid grid-cols-2 gap-4 text-gray-400">
+            <div className="mt-4 p-4 bg-gray-100/50 border border-gray-300 font-mono text-xs">
+              <div className="grid grid-cols-2 gap-4 text-gray-600">
                 <div>STATUS: OPERATIONAL</div>
                 <div>PURITY: LEVEL 7</div>
                 <div>COORDINATES: 14°S 175°W</div>
@@ -268,9 +268,9 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
       </div>
 
       {/* Bottom Status Bar */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-gray-800 bg-black/80 backdrop-blur-sm">
+      <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
-                      <div className="flex items-center justify-between text-xs font-mono text-gray-400">
+                      <div className="flex items-center justify-between text-xs font-mono text-gray-600">
               <div className="flex items-center gap-6">
                 <div>SOJOURN COLONY ALPHA</div>
                 <div>STATUS: ACTIVE</div>
