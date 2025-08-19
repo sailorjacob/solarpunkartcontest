@@ -217,6 +217,47 @@ export default function SolarRadio() {
         <div className="absolute inset-0 border-2 border-punk-green/50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </motion.div>
 
+      {/* Spinning DJ Record - Bottom Left Corner */}
+      <div className="absolute bottom-8 left-8 w-48 h-48 pointer-events-none">
+        <motion.div
+          animate={{ 
+            rotate: isPlaying ? 360 : 0 
+          }}
+          transition={{
+            duration: isPlaying ? 3 : 0,
+            repeat: isPlaying ? Infinity : 0,
+            ease: "linear"
+          }}
+          className="w-full h-full relative"
+        >
+          {/* Outer Record */}
+          <div className="absolute inset-0 rounded-full border-4 border-punk-green/60 bg-gradient-to-br from-gray-900 to-black">
+            {/* Record Grooves */}
+            <div className="absolute inset-4 rounded-full border-2 border-punk-green/40"></div>
+            <div className="absolute inset-8 rounded-full border border-punk-green/30"></div>
+            <div className="absolute inset-12 rounded-full border border-punk-green/20"></div>
+            
+            {/* Center Label */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-br from-punk-green to-punk-mint flex items-center justify-center">
+              <div className="w-3 h-3 rounded-full bg-black"></div>
+            </div>
+            
+            {/* Spinning indicator dots */}
+            <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full bg-punk-mint"></div>
+            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full bg-punk-mint"></div>
+            <div className="absolute left-6 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-punk-mint"></div>
+            <div className="absolute right-6 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-punk-mint"></div>
+          </div>
+          
+          {/* Energy glow when playing */}
+          {isPlaying && (
+            <>
+              <div className="absolute -inset-2 rounded-full bg-punk-green/10 animate-pulse"></div>
+              <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-punk-green/5 to-punk-mint/5 animate-ping"></div>
+            </>
+          )}
+        </motion.div>
+      </div>
 
       
       <div className="max-w-6xl mx-auto">
@@ -277,33 +318,7 @@ export default function SolarRadio() {
               ))}
             </div>
 
-            {/* DJ Player Image */}
-            <AnimatePresence mode="wait">
-              <motion.div 
-                key={currentTrack}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.5 }}
-                className="text-center relative"
-              >
-                <div className="relative inline-block">
-                  {/* Energy Pulse Effect */}
-                  {isPlaying && (
-                    <>
-                      <div className="absolute inset-0 bg-punk-green/20 rounded-lg animate-pulse" />
-                      <div className="absolute -inset-2 bg-gradient-to-r from-punk-green/10 to-punk-mint/10 rounded-lg animate-ping" />
-                      <div className="absolute -inset-4 bg-gradient-to-r from-solar-gold/5 to-mars-orange/5 rounded-lg animate-pulse" style={{ animationDuration: '2s' }} />
-                    </>
-                  )}
-                  <img
-                    src={djPlayerImages[currentTrack]}
-                    alt={`DJ Player for ${selectedStation.tracks[currentTrack]?.title}`}
-                    className="w-72 h-auto relative z-10"
-                  />
-                </div>
-              </motion.div>
-            </AnimatePresence>
+
           </div>
 
           {/* Right Side - DJ Video and Controls */}
