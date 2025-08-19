@@ -216,7 +216,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               </div>
               <div>
                 <div className="text-3xl font-bold text-cyan-400">100%</div>
-                <div className="text-sm text-cyan-300 font-mono">RENEWABLE</div>
+                <div className="text-sm text-cyan-300 font-mono">GENERATED</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-white">2157</div>
@@ -301,7 +301,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
 
       {/* Bottom Status Bar */}
       <div 
-        className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white/80 backdrop-blur-sm"
+        className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white/80 backdrop-blur-sm z-60"
         onMouseMove={handleFooterMouseMove}
         onMouseEnter={() => setIsHoveringFooter(true)}
         onMouseLeave={() => setIsHoveringFooter(false)}
@@ -309,7 +309,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
         {/* Red Circle Trail */}
         {isHoveringFooter && (
           <div 
-            className="absolute w-6 h-6 bg-red-500 rounded-full pointer-events-none z-50 transition-opacity duration-200 shadow-lg"
+            className="absolute w-6 h-6 bg-red-500 rounded-full pointer-events-none z-70 transition-opacity duration-200 shadow-lg"
             style={{
               left: trailPosition.x - 12,
               top: trailPosition.y - 12,
