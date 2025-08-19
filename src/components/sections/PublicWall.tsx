@@ -82,7 +82,7 @@ export default function PublicWall() {
     maskCanvasRef.current = maskCanvas;
 
     // Load background image - using your gallery image
-    const img = new Image();
+    const img = new window.Image();
     img.crossOrigin = 'anonymous';
     
     img.onload = () => {
@@ -116,7 +116,7 @@ export default function PublicWall() {
     const maskCtx = maskCanvas.getContext('2d');
     if (!maskCtx) return;
 
-    const maskImg = new Image();
+    const maskImg = new window.Image();
     maskImg.crossOrigin = 'anonymous';
     
     maskImg.onload = () => {
