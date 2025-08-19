@@ -13,9 +13,7 @@ export default function PublicWall() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isMaskLoaded, setIsMaskLoaded] = useState(false);
-  // Simplified frame system - 4 frames but user gets random one
-  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
-  const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
+  // Single collaborative canvas - everyone paints on frame 0
   const [savedArtworks, setSavedArtworks] = useState<Artwork[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -23,6 +21,9 @@ export default function PublicWall() {
   const [showDescription, setShowDescription] = useState(false);
   const [hasUserPainted, setHasUserPainted] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
+  
+  // Track user's strokes separately for proper clearing
+  const userStrokesRef = useRef<ImageData | null>(null);
 
   // Brush settings  
   const sprayDensity = 80;
@@ -160,9 +161,10 @@ export default function PublicWall() {
   const loadExistingArtwork = async () => {
     try {
       const artworks = await getArtworksFromSupabase();
-      const currentFrameArtwork = artworks.find((artwork: Artwork) => artwork.frame_index === currentCanvasIndex);
+      // Get the latest artwork from the collaborative canvas (frame_index: 0)
+      const latestArtwork = artworks.find((artwork: Artwork) => artwork.frame_index === 0);
       
-      if (currentFrameArtwork && canvasRef.current) {
+      if (latestArtwork && canvasRef.current) {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
@@ -174,17 +176,34 @@ export default function PublicWall() {
         return new Promise<void>((resolve) => {
           artworkImg.onload = () => {
             ctx.drawImage(artworkImg, 0, 0, canvas.width, canvas.height);
-            console.log(`Loaded existing artwork for frame ${currentCanvasIndex + 1}`);
+            // Store this as the base state (before user starts painting)
+            userStrokesRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            console.log('Loaded existing collaborative artwork');
             resolve();
           };
           
           artworkImg.onerror = () => {
-            console.error(`Failed to load artwork for frame ${currentCanvasIndex + 1}`);
+            console.error('Failed to load collaborative artwork');
+            // Store current state as base even if load fails
+            if (canvasRef.current) {
+              const ctx = canvasRef.current.getContext('2d');
+              if (ctx) userStrokesRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            }
             resolve();
           };
           
-          artworkImg.src = currentFrameArtwork.artwork_data;
+          artworkImg.src = latestArtwork.artwork_data;
         });
+      } else {
+        console.log('No existing collaborative artwork found');
+        // Store the background-only state as base
+        if (canvasRef.current) {
+          const canvas = canvasRef.current;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            userStrokesRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          }
+        }
       }
     } catch (error) {
       console.error('Error loading existing artwork:', error);
@@ -213,8 +232,8 @@ export default function PublicWall() {
       setIsMaskLoaded(true); // Continue without mask
     };
     
-    // Load the current frame as mask
-    maskImg.src = galleryFrames[currentCanvasIndex];
+    // Load frame 0 as mask (single collaborative canvas)
+    maskImg.src = galleryFrames[0];
   };
 
   // Check if a point is on a paintable area (has pixels in the mask)
@@ -367,20 +386,18 @@ export default function PublicWall() {
   };
 
   const clearCanvas = () => {
-    if (!canvasRef.current || !backgroundImageRef.current) return;
+    if (!canvasRef.current || !userStrokesRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Clear everything and restart fresh
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(backgroundImageRef.current, 0, 0, canvas.width, canvas.height);
-    
-    // Reload existing artwork for this frame (so public art stays visible)
-    loadExistingArtwork();
+    // Restore to the state before user started painting (keeps published art)
+    ctx.putImageData(userStrokesRef.current, 0, 0);
     
     // Reset painted state
     setHasUserPainted(false);
+    
+    console.log('Cleared user strokes, preserved published artwork');
   };
 
   // Remove frame switching logic - single collaborative canvas
@@ -396,20 +413,8 @@ export default function PublicWall() {
       const artworks = await getArtworksFromSupabase();
       setSavedArtworks(artworks);
       
-      // Load 4 most recent artworks into frames
-      const submissions = new Array(4).fill(null);
-      artworks.forEach((artwork: Artwork) => {
-        if (artwork.frame_index < 4) {
-          submissions[artwork.frame_index] = artwork.artwork_data;
-        }
-      });
-      setArtSubmissions(submissions);
-      
-      // Randomly select a frame for the user to paint on (0-3 in code = Frames 1-4 for user)
-      const randomFrame = Math.floor(Math.random() * 4);
-      setCurrentCanvasIndex(randomFrame);
-      
-      console.log(`User assigned to Frame ${randomFrame + 1} (index ${randomFrame})`);
+      // Store artworks for reference (single collaborative canvas)
+      console.log('Loaded collaborative artworks for single canvas');
       
       console.log(`Loaded ${artworks.length} artworks from Supabase`);
     } catch (error) {
@@ -440,15 +445,15 @@ export default function PublicWall() {
       setSaveMessage('Saving artwork...');
       
       const artworkToSave = {
-        title: `Art Gallery Frame ${currentCanvasIndex + 1} - Community Creation`,
+        title: 'Collaborative Art Wall - Community Creation',
         base_image: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png',
         artwork_data: artworkData,
-        frame_index: currentCanvasIndex,
+        frame_index: 0, // Single collaborative canvas
         artist_name: 'Anonymous Artist'
       };
 
       console.log('Attempting to save artwork:', {
-        frame_index: currentCanvasIndex,
+        frame_index: 0,
         title: artworkToSave.title,
         dataLength: artworkData.length
       });
@@ -500,10 +505,14 @@ export default function PublicWall() {
       
       console.log('Artwork saved successfully:', savedArtwork);
       
-      // Update local submissions
-    const newSubmissions = [...artSubmissions];
-    newSubmissions[currentCanvasIndex] = artworkData;
-    setArtSubmissions(newSubmissions);
+      // Update the base state so future 'clear' preserves this new artwork
+      if (canvasRef.current) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          userStrokesRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        }
+      }
     
       // Show success message
       setSaveMessage('Artwork saved to gallery!');
@@ -806,10 +815,10 @@ export default function PublicWall() {
                   <X size={14} />
                 </button>
               </div>
-                             <p className="text-xs text-gray-600 leading-relaxed">
-                 You've been assigned to Frame {currentCanvasIndex + 1} of 4 in our collaborative art gallery. 
-                 Paint with the spray tool and submit your work to replace the current art on this frame. 
-                 Each frame holds one artwork that evolves as new artists contribute.
+               <p className="text-xs text-gray-600 leading-relaxed">
+                 Welcome to our collaborative art wall! Paint with the spray tool and choose any color. 
+                 When you submit, your artwork becomes part of the evolving community creation that everyone can build upon. 
+                 Use 'clear' to remove only your current strokes while preserving the published collaborative artwork.
                </p>
         </div>
       </motion.div>
