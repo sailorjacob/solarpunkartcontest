@@ -43,6 +43,11 @@ const djVideos = [
   'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj.mp4'
 ];
 
+const djPlayerImages = [
+  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/images/DJPlayer.png',
+  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/images/djplayer2.png'
+];
+
 const undergroundMallVideo = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/undergroundmalltimelapse.mp4';
 
 export default function SolarRadio() {
@@ -211,6 +216,38 @@ export default function SolarRadio() {
         {/* Hover effect overlay */}
         <div className="absolute inset-0 border-2 border-punk-green/50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </motion.div>
+
+      {/* DJ Player Image - Bottom Left */}
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={currentTrack}
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -50 }}
+          transition={{ duration: 0.5 }}
+          className="absolute bottom-8 left-8 w-64 h-40 rounded-xl overflow-hidden border border-punk-green/30 shadow-lg"
+        >
+          <img
+            src={djPlayerImages[currentTrack]}
+            alt={`DJ Player for ${selectedStation.tracks[currentTrack]?.title}`}
+            className="w-full h-full object-cover"
+          />
+          {/* LIVE indicator when playing */}
+          {isPlaying && (
+            <div className="absolute top-3 right-3 flex items-center gap-2 bg-black/70 px-2 py-1 rounded-full">
+              <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+              <span className="text-white text-xs font-bold">LIVE</span>
+            </div>
+          )}
+          {/* Track info overlay */}
+          <div className="absolute bottom-3 left-3">
+            <p className="text-white text-sm font-medium">
+              {selectedStation.tracks[currentTrack]?.title}
+            </p>
+            <p className="text-white/80 text-xs">DJ Equipment</p>
+          </div>
+        </motion.div>
+      </AnimatePresence>
       
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
