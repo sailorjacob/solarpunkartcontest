@@ -77,7 +77,7 @@ export default function Home() {
           className="text-center"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-400 rounded-sm" />
+            <div className="w-8 h-8 bg-gradient-to-br from-gray-300 to-yellow-400 rounded-sm" />
             <div>
               <h1 className="font-bold text-xl text-white tracking-tight">
                 SOLARPUNK
