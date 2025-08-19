@@ -68,10 +68,16 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
 
   const handleFooterMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    setFooterMousePosition({
+    const newPosition = {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top
-    });
+    };
+    setFooterMousePosition(newPosition);
+    
+    // Initialize trail position if this is the first movement
+    if (trailPosition.x === 0 && trailPosition.y === 0) {
+      setTrailPosition(newPosition);
+    }
   };
 
   return (
@@ -303,11 +309,11 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
         {/* Red Circle Trail */}
         {isHoveringFooter && (
           <div 
-            className="absolute w-4 h-4 bg-red-500 rounded-full pointer-events-none z-10 transition-opacity duration-200"
+            className="absolute w-6 h-6 bg-red-500 rounded-full pointer-events-none z-50 transition-opacity duration-200 shadow-lg"
             style={{
-              left: trailPosition.x - 8,
-              top: trailPosition.y - 8,
-              opacity: 0.7
+              left: trailPosition.x - 12,
+              top: trailPosition.y - 12,
+              opacity: 0.9
             }}
           />
         )}
