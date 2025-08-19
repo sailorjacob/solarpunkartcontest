@@ -201,12 +201,9 @@ export default function SolarRadio() {
   };
 
   return (
-    <section className="min-h-screen py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800" />
-      
+    <section className="py-16 px-4 sm:px-6 lg:px-8 relative">
       {/* Underground Mall Video - Corner Feature */}
-      <div className="absolute bottom-8 right-8 w-96 h-64 rounded-xl overflow-hidden border border-punk-green/30 shadow-2xl">
+      <div className="absolute top-8 right-8 w-80 h-48 rounded-xl overflow-hidden border border-punk-green/30 shadow-lg">
         <video
           src={undergroundMallVideo}
           autoPlay
@@ -221,210 +218,169 @@ export default function SolarRadio() {
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-5xl sm:text-6xl font-bold mb-4">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold mb-2">
             <span className="bg-gradient-to-r from-solar-gold via-punk-green to-mars-orange text-gradient">
               SolarPunk Radio
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-600">
             Live from Underground Mall
           </p>
-        </motion.div>
+        </div>
 
-        {/* Main Player */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-4xl mx-auto"
-        >
-          <div className="glass rounded-2xl p-8">
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Side - Song Selection */}
+          <div className="glass rounded-2xl p-6">
+            <h3 className="text-xl font-bold mb-6 text-punk-green">Select Track</h3>
+            <div className="space-y-4">
+              {selectedStation.tracks.map((track, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    if (audioRef.current) {
+                      audioRef.current.stop();
+                      audioRef.current.unload();
+                    }
+                    setIsPlaying(false);
+                    setCurrentTrack(index);
+                  }}
+                  className={`p-4 rounded-xl cursor-pointer transition-all ${
+                    index === currentTrack
+                      ? 'bg-gradient-to-r from-punk-green to-punk-mint text-black'
+                      : 'hover:bg-white/10 border border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-bold text-lg">{track.title}</h4>
+                      <p className={`text-sm ${
+                        index === currentTrack ? 'text-black/70' : 'text-gray-500'
+                      }`}>
+                        {track.artist} • {track.duration}
+                      </p>
+                    </div>
+                    {index === currentTrack && isPlaying && (
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                        <span className="text-xs font-medium">LIVE</span>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
 
-              {/* DJ Video Section */}
-              <div className="mb-8">
-                <div className="relative w-full h-64 rounded-xl overflow-hidden bg-black/20">
-                  <AnimatePresence mode="wait">
-                    <motion.video
-                      key={currentDjVideo}
-                      initial={{ opacity: 0, scale: 1.1 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 1 }}
-                      src={djVideos[currentDjVideo]}
+          {/* Right Side - DJ Videos and Controls */}
+          <div className="glass rounded-2xl p-6">
+            {/* DJ Videos */}
+            <div className="mb-6">
+              <div className="grid grid-cols-2 gap-2 h-64">
+                {djVideos.map((video, index) => (
+                  <div key={index} className="relative overflow-hidden rounded-xl">
+                    <video
+                      src={video}
                       autoPlay
                       loop
                       muted
-                      className="w-full h-full object-cover"
+                      className={`w-full h-full object-cover transition-all duration-500 ${
+                        currentTrack === index && isPlaying 
+                          ? 'brightness-100 scale-105' 
+                          : 'brightness-75 scale-100'
+                      }`}
                     />
-                  </AnimatePresence>
-                  
-                  {/* Video overlay with station info */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-white text-sm font-medium opacity-90">
-                          SolarPunk DJ
-                        </p>
-                        <p className="text-white/70 text-xs">
-                          Live Performance
-                        </p>
-                      </div>
-                      {isPlaying && (
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                          <span className="text-white text-xs font-medium">LIVE</span>
-                        </div>
-                      )}
+                    {currentTrack === index && (
+                      <div className="absolute inset-0 border-2 border-punk-green rounded-xl" />
+                    )}
+                    <div className="absolute bottom-2 left-2">
+                      <p className="text-white text-xs font-medium">
+                        {selectedStation.tracks[index]?.title || `DJ ${index + 1}`}
+                      </p>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Visualizer */}
-              <div className="mb-8 h-32 flex items-end justify-center gap-1">
-                {visualizerData.map((height, index) => (
-                  <motion.div
-                    key={index}
-                    animate={{ height: `${height}%` }}
-                    transition={{ duration: 0.1 }}
-                    className={`w-3 bg-gradient-to-t ${selectedStation.color} rounded-t-full`}
-                    style={{ minHeight: '4px' }}
-                  />
                 ))}
               </div>
-
-              {/* Current Track */}
-              <div className="mb-8 text-center">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentTrack}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <h4 className="text-2xl font-bold mb-2">
-                      {selectedStation.tracks[currentTrack].title}
-                    </h4>
-                    <p className="text-gray-300">
-                      {selectedStation.tracks[currentTrack].artist}
-                    </p>
-                    <p className="text-sm text-gray-400 mt-2">
-                      {selectedStation.tracks[currentTrack].duration}
-                    </p>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {/* Progress Bar */}
-              {(selectedStation.tracks[currentTrack] as any).audioUrl && (
-                <div className="mb-8">
-                  <div className="flex items-center gap-3 text-sm text-gray-400 mb-2">
-                    <span>{isPlaying && audioRef.current ? formatTime(audioRef.current.seek() as number) : '0:00'}</span>
-                    <div className="flex-1 bg-white/10 rounded-full h-2 overflow-hidden">
-                      <motion.div
-                        className={`h-full bg-gradient-to-r ${selectedStation.color}`}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progress}%` }}
-                        transition={{ duration: 0.1 }}
-                      />
-                    </div>
-                    <span>{selectedStation.tracks[currentTrack].duration}</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Player Controls */}
-              <div className="flex items-center justify-center gap-4 mb-8">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={prevTrack}
-                  className="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-white/20"
-                >
-                  <span className="text-xl">⏮</span>
-                </motion.button>
-                
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={togglePlay}
-                  className={`w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-r ${selectedStation.color} text-black`}
-                >
-                  <span className="text-2xl">{isPlaying ? '⏸' : '▶'}</span>
-                </motion.button>
-                
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={nextTrack}
-                  className="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-white/20"
-                >
-                  <span className="text-xl">⏭</span>
-                </motion.button>
-              </div>
-
-              {/* Volume Control */}
-              <div className="flex items-center gap-4">
-                <span className="text-gray-400 font-semibold">VOL</span>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={volume}
-                  onChange={(e) => setVolume(Number(e.target.value))}
-                  className="flex-1 range-slider"
-                />
-                <span className="text-gray-400 w-12 text-right">{volume}%</span>
-              </div>
-
-              {/* Track List */}
-              <div className="mt-8 pt-8 border-t border-white/10">
-                <h4 className="text-lg font-semibold mb-4">Tracks</h4>
-                <div className="space-y-3">
-                  {selectedStation.tracks.map((track, index) => (
-                    <motion.div
-                      key={index}
-                      whileHover={{ x: 5 }}
-                      className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all ${
-                        index === currentTrack
-                          ? 'bg-white/10'
-                          : 'hover:bg-white/5'
-                      }`}
-                      onClick={() => {
-                        if (audioRef.current) {
-                          audioRef.current.stop();
-                          audioRef.current.unload();
-                        }
-                        setIsPlaying(false);
-                        setCurrentTrack(index);
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-gray-500 w-6">{index + 1}</span>
-                        <div>
-                          <p className="font-semibold">{track.title}</p>
-                          <p className="text-sm text-gray-400">{track.artist}</p>
-                        </div>
-                      </div>
-                      <span className="text-sm text-gray-400">{track.duration}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
             </div>
-        </motion.div>
+
+            {/* Current Track Info */}
+            <div className="text-center mb-6">
+              <h4 className="text-xl font-bold mb-1">
+                {selectedStation.tracks[currentTrack].title}
+              </h4>
+              <p className="text-gray-500">
+                {selectedStation.tracks[currentTrack].artist}
+              </p>
+            </div>
+
+            {/* Progress Bar */}
+            {(selectedStation.tracks[currentTrack] as any).audioUrl && (
+              <div className="mb-6">
+                <div className="flex items-center gap-3 text-sm text-gray-500 mb-2">
+                  <span>{isPlaying && audioRef.current ? formatTime(audioRef.current.seek() as number) : '0:00'}</span>
+                  <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-punk-green to-punk-mint"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ duration: 0.1 }}
+                    />
+                  </div>
+                  <span>{selectedStation.tracks[currentTrack].duration}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Player Controls */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={prevTrack}
+                className="w-12 h-12 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+              >
+                <span className="text-xl text-gray-700">⏮</span>
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={togglePlay}
+                className="w-16 h-16 rounded-full bg-gradient-to-r from-punk-green to-punk-mint text-white flex items-center justify-center shadow-lg"
+              >
+                <span className="text-2xl">{isPlaying ? '⏸' : '▶'}</span>
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={nextTrack}
+                className="w-12 h-12 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+              >
+                <span className="text-xl text-gray-700">⏭</span>
+              </motion.button>
+            </div>
+
+            {/* Volume Control */}
+            <div className="flex items-center gap-4">
+              <span className="text-gray-500 font-semibold text-sm">VOLUME</span>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={volume}
+                onChange={(e) => setVolume(Number(e.target.value))}
+                className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              />
+              <span className="text-gray-500 w-12 text-right text-sm">{volume}%</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
