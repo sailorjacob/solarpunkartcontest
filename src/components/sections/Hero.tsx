@@ -201,7 +201,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             >
               <button
                 onClick={onExploreClick}
-                className="px-6 py-1.5 bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-medium tracking-wide rounded-full hover:from-red-600 hover:to-orange-600 transition-all duration-300 hover:scale-105"
+                className="px-6 py-1.5 border border-red-500 text-red-500 text-sm font-medium tracking-wide rounded-full hover:bg-red-500 hover:text-white transition-all duration-300 hover:scale-105"
               >
                 explore
               </button>
