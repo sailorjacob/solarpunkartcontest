@@ -61,13 +61,14 @@ export const saveArtworkToSupabase = async (artwork: Omit<Artwork, 'id' | 'creat
 
 export const getArtworksFromSupabase = async () => {
   try {
-    // Get latest artwork for each frame (0-3) with limit to prevent timeout
+    // Simplified query - get recent artworks with basic filter only
     const { data, error } = await supabase
       .from('artworks')
       .select('*')
-      .in('frame_index', [0, 1, 2, 3])
+      .gte('frame_index', 0)
+      .lte('frame_index', 3)
       .order('created_at', { ascending: false })
-      .limit(20) // Limit to recent entries to prevent timeout
+      .limit(12) // Smaller limit for faster query
 
     if (error) throw error
     

@@ -22,6 +22,7 @@ export default function PublicWall() {
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [showDescription, setShowDescription] = useState(false);
   const [hasUserPainted, setHasUserPainted] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
 
   // Ink blue color and settings  
   const neonBlue = '#1E40AF'; // Ink blue instead of cyan
@@ -344,10 +345,14 @@ export default function PublicWall() {
 
   // Remove frame switching logic - single collaborative canvas
 
-  // Load saved artworks from Supabase
-  const loadSavedArtworks = async () => {
+  // Load saved artworks from Supabase with retry logic
+  const loadSavedArtworks = async (retryCount = 0) => {
+    if (isRetrying && retryCount === 0) return; // Prevent duplicate calls
+    
     try {
-      setIsInitialLoading(true);
+      if (retryCount === 0) setIsInitialLoading(true);
+      if (retryCount > 0) setIsRetrying(true);
+      
       const artworks = await getArtworksFromSupabase();
       setSavedArtworks(artworks);
       
@@ -369,10 +374,22 @@ export default function PublicWall() {
       console.log(`Loaded ${artworks.length} artworks from Supabase`);
     } catch (error) {
       console.error('Error loading saved artworks:', error);
-      // Don't show error message on initial load - just fail silently
-      console.log('Continuing with empty gallery...');
+      
+      // Retry with exponential backoff for first few attempts
+      if (retryCount < 2) {
+        const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s delays
+        console.log(`Retrying in ${delay}ms... (attempt ${retryCount + 1})`);
+        setTimeout(() => {
+          loadSavedArtworks(retryCount + 1);
+        }, delay);
+        return;
+      }
+      
+      // After max retries, continue with empty gallery
+      console.log('Max retries reached. Continuing with empty gallery...');
     } finally {
       setIsInitialLoading(false);
+      setIsRetrying(false);
     }
   };
 
@@ -429,8 +446,8 @@ export default function PublicWall() {
     console.log('Starting save process...');
     
     try {
-    // Get canvas as data URL
-    const artworkData = canvasRef.current.toDataURL('image/png');
+    // Get canvas as data URL with compression for smaller size
+    const artworkData = canvasRef.current.toDataURL('image/jpeg', 0.7); // JPEG with 70% quality for smaller size
       console.log('Canvas data captured, length:', artworkData.length);
       
       // Save to database
@@ -444,10 +461,10 @@ export default function PublicWall() {
       console.log('Artwork saved successfully:', savedArtwork);
       
       // Update local submissions
-      const newSubmissions = [...artSubmissions];
-      newSubmissions[currentCanvasIndex] = artworkData;
-      setArtSubmissions(newSubmissions);
-      
+    const newSubmissions = [...artSubmissions];
+    newSubmissions[currentCanvasIndex] = artworkData;
+    setArtSubmissions(newSubmissions);
+    
       // Show success message
       setSaveMessage('Artwork saved to gallery!');
       
@@ -502,20 +519,13 @@ export default function PublicWall() {
     img.src = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png';
   };
 
-  // Initialize canvas on component mount
+    // Initialize canvas on component mount
   useEffect(() => {
-    const initAndLoad = async () => {
-      // Load artwork data and initialize canvas simultaneously for faster loading
-      const [_] = await Promise.all([
-        loadSavedArtworks(),
-        new Promise(resolve => {
-          initializeCanvas();
-          resolve(null);
-        })
-      ]);
-    };
+    // Make canvas immediately interactive
+    initializeCanvas();
     
-    initAndLoad();
+    // Load artwork data in background (don't block canvas interaction)
+    loadSavedArtworks();
   }, []);
 
 
@@ -545,7 +555,7 @@ export default function PublicWall() {
           box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
       `}</style>
-      <section className="relative w-full h-screen overflow-hidden bg-black">
+    <section className="relative w-full h-screen overflow-hidden bg-black">
       {/* Art Gallery Wall Background */}
       <div className="absolute inset-0">
         <Image
@@ -562,8 +572,8 @@ export default function PublicWall() {
       {/* Canvas Overlay */}
       <canvas
         ref={canvasRef}
-        width={1400}
-        height={800}
+        width={800}
+        height={450}
         className="absolute inset-0 w-full h-full object-cover cursor-crosshair z-10"
         onMouseDown={startDrawing}
         onMouseMove={draw}
@@ -601,12 +611,12 @@ export default function PublicWall() {
             
             <div className="flex gap-2">
               {hasUserPainted && (
-                <button
-                  onClick={clearCanvas}
-                  className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border border-gray-200"
-                >
-                  clear
-                </button>
+              <button
+                onClick={clearCanvas}
+                className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border border-gray-200"
+              >
+                clear
+              </button>
               )}
               <button
                 onClick={saveArt}
@@ -688,11 +698,11 @@ export default function PublicWall() {
                  Paint with the spray tool and submit your work to replace the current art on this frame. 
                  Each frame holds one artwork that evolves as new artists contribute.
                </p>
-            </div>
-          </motion.div>
+        </div>
+      </motion.div>
         )}
       </AnimatePresence>
-      </section>
+    </section>
     </>
   );
 }
