@@ -13,9 +13,9 @@ export default function PublicWall() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isMaskLoaded, setIsMaskLoaded] = useState(false);
-  // Remove frame switching - just one collaborative canvas
-  // const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
-  // const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
+  // Simplified frame system - 4 frames but user gets random one
+  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0);
+  const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
   const [savedArtworks, setSavedArtworks] = useState<Artwork[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -113,13 +113,13 @@ export default function PublicWall() {
     img.src = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png';
   };
 
-  // Load the latest collaborative artwork
+  // Load existing artwork for current frame
   const loadExistingArtwork = async () => {
     try {
       const artworks = await getArtworksFromSupabase();
-      const latestArtwork = artworks[0]; // Get the most recent artwork
+      const currentFrameArtwork = artworks.find((artwork: Artwork) => artwork.frame_index === currentCanvasIndex);
       
-      if (latestArtwork && canvasRef.current) {
+      if (currentFrameArtwork && canvasRef.current) {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
@@ -131,16 +131,16 @@ export default function PublicWall() {
         return new Promise<void>((resolve) => {
           artworkImg.onload = () => {
             ctx.drawImage(artworkImg, 0, 0, canvas.width, canvas.height);
-            console.log(`Loaded latest collaborative artwork`);
+            console.log(`Loaded existing artwork for frame ${currentCanvasIndex + 1}`);
             resolve();
           };
           
           artworkImg.onerror = () => {
-            console.error(`Failed to load collaborative artwork`);
+            console.error(`Failed to load artwork for frame ${currentCanvasIndex + 1}`);
             resolve();
           };
           
-          artworkImg.src = latestArtwork.artwork_data;
+          artworkImg.src = currentFrameArtwork.artwork_data;
         });
       }
     } catch (error) {
@@ -170,8 +170,8 @@ export default function PublicWall() {
       setIsMaskLoaded(true); // Continue without mask
     };
     
-    // Load the single collaborative canvas frame as mask
-    maskImg.src = galleryFrames[0]; // Use first frame for single collaborative canvas
+    // Load the current frame as mask
+    maskImg.src = galleryFrames[currentCanvasIndex];
   };
 
   // Check if a point is on a paintable area (has pixels in the mask)
@@ -345,7 +345,20 @@ export default function PublicWall() {
       const artworks = await getArtworksFromSupabase();
       setSavedArtworks(artworks);
       
-      // Just store the artworks - no frame switching needed
+      // Load 4 most recent artworks into frames
+      const submissions = new Array(4).fill(null);
+      artworks.forEach((artwork: Artwork) => {
+        if (artwork.frame_index < 4) {
+          submissions[artwork.frame_index] = artwork.artwork_data;
+        }
+      });
+      setArtSubmissions(submissions);
+      
+      // Randomly select a frame for the user to paint on
+      const randomFrame = Math.floor(Math.random() * 4);
+      setCurrentCanvasIndex(randomFrame);
+      
+      console.log(`User assigned to frame ${randomFrame + 1}`);
       
       console.log(`Loaded ${artworks.length} artworks from Supabase`);
     } catch (error) {
@@ -364,14 +377,15 @@ export default function PublicWall() {
       setSaveMessage('Saving artwork...');
       
       const artworkToSave = {
-        title: `Collaborative Art Gallery - Community Creation`,
+        title: `Art Gallery Frame ${currentCanvasIndex + 1} - Community Creation`,
         base_image: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png',
         artwork_data: artworkData,
-        frame_index: 0, // Single collaborative canvas
+        frame_index: currentCanvasIndex,
         artist_name: 'Anonymous Artist'
       };
 
-      console.log('Attempting to save collaborative artwork:', {
+      console.log('Attempting to save artwork:', {
+        frame_index: currentCanvasIndex,
         title: artworkToSave.title,
         dataLength: artworkData.length
       });
@@ -423,8 +437,13 @@ export default function PublicWall() {
       
       console.log('Artwork saved successfully:', savedArtwork);
       
-            // Show success message
-      setSaveMessage('Artwork added to collaborative gallery');
+      // Update local submissions
+      const newSubmissions = [...artSubmissions];
+      newSubmissions[currentCanvasIndex] = artworkData;
+      setArtSubmissions(newSubmissions);
+      
+      // Show success message
+      setSaveMessage('Artwork saved to gallery!');
       
       // Clear success message after 3 seconds
       setTimeout(() => {
@@ -434,6 +453,11 @@ export default function PublicWall() {
     } catch (error) {
       console.error('Error in saveArt:', error);
       setSaveMessage('Failed to save artwork. Check console for details.');
+      setTimeout(() => {
+        setSaveMessage(null);
+      }, 3000);
+    } finally {
+      setIsLoading(false); // Always reset loading state
     }
   };
 
@@ -620,12 +644,12 @@ export default function PublicWall() {
           onClick={() => setShowDescription(!showDescription)}
           className="bg-white/90 backdrop-blur-md rounded-xl px-3 py-2 border border-gray-200 shadow-lg hover:bg-white transition-all duration-200"
         >
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">
-              Collaborative Art Wall
-            </span>
-            <Info size={12} className="text-gray-500" />
-          </div>
+                     <div className="flex items-center gap-2">
+             <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">
+               Frame {currentCanvasIndex + 1}/4
+             </span>
+             <Info size={12} className="text-gray-500" />
+           </div>
         </button>
       </motion.div>
 
@@ -648,11 +672,11 @@ export default function PublicWall() {
                   <X size={14} />
                 </button>
               </div>
-              <p className="text-xs text-gray-600 leading-relaxed">
-                This is a shared canvas where visitors can paint together using spray paint tools. 
-                Your artwork becomes part of a collaborative piece that evolves with each contributor. 
-                Save your creation to add it to the public gallery.
-              </p>
+                             <p className="text-xs text-gray-600 leading-relaxed">
+                 You've been assigned to Frame {currentCanvasIndex + 1} of 4 in our collaborative art gallery. 
+                 Paint with the spray tool and submit your work to replace the current art on this frame. 
+                 Each frame holds one artwork that evolves as new artists contribute.
+               </p>
             </div>
           </motion.div>
         )}
