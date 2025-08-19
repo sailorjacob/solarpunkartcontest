@@ -265,11 +265,11 @@ export default function About({ onBack }: AboutProps) {
           </p>
 
           {/* Tools Used */}
-          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Tools Used</h2>
-          <p className="text-stone-600 mb-4">AI Models: Claude 4 Sonnet, ChatGPT 5, Grok 4 Web, Midjourney, Udio</p>
-          <p className="text-stone-600 mb-4">Hardware: MacBook Pro 15" 2017, RODE USB Microphone, ATH-M50x Headphones</p>
-          <p className="text-stone-600 mb-4">Creative Software: Ableton Live, Udio, Pixlr.com</p>
-          <p className="text-stone-600 mb-6">Other: GitHub, Vercel, AirDrop, Chrome DevTools, TextEdit</p>
+          <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">tools used</h2>
+          <p className="text-stone-600 mb-4">ai models: claude 4 sonnet, chatgpt 5, grok 4 web, midjourney, udio</p>
+          <p className="text-stone-600 mb-4">hardware: macbook pro 15" 2017</p>
+          <p className="text-stone-600 mb-4">creative software: udio, pixlr.com</p>
+          <p className="text-stone-600 mb-6">other: github, vercel, airdrop, chrome devtools, textedit</p>
 
           {/* Usage Policies */}
           <h2 className="text-xl font-semibold text-stone-800 mt-8 mb-4">Usage Policies</h2>
