@@ -1,8 +1,8 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Download } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Download, Info, X } from 'lucide-react';
 import { saveArtworkToSupabase, getArtworksFromSupabase, type Artwork } from '@/lib/supabase';
 import Image from 'next/image';
 
@@ -19,6 +19,7 @@ export default function PublicWall() {
   const [savedArtworks, setSavedArtworks] = useState<Artwork[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [showDescription, setShowDescription] = useState(false);
 
   // Ink blue color and settings  
   const neonBlue = '#1E40AF'; // Ink blue instead of cyan
@@ -489,7 +490,29 @@ export default function PublicWall() {
   // Remove frame switching - single collaborative canvas
 
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-black">
+    <>
+      <style jsx>{`
+        .slider-custom::-webkit-slider-thumb {
+          appearance: none;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: #10b981;
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .slider-custom::-moz-range-thumb {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: #10b981;
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+      `}</style>
+      <section className="relative w-full h-screen overflow-hidden bg-black">
       {/* Art Gallery Wall Background */}
       <div className="absolute inset-0">
         <Image
@@ -523,7 +546,7 @@ export default function PublicWall() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
       >
-        <div className="bg-white/90 backdrop-blur-md rounded-xl p-4 border border-gray-200 shadow-lg">
+        <div className="bg-white/90 backdrop-blur-md rounded-xl px-3 py-2 border border-gray-200 shadow-lg">
           <div className="flex items-center gap-3 text-gray-800">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono uppercase tracking-wide text-gray-600">Brush</span>
@@ -533,9 +556,9 @@ export default function PublicWall() {
                 max="15"
                 value={sprayRadius}
                 onChange={(e) => setSprayRadius(Number(e.target.value))}
-                className="w-16 h-1 bg-blue-500 rounded-lg appearance-none cursor-pointer"
+                className="w-16 h-1 rounded-lg appearance-none cursor-pointer slider-custom"
                 style={{
-                  background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((sprayRadius - 2) / 13) * 100}%, #e5e7eb ${((sprayRadius - 2) / 13) * 100}%, #e5e7eb 100%)`
+                  background: `linear-gradient(to right, #dc2626 0%, #dc2626 ${((sprayRadius - 2) / 13) * 100}%, #e5e7eb ${((sprayRadius - 2) / 13) * 100}%, #e5e7eb 100%)`
                 }}
               />
               <span className="text-xs text-gray-500 w-6">{sprayRadius}</span>
@@ -586,21 +609,55 @@ export default function PublicWall() {
 
 
 
-      {/* Collaborative Info */}
+      {/* Collaborative Info - Bottom Left */}
       <motion.div 
-        className="absolute top-6 left-6 z-50"
+        className="absolute bottom-6 left-6 z-50"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
       >
-        <div className="bg-white/90 backdrop-blur-md rounded-xl p-3 border border-gray-200 shadow-lg">
-          <div className="flex items-center gap-3">
+        <button
+          onClick={() => setShowDescription(!showDescription)}
+          className="bg-white/90 backdrop-blur-md rounded-xl px-3 py-2 border border-gray-200 shadow-lg hover:bg-white transition-all duration-200"
+        >
+          <div className="flex items-center gap-2">
             <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">
               Collaborative Art Wall
             </span>
+            <Info size={12} className="text-gray-500" />
           </div>
-        </div>
+        </button>
       </motion.div>
-    </section>
+
+      {/* Description Modal */}
+      <AnimatePresence>
+        {showDescription && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="absolute bottom-20 left-6 z-50 max-w-xs"
+          >
+            <div className="bg-white/95 backdrop-blur-md rounded-xl p-4 border border-gray-200 shadow-lg">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="text-sm font-semibold text-gray-800">About This Space</h4>
+                <button
+                  onClick={() => setShowDescription(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                This is a shared canvas where visitors can paint together using spray paint tools. 
+                Your artwork becomes part of a collaborative piece that evolves with each contributor. 
+                Save your creation to add it to the public gallery.
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      </section>
+    </>
   );
 }
