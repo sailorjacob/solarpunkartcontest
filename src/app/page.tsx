@@ -141,7 +141,7 @@ export default function Home() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: '100%', opacity: 0 }}
                 transition={{ duration: 0.4, ease: 'easeInOut' }}
-                className="fixed bottom-0 left-0 right-0 overflow-hidden bg-amber-50 text-stone-800 max-h-[80vh] overflow-y-auto"
+                className="fixed bottom-0 left-0 right-0 overflow-hidden bg-amber-50 text-stone-800 max-h-[80vh] overflow-y-auto pointer-events-auto"
               >
                 <div className="container-custom py-16">
                   <div className="grid md:grid-cols-3 gap-12">
@@ -168,12 +168,16 @@ export default function Home() {
                       <h4 className="font-bold text-stone-800 mb-4 uppercase tracking-wide">Sectors</h4>
                       <ul className="space-y-2">
                         <li>
-                          <button 
-                            onClick={() => handleSectionChange('about')}
-                            className="text-blue-600 hover:text-blue-800 transition-colors font-mono text-sm uppercase tracking-wide"
+                          <a 
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleSectionChange('about');
+                            }}
+                            className="text-blue-600 hover:text-blue-800 transition-colors font-mono text-sm uppercase tracking-wide cursor-pointer"
                           >
                             Documentation
-                          </button>
+                          </a>
                         </li>
                       </ul>
                       

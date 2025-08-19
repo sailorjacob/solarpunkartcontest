@@ -55,11 +55,13 @@ export default function About({ onBack }: AboutProps) {
             The original Mars billboard concept - visualizing futuristic advertising on a terraformed planet
           </p>
           
-          <img 
-            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokinitialprompt.png"
-            alt="Initial concept development"
-            className="w-full mb-3"
-          />
+          <div className="w-full h-48 mb-3 overflow-hidden">
+            <img 
+              src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokinitialprompt.png"
+              alt="Initial concept development"
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
           <p className="text-sm text-stone-500 mb-4">
             Early brainstorming with Grok for terraforming research and initial project scope
           </p>
