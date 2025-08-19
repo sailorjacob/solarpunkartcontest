@@ -233,7 +233,14 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             >
               <button
                 onClick={onExploreClick}
-                className="px-6 py-1.5 bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-medium tracking-wide rounded-full hover:opacity-90 transition-opacity duration-200"
+                className="px-6 py-1.5 border-2 text-sm font-medium tracking-wide rounded-full hover:opacity-90 transition-opacity duration-200 relative overflow-hidden"
+                style={{
+                  borderImage: 'linear-gradient(to right, rgb(239 68 68), rgb(251 146 60)) 1',
+                  background: 'linear-gradient(to right, rgb(239 68 68), rgb(251 146 60))',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
               >
                 explore
               </button>
