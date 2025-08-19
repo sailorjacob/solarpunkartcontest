@@ -61,7 +61,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                       SOJOURN
                     </h1>
                     <p className={`text-xs font-mono tracking-wider -mt-1 transition-colors duration-300 ${
-                      isScrolled ? 'text-gray-400' : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio' ? 'text-slate-600' : activeSection === 'home' ? 'text-red-500' : 'text-gray-300'
+                      isScrolled ? 'text-gray-400' : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio' ? 'text-slate-600' : 'text-gray-300'
                     }`}>
                       KEPLER-442B
                     </p>
