@@ -485,8 +485,8 @@ export default function Gallery() {
         }
       }}
     >
-      {/* Tab Navigation */}
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-30">
+      {/* Tab Navigation - DEBUG VERSION */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-50" style={{backgroundColor: 'red', padding: '10px'}}>
         <div className="flex bg-black/30 backdrop-blur-sm border border-white/20 rounded-full p-1">
           <motion.button
             whileHover={{ scale: 1.02 }}
