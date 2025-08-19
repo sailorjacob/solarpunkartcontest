@@ -323,13 +323,25 @@ export default function Gallery() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="absolute bottom-24 left-8 right-8 z-20"
           >
-            <div className="max-w-2xl bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-white">
+            <div className="max-w-2xl bg-stone-50/95 backdrop-blur-md border border-stone-200/60 rounded-2xl p-6 text-stone-800 shadow-xl">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="text-2xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">
+                  <h3 className="text-2xl font-bold mb-2 text-stone-800">
                     {currentImage.title}
                   </h3>
-                  <div className="inline-block px-3 py-1 bg-emerald-500/20 rounded-full text-emerald-300 text-sm font-medium capitalize">
+                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium capitalize ${
+                    currentImage.category === 'nature' ? 'bg-emerald-100 text-emerald-700' :
+                    currentImage.category === 'urban' ? 'bg-slate-100 text-slate-700' :
+                    currentImage.category === 'culture' ? 'bg-amber-100 text-amber-700' :
+                    currentImage.category === 'agriculture' ? 'bg-green-100 text-green-700' :
+                    currentImage.category === 'technology' ? 'bg-blue-100 text-blue-700' :
+                    currentImage.category === 'infrastructure' ? 'bg-orange-100 text-orange-700' :
+                    currentImage.category === 'transportation' ? 'bg-purple-100 text-purple-700' :
+                    currentImage.category === 'civic' ? 'bg-red-100 text-red-700' :
+                    currentImage.category === 'commercial' ? 'bg-yellow-100 text-yellow-700' :
+                    currentImage.category === 'residential' ? 'bg-teal-100 text-teal-700' :
+                    'bg-stone-100 text-stone-700'
+                  }`}>
                     {currentImage.category}
                   </div>
                 </div>
@@ -340,12 +352,19 @@ export default function Gallery() {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        // Download functionality could be added here
+                        // Create download link
+                        const link = document.createElement('a');
+                        link.href = currentImage.src;
+                        link.download = `${currentImage.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.png`;
+                        link.target = '_blank';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
-                      className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+                      className="p-2 bg-stone-100 rounded-full hover:bg-stone-200 transition-colors border border-stone-300"
                       aria-label="Download image"
                     >
-                      <Download size={16} />
+                      <Download size={16} className="text-stone-600" />
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
@@ -355,14 +374,14 @@ export default function Gallery() {
                         e.stopPropagation();
                         setShowInfo(false);
                       }}
-                      className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+                      className="p-2 bg-stone-100 rounded-full hover:bg-stone-200 transition-colors border border-stone-300"
                       aria-label="Close info panel"
                     >
-                      <X size={16} />
+                      <X size={16} className="text-stone-600" />
                     </motion.button>
                 </div>
               </div>
-              <p className="text-gray-200 leading-relaxed">
+              <p className="text-stone-600 leading-relaxed">
                 {currentImage.description}
               </p>
             </div>
