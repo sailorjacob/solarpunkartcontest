@@ -449,10 +449,17 @@ export default function Gallery() {
     }
   }, [activeTab]);
 
-  // Load saved artworks on component mount
+  // Load saved artworks on component mount and when switching to view tab
   useEffect(() => {
     loadSavedArtworks();
   }, []);
+
+  // Refresh artworks when switching to view tab
+  useEffect(() => {
+    if (activeTab === 'view') {
+      loadSavedArtworks();
+    }
+  }, [activeTab]);
 
   // Auto-advance slideshow
   useEffect(() => {
@@ -554,6 +561,18 @@ export default function Gallery() {
             className="object-cover"
             sizes="100vw"
           />
+          
+          {/* Show submitted artwork overlay if it exists for current image */}
+          {artSubmissions[currentIndex % 4] && (
+            <div className="absolute inset-0">
+              <img
+                src={artSubmissions[currentIndex % 4]}
+                alt={`Community artwork`}
+                className="w-full h-full object-cover opacity-80 mix-blend-screen"
+              />
+            </div>
+          )}
+          
           {/* Gradient Overlay for Better Text Readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
         </motion.div>
