@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { Howl } from 'howler';
 
 interface Track {
@@ -37,13 +38,14 @@ const radioStations = [
 ];
 
 const djVideos = [
-  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj.mp4',
-  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj2.mp4'
+  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj2.mp4',
+  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj.mp4'
 ];
 
 const undergroundMallVideo = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/undergroundmalltimelapse.mp4';
 
 export default function SolarRadio() {
+  const router = useRouter();
   const [selectedStation, setSelectedStation] = useState(radioStations[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(0);
@@ -187,20 +189,27 @@ export default function SolarRadio() {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 relative mt-8">
       {/* Underground Mall Video - Corner Feature */}
-      <div className="absolute top-8 right-8 w-80 h-48 rounded-xl overflow-hidden border border-punk-green/30 shadow-lg">
+      <motion.div 
+        className="absolute top-8 right-8 w-80 h-48 rounded-xl overflow-hidden border border-punk-green/30 shadow-lg cursor-pointer group"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => router.push('/underground-mall')}
+      >
         <video
           src={undergroundMallVideo}
           autoPlay
           loop
           muted
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover:from-black/40 transition-all duration-300" />
         <div className="absolute bottom-3 left-3">
           <p className="text-white text-sm font-medium">Underground Mall</p>
-          <p className="text-white/70 text-xs">Live Event Venue</p>
+          <p className="text-white/70 text-xs">Live Event Venue • Click to Enter</p>
         </div>
-      </div>
+        {/* Hover effect overlay */}
+        <div className="absolute inset-0 border-2 border-punk-green/50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      </motion.div>
       
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}

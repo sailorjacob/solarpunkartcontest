@@ -85,11 +85,15 @@ export default function PublicWall() {
     const img = new window.Image();
     img.crossOrigin = 'anonymous';
     
-    img.onload = () => {
+    img.onload = async () => {
       if (!canvasRef.current) return;
       
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       backgroundImageRef.current = img;
+      
+      // Load any existing submitted artwork for this frame
+      await loadExistingArtwork();
+      
       setIsImageLoaded(true);
       
       // Load mask for current canvas
@@ -104,8 +108,43 @@ export default function PublicWall() {
       setIsImageLoaded(true);
     };
     
-    // Use your gallery image as the painting background
-    img.src = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png';
+    // Use the selected gallery image as the painting background
+    img.src = galleryImages[currentImageIndex].src;
+  };
+
+  // Load existing submitted artwork for the current frame
+  const loadExistingArtwork = async () => {
+    try {
+      const artworks = await getArtworksFromSupabase();
+      const currentFrameArtwork = artworks.find((artwork: Artwork) => artwork.frame_index === currentCanvasIndex);
+      
+      if (currentFrameArtwork && canvasRef.current) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        // Load and draw the existing artwork
+        const artworkImg = new window.Image();
+        artworkImg.crossOrigin = 'anonymous';
+        
+        return new Promise<void>((resolve) => {
+          artworkImg.onload = () => {
+            ctx.drawImage(artworkImg, 0, 0, canvas.width, canvas.height);
+            console.log(`Loaded existing artwork for frame ${currentCanvasIndex}`);
+            resolve();
+          };
+          
+          artworkImg.onerror = () => {
+            console.error(`Failed to load existing artwork for frame ${currentCanvasIndex}`);
+            resolve();
+          };
+          
+          artworkImg.src = currentFrameArtwork.artwork_data;
+        });
+      }
+    } catch (error) {
+      console.error('Error loading existing artwork:', error);
+    }
   };
 
   // Load the mask for the current canvas position
@@ -457,11 +496,32 @@ export default function PublicWall() {
     loadSavedArtworks();
   }, []);
 
+  // Reinitialize canvas when background image changes
+  useEffect(() => {
+    if (isImageLoaded) {
+      initializeCanvas();
+    }
+  }, [currentImageIndex]);
+
   // Function to change canvas frame
-  const changeCanvasFrame = (newIndex: number) => {
+  const changeCanvasFrame = async (newIndex: number) => {
     setCurrentCanvasIndex(newIndex);
     setIsMaskLoaded(false);
-    setTimeout(() => {
+    
+    // Reinitialize canvas with new frame
+    setTimeout(async () => {
+      if (canvasRef.current && backgroundImageRef.current) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          // Clear and redraw background
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(backgroundImageRef.current, 0, 0, canvas.width, canvas.height);
+          
+          // Load existing artwork for this frame
+          await loadExistingArtwork();
+        }
+      }
       loadCurrentMask();
     }, 100);
   };
@@ -529,22 +589,15 @@ export default function PublicWall() {
                 clear
               </button>
               <button
-                onClick={downloadArtwork}
-                className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border border-emerald-200 flex items-center gap-1"
-              >
-                <Download size={12} />
-                download
-              </button>
-              <button
                 onClick={saveArt}
                 disabled={isLoading}
                 className={`px-3 py-1.5 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border ${
                   isLoading 
                     ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed' 
-                    : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200'
+                    : 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200'
                 }`}
               >
-                {isLoading ? 'saving...' : 'submit to public'}
+                {isLoading ? 'saving...' : 'submit →'}
               </button>
             </div>
           </div>
