@@ -331,6 +331,17 @@ export default function PublicWall() {
     ctx.drawImage(backgroundImageRef.current, 0, 0, canvas.width, canvas.height);
   };
 
+  // Find the first empty frame for new users
+  const findFirstEmptyFrame = () => {
+    for (let i = 0; i < 4; i++) {
+      if (!artSubmissions[i]) {
+        return i;
+      }
+    }
+    // If all frames have art, return 0 (they'll replace existing art)
+    return 0;
+  };
+
   // Load saved artworks from Supabase
   const loadSavedArtworks = async () => {
     try {
@@ -346,7 +357,23 @@ export default function PublicWall() {
         }
       });
       setArtSubmissions(submissions);
+      
+      // Find first empty frame from the submissions array
+      let emptyFrame = 0;
+      for (let i = 0; i < 4; i++) {
+        if (!submissions[i]) {
+          emptyFrame = i;
+          break;
+        }
+      }
+      
+      // Set current canvas to first empty frame
+      if (emptyFrame !== currentCanvasIndex) {
+        setCurrentCanvasIndex(emptyFrame);
+      }
+      
       console.log(`Loaded ${artworks.length} artworks from Supabase`);
+      console.log(`Selected frame ${emptyFrame + 1} (first empty frame)`);
     } catch (error) {
       console.error('Error loading saved artworks:', error);
       setSaveMessage('Error loading artworks from database');
@@ -382,7 +409,7 @@ export default function PublicWall() {
         throw new Error('No artwork returned from Supabase');
       }
       
-      setSaveMessage('Artwork saved to public gallery! 🎨');
+      setSaveMessage('Artwork saved to public gallery');
       setTimeout(() => setSaveMessage(null), 3000);
       
       console.log('Artwork saved successfully to Supabase:', savedArtwork);
@@ -409,8 +436,8 @@ export default function PublicWall() {
     console.log('Starting save process...');
     
     try {
-      // Get canvas as data URL
-      const artworkData = canvasRef.current.toDataURL('image/png');
+    // Get canvas as data URL
+    const artworkData = canvasRef.current.toDataURL('image/png');
       console.log('Canvas data captured, length:', artworkData.length);
       
       // Save to database
@@ -424,28 +451,28 @@ export default function PublicWall() {
       console.log('Artwork saved successfully:', savedArtwork);
       
       // Update local submissions
-      const newSubmissions = [...artSubmissions];
-      newSubmissions[currentCanvasIndex] = artworkData;
-      setArtSubmissions(newSubmissions);
-      
+    const newSubmissions = [...artSubmissions];
+    newSubmissions[currentCanvasIndex] = artworkData;
+    setArtSubmissions(newSubmissions);
+    
       // Show success for 2 seconds before clearing
-      setSaveMessage('Artwork submitted successfully! 🎨');
+      setSaveMessage('Artwork submitted successfully');
       
       // Wait before moving to next frame
       setTimeout(() => {
-        // Move to next canvas position
-        const nextIndex = (currentCanvasIndex + 1) % 4;
+        // Move to next empty canvas position
+        const nextIndex = findFirstEmptyFrame();
         setCurrentCanvasIndex(nextIndex);
         
         // Clear and reset for next artist
         clearCanvas();
-        
-        // Load new mask for next canvas
-        setIsMaskLoaded(false);
-        setTimeout(() => {
-          loadCurrentMask();
-        }, 100);
-        
+    
+    // Load new mask for next canvas
+    setIsMaskLoaded(false);
+    setTimeout(() => {
+      loadCurrentMask();
+    }, 100);
+    
         console.log(`Moved to frame ${nextIndex + 1} for next artwork`);
       }, 2000);
       
@@ -489,8 +516,14 @@ export default function PublicWall() {
 
   // Initialize canvas on component mount
   useEffect(() => {
-    initializeCanvas();
-    loadSavedArtworks();
+    const initAndLoad = async () => {
+      // First load artwork data to know which frames have art
+      await loadSavedArtworks();
+      // Then initialize canvas (which will load existing artwork for the selected frame)
+      initializeCanvas();
+    };
+    
+    initAndLoad();
   }, []);
 
 
@@ -563,9 +596,9 @@ export default function PublicWall() {
                 max="15"
                 value={sprayRadius}
                 onChange={(e) => setSprayRadius(Number(e.target.value))}
-                className="w-16 h-1 bg-red-500 rounded-lg appearance-none cursor-pointer"
+                className="w-16 h-1 bg-blue-500 rounded-lg appearance-none cursor-pointer"
                 style={{
-                  background: `linear-gradient(to right, #ef4444 0%, #ef4444 ${((sprayRadius - 2) / 13) * 100}%, #e5e7eb ${((sprayRadius - 2) / 13) * 100}%, #e5e7eb 100%)`
+                  background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((sprayRadius - 2) / 13) * 100}%, #e5e7eb ${((sprayRadius - 2) / 13) * 100}%, #e5e7eb 100%)`
                 }}
               />
               <span className="text-xs text-gray-500 w-6">{sprayRadius}</span>
@@ -586,7 +619,7 @@ export default function PublicWall() {
                 className={`px-3 py-1.5 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border ${
                   isLoading 
                     ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed' 
-                    : 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200'
+                    : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
                 }`}
               >
                 {isLoading ? 'saving...' : 'submit →'}
@@ -598,20 +631,20 @@ export default function PublicWall() {
 
       {/* Save Message */}
       {saveMessage && (
-        <motion.div
+      <motion.div 
           initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50"
         >
           <div className={`px-4 py-2 rounded-lg text-sm font-medium ${
             saveMessage.includes('Error') 
               ? 'bg-red-100 text-red-700 border border-red-200'
-              : 'bg-green-100 text-green-700 border border-green-200'
+              : 'bg-gray-100 text-gray-700 border border-gray-200'
           }`}>
             {saveMessage}
-          </div>
-        </motion.div>
+        </div>
+      </motion.div>
       )}
 
 
@@ -634,15 +667,20 @@ export default function PublicWall() {
                     index === currentCanvasIndex 
                       ? 'bg-blue-500 border-blue-400' 
                       : artSubmissions[index] 
-                        ? 'bg-green-500 border-green-400' 
+                        ? 'bg-gray-500 border-gray-400' 
                         : 'bg-gray-300 border-gray-400 hover:bg-gray-400'
                   }`}
                 />
               ))}
             </div>
-            <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">
-              Gallery Frames
-            </span>
+            <div className="flex flex-col">
+              <span className="text-xs font-mono text-gray-600 uppercase tracking-wide">
+                Frame {currentCanvasIndex + 1}/4
+              </span>
+              <span className="text-xs text-gray-500">
+                {artSubmissions[currentCanvasIndex] ? 'Has Art' : 'Empty'}
+              </span>
+            </div>
           </div>
         </div>
       </motion.div>
