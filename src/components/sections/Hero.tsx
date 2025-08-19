@@ -49,7 +49,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative min-h-screen bg-white text-black overflow-hidden">
+    <section className="relative min-h-screen bg-gray-50 text-black overflow-hidden">
       {/* Background Image Carousel */}
       <div className="absolute inset-0">
         {heroImages.map((image, index) => (
@@ -268,7 +268,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
       </div>
 
       {/* Bottom Status Bar */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white/80 backdrop-blur-sm">
+      <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-gray-50/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
                       <div className="flex items-center justify-between text-xs font-mono text-gray-600">
               <div className="flex items-center gap-6">

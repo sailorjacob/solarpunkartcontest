@@ -53,15 +53,17 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
             >
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-400 rounded-sm" />
+                  <div className={`w-8 h-8 rounded-sm ${
+                    activeSection === 'home' ? 'bg-gradient-to-br from-red-500 to-orange-500' : 'bg-gradient-to-br from-green-400 to-blue-400'
+                  }`} />
                   <div>
                     <h1 className={`font-bold text-xl tracking-tight transition-colors duration-300 ${
-                      isScrolled ? 'text-white' : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio' ? 'text-slate-800' : 'text-white'
+                      isScrolled ? 'text-white' : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio' ? 'text-slate-800' : activeSection === 'home' ? 'text-orange-600' : 'text-white'
                     }`}>
                       SOJOURN
                     </h1>
                     <p className={`text-xs font-mono tracking-wider -mt-1 transition-colors duration-300 ${
-                      isScrolled ? 'text-gray-400' : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio' ? 'text-slate-600' : 'text-gray-300'
+                      isScrolled ? 'text-gray-400' : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio' ? 'text-slate-600' : activeSection === 'home' ? 'text-orange-500' : 'text-gray-300'
                     }`}>
                       KEPLER-442B
                     </p>
@@ -84,12 +86,14 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                   className={cn(
                     "relative px-6 py-3 font-medium tracking-wider transition-all duration-300 uppercase text-sm",
                     activeSection === item.id
-                      ? "text-green-400 border-b-2 border-green-400"
+                      ? activeSection === 'home' ? "text-red-500 border-b-2 border-red-500" : "text-green-400 border-b-2 border-green-400"
                       : isScrolled 
                         ? "text-gray-400 hover:text-white"
                         : activeSection === 'journey' || activeSection === 'wall' || activeSection === 'radio'
                           ? "text-slate-800 hover:text-slate-600"
-                          : "text-slate-200 hover:text-white"
+                          : activeSection === 'home'
+                            ? "text-orange-600 hover:text-red-500"
+                            : "text-slate-200 hover:text-white"
                   )}
                 >
 
