@@ -209,7 +209,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                 onClick={onCreateClick}
                 className="px-6 py-1.5 border border-white/70 text-white text-sm font-medium tracking-wide rounded-full hover:bg-white/20 hover:border-white transition-all duration-300 hover:scale-105"
               >
-                create art
+                create
               </button>
             </motion.div>
           </motion.div>
