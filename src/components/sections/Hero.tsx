@@ -29,6 +29,9 @@ const heroImages = [
 export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [footerMousePosition, setFooterMousePosition] = useState({ x: 0, y: 0 });
+  const [trailPosition, setTrailPosition] = useState({ x: 0, y: 0 });
+  const [isHoveringFooter, setIsHoveringFooter] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -47,6 +50,29 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
     }, 4000);
     return () => clearInterval(interval);
   }, []);
+
+  // Smooth trailing animation for footer mouse trail
+  useEffect(() => {
+    if (!isHoveringFooter) return;
+
+    const animateTrail = () => {
+      setTrailPosition(prev => ({
+        x: prev.x + (footerMousePosition.x - prev.x) * 0.1,
+        y: prev.y + (footerMousePosition.y - prev.y) * 0.1
+      }));
+    };
+
+    const intervalId = setInterval(animateTrail, 16); // ~60fps
+    return () => clearInterval(intervalId);
+  }, [footerMousePosition, isHoveringFooter]);
+
+  const handleFooterMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setFooterMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
 
   return (
     <section className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -268,7 +294,24 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
       </div>
 
       {/* Bottom Status Bar */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white/80 backdrop-blur-sm">
+      <div 
+        className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white/80 backdrop-blur-sm"
+        onMouseMove={handleFooterMouseMove}
+        onMouseEnter={() => setIsHoveringFooter(true)}
+        onMouseLeave={() => setIsHoveringFooter(false)}
+      >
+        {/* Red Circle Trail */}
+        {isHoveringFooter && (
+          <div 
+            className="absolute w-4 h-4 bg-red-500 rounded-full pointer-events-none z-10 transition-opacity duration-200"
+            style={{
+              left: trailPosition.x - 8,
+              top: trailPosition.y - 8,
+              opacity: 0.7
+            }}
+          />
+        )}
+        
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
                       <div className="flex items-center justify-between text-xs font-mono text-gray-600">
               <div className="flex items-center gap-6">
