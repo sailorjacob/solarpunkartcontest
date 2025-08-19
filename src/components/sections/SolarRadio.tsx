@@ -23,13 +23,13 @@ const radioStations = [
       { 
         title: 'Travel', 
         artist: 'SolarPunk DJ', 
-        duration: '4:17', 
+        duration: '2:43', 
         audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Travel.mp3' 
       },
       { 
         title: 'Terraform', 
         artist: 'SolarPunk DJ', 
-        duration: '3:52', 
+        duration: '2:10', 
         audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Terraform.mp3' 
       },
     ],
@@ -201,7 +201,7 @@ export default function SolarRadio() {
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 relative">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 relative mt-8">
       {/* Underground Mall Video - Corner Feature */}
       <div className="absolute top-8 right-8 w-80 h-48 rounded-xl overflow-hidden border border-punk-green/30 shadow-lg">
         <video
@@ -220,22 +220,22 @@ export default function SolarRadio() {
       
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">
+        <div className="mb-12">
+          <h2 className="text-4xl font-bold mb-3 text-left">
             <span className="bg-gradient-to-r from-solar-gold via-punk-green to-mars-orange text-gradient">
               SolarPunk Radio
             </span>
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-left text-lg">
             Live from Underground Mall
           </p>
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left Side - Song Selection */}
-          <div className="glass rounded-2xl p-6">
-            <h3 className="text-xl font-bold mb-6 text-punk-green">Select Track</h3>
+          <div className="glass rounded-2xl p-8">
+            <h3 className="text-2xl font-bold mb-8 text-punk-green text-left">Select Track</h3>
             <div className="space-y-4">
               {selectedStation.tracks.map((track, index) => (
                 <motion.div
@@ -277,53 +277,50 @@ export default function SolarRadio() {
             </div>
           </div>
 
-          {/* Right Side - DJ Videos and Controls */}
-          <div className="glass rounded-2xl p-6">
-            {/* DJ Videos */}
-            <div className="mb-6">
-              <div className="grid grid-cols-2 gap-2 h-64">
-                {djVideos.map((video, index) => (
-                  <div key={index} className="relative overflow-hidden rounded-xl">
-                    <video
-                      src={video}
-                      autoPlay
-                      loop
-                      muted
-                      className={`w-full h-full object-cover transition-all duration-500 ${
-                        currentTrack === index && isPlaying 
-                          ? 'brightness-100 scale-105' 
-                          : 'brightness-75 scale-100'
-                      }`}
-                    />
-                    {currentTrack === index && (
-                      <div className="absolute inset-0 border-2 border-punk-green rounded-xl" />
-                    )}
-                    <div className="absolute bottom-2 left-2">
-                      <p className="text-white text-xs font-medium">
-                        {selectedStation.tracks[index]?.title || `DJ ${index + 1}`}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+          {/* Right Side - DJ Video and Controls */}
+          <div className="glass rounded-2xl p-8">
+            {/* DJ Video */}
+            <div className="mb-8">
+              <div className="relative w-full h-80 rounded-xl overflow-hidden">
+                <video
+                  src={djVideos[currentDjVideo]}
+                  autoPlay
+                  loop
+                  muted
+                  className="w-full h-full object-cover"
+                />
+                {/* LIVE indicator in top right */}
+                <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/70 px-3 py-1 rounded-full">
+                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                  <span className="text-white text-sm font-bold">LIVE</span>
+                </div>
+                <div className="absolute bottom-4 left-4">
+                  <p className="text-white text-lg font-bold">
+                    {selectedStation.tracks[currentTrack]?.title}
+                  </p>
+                  <p className="text-white/80 text-sm">
+                    {selectedStation.tracks[currentTrack]?.artist}
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Current Track Info */}
-            <div className="text-center mb-6">
-              <h4 className="text-xl font-bold mb-1">
+            <div className="text-center mb-8">
+              <h4 className="text-2xl font-bold mb-2">
                 {selectedStation.tracks[currentTrack].title}
               </h4>
-              <p className="text-gray-500">
+              <p className="text-gray-500 text-lg">
                 {selectedStation.tracks[currentTrack].artist}
               </p>
             </div>
 
             {/* Progress Bar */}
             {(selectedStation.tracks[currentTrack] as any).audioUrl && (
-              <div className="mb-6">
-                <div className="flex items-center gap-3 text-sm text-gray-500 mb-2">
-                  <span>{isPlaying && audioRef.current ? formatTime(audioRef.current.seek() as number) : '0:00'}</span>
-                  <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+              <div className="mb-8">
+                <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
+                  <span className="w-12 text-center">{isPlaying && audioRef.current ? formatTime(audioRef.current.seek() as number) : '0:00'}</span>
+                  <div className="flex-1 bg-gray-200 rounded-full h-3 overflow-hidden">
                     <motion.div
                       className="h-full bg-gradient-to-r from-punk-green to-punk-mint"
                       initial={{ width: 0 }}
@@ -331,13 +328,13 @@ export default function SolarRadio() {
                       transition={{ duration: 0.1 }}
                     />
                   </div>
-                  <span>{selectedStation.tracks[currentTrack].duration}</span>
+                  <span className="w-12 text-center">{selectedStation.tracks[currentTrack].duration}</span>
                 </div>
               </div>
             )}
 
             {/* Player Controls */}
-            <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="flex items-center justify-center gap-6 mb-8">
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -375,7 +372,7 @@ export default function SolarRadio() {
                 max="100"
                 value={volume}
                 onChange={(e) => setVolume(Number(e.target.value))}
-                className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer volume-slider"
               />
               <span className="text-gray-500 w-12 text-right text-sm">{volume}%</span>
             </div>
