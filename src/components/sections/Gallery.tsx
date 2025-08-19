@@ -324,43 +324,50 @@ export default function Gallery() {
   const saveArt = async () => {
     if (!canvasRef.current || isLoading) return;
     
-    // Get canvas as data URL
+    // Get canvas as data URL (this includes any existing artwork + new additions)
     const artworkData = canvasRef.current.toDataURL('image/png');
     
     // Save to database
     const savedArtwork = await saveArtworkToDatabase(artworkData);
     if (!savedArtwork) return;
     
-    // Add to submissions at current position
+    // Update submissions at current position with the new collaborative artwork
     const newSubmissions = [...artSubmissions];
     newSubmissions[currentCanvasIndex] = artworkData;
     setArtSubmissions(newSubmissions);
     
-    // Move to next available canvas position
-    const nextIndex = findNextAvailableCanvas();
-    setCurrentCanvasIndex(nextIndex);
+    // Don't automatically move to next frame - let user choose
+    // This allows them to continue building on the same frame or switch manually
     
-    // Clear and reset for next artist
-    clearCanvas();
-    
-    // Load new mask for next canvas
-    setIsMaskLoaded(false);
-    setTimeout(() => {
-      loadCurrentMask();
-    }, 100);
-    
-    console.log(`Art saved to canvas position ${currentCanvasIndex + 1}, moving to position ${nextIndex + 1}`);
-    console.log(`Gallery frames in use: ${newSubmissions.filter(Boolean).length}/4`);
+    // Show success message without clearing
+    console.log(`Collaborative art updated on frame ${currentCanvasIndex + 1}!`);
+    console.log(`Gallery frames with art: ${newSubmissions.filter(Boolean).length}/4`);
   };
 
-  // Function to manually select a canvas frame
+  // Function to manually select a canvas frame and load existing art
   const selectCanvasFrame = (frameIndex: number) => {
     setCurrentCanvasIndex(frameIndex);
     clearCanvas();
     setIsMaskLoaded(false);
     setTimeout(() => {
       loadCurrentMask();
+      loadExistingArtwork(frameIndex);
     }, 100);
+  };
+
+  // Load existing collaborative artwork for a frame
+  const loadExistingArtwork = (frameIndex: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas || !artSubmissions[frameIndex]) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const img = new window.Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+    img.src = artSubmissions[frameIndex];
   };
 
   // Load saved artworks from Supabase
@@ -429,8 +436,12 @@ export default function Gallery() {
   useEffect(() => {
     if (activeTab === 'create') {
       initializeCanvas();
+      // Load existing artwork for current frame after a brief delay
+      setTimeout(() => {
+        loadExistingArtwork(currentCanvasIndex);
+      }, 200);
     }
-  }, [activeTab]);
+  }, [activeTab, currentCanvasIndex]);
 
   // Load saved artworks on component mount
   useEffect(() => {
@@ -714,31 +725,41 @@ export default function Gallery() {
           {/* Controls Panel */}
           <div className="absolute top-20 right-8 z-20">
             <div className="bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl p-4 space-y-4">
-              {/* Download Button */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={downloadArtwork}
-                className="w-full px-4 py-2 bg-emerald-500/20 border border-emerald-400/30 rounded-lg text-emerald-300 hover:bg-emerald-500/30 transition-all flex items-center gap-2"
-              >
-                <Download size={16} />
-                Download Art
-              </motion.button>
+              
+              {/* Collaborative Info */}
+              <div className="text-white/80 text-xs bg-white/10 rounded-lg p-3 border border-white/20">
+                <div className="font-semibold text-emerald-300 mb-1">🎨 Public Collaborative Canvas</div>
+                <div>Paint on any frame, download your art, then submit to add it permanently to the public gallery!</div>
+              </div>
 
-              {/* Submit Button */}
-              <motion.button
-                whileHover={{ scale: isLoading ? 1 : 1.05 }}
-                whileTap={{ scale: isLoading ? 1 : 0.95 }}
-                onClick={saveArt}
-                disabled={isLoading}
-                className={`w-full px-4 py-2 border rounded-lg transition-all ${
-                  isLoading 
-                    ? 'bg-gray-500/20 border-gray-400/30 text-gray-400 cursor-not-allowed' 
-                    : 'bg-blue-500/20 border-blue-400/30 text-blue-300 hover:bg-blue-500/30'
-                }`}
-              >
-                {isLoading ? 'Saving...' : 'Submit to Gallery'}
-              </motion.button>
+              {/* Main Action Buttons - Side by Side */}
+              <div className="flex gap-2">
+                {/* Download Button */}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={downloadArtwork}
+                  className="flex-1 px-3 py-2 bg-emerald-500/20 border border-emerald-400/30 rounded-lg text-emerald-300 hover:bg-emerald-500/30 transition-all flex items-center justify-center gap-2 text-sm"
+                >
+                  <Download size={14} />
+                  Download
+                </motion.button>
+
+                {/* Submit Button */}
+                <motion.button
+                  whileHover={{ scale: isLoading ? 1 : 1.05 }}
+                  whileTap={{ scale: isLoading ? 1 : 0.95 }}
+                  onClick={saveArt}
+                  disabled={isLoading}
+                  className={`flex-1 px-3 py-2 border rounded-lg transition-all flex items-center justify-center gap-2 text-sm ${
+                    isLoading 
+                      ? 'bg-gray-500/20 border-gray-400/30 text-gray-400 cursor-not-allowed' 
+                      : 'bg-blue-500/20 border-blue-400/30 text-blue-300 hover:bg-blue-500/30'
+                  }`}
+                >
+                  {isLoading ? 'Saving...' : 'Submit to Public'}
+                </motion.button>
+              </div>
 
               {/* Clear Button */}
               <motion.button
@@ -752,7 +773,10 @@ export default function Gallery() {
 
               {/* Canvas Frame Selector */}
               <div className="space-y-2">
-                <label className="text-white/80 text-sm">Canvas Frame</label>
+                <label className="text-white/80 text-sm">Select Canvas Frame</label>
+                <div className="text-white/60 text-xs mb-2">
+                  Each frame builds up over time as people add their art!
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                   {galleryFrames.map((_, index) => (
                     <motion.button
@@ -769,14 +793,16 @@ export default function Gallery() {
                       }`}
                     >
                       Frame {index + 1}
-                      {artSubmissions[index] && (
-                        <div className="text-xs opacity-75">Used</div>
+                      {artSubmissions[index] ? (
+                        <div className="text-xs opacity-75">🎨 Active</div>
+                      ) : (
+                        <div className="text-xs opacity-75">Empty</div>
                       )}
                     </motion.button>
                   ))}
                 </div>
                 <div className="text-white/60 text-xs">
-                  {artSubmissions.filter(Boolean).length}/4 frames used
+                  {artSubmissions.filter(Boolean).length}/4 frames have public art
                 </div>
               </div>
 
