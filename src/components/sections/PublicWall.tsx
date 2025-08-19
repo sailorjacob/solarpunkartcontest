@@ -828,7 +828,7 @@ export default function PublicWall() {
                <p className="text-xs text-gray-600 leading-relaxed">
                  Welcome to our collaborative art wall! Paint with the spray tool and choose any color. 
                  When you submit, your artwork becomes part of the evolving community creation that everyone can build upon. 
-                 Use 'clear' to remove only your current strokes while preserving the published collaborative artwork.
+                 Use 'clear' to remove only your current strokes before submission.
                </p>
         </div>
       </motion.div>
