@@ -233,20 +233,23 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
             >
               <button
                 onClick={onExploreClick}
-                className="px-6 py-1.5 border-2 text-sm font-medium tracking-wide rounded-full hover:opacity-90 transition-opacity duration-200 relative overflow-hidden"
+                className="px-6 py-2 text-sm font-medium tracking-wide rounded-full hover:opacity-80 transition-all duration-200 relative overflow-hidden border"
                 style={{
-                  borderImage: 'linear-gradient(to right, rgb(239 68 68), rgb(251 146 60)) 1',
-                  background: 'linear-gradient(to right, rgb(239 68 68), rgb(251 146 60))',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
+                  background: 'linear-gradient(135deg, rgb(239 68 68 / 0.1), rgb(251 146 60 / 0.1))',
+                  borderColor: 'rgb(239 68 68 / 0.3)',
+                  color: 'rgb(239 68 68)'
                 }}
               >
                 explore
               </button>
               <button
                 onClick={onCreateClick}
-                className="px-6 py-1.5 border border-white/70 text-white text-sm font-medium tracking-wide rounded-full hover:opacity-90 transition-opacity duration-200"
+                className="px-6 py-2 text-sm font-medium tracking-wide rounded-full hover:opacity-80 transition-all duration-200 relative overflow-hidden border"
+                style={{
+                  background: 'linear-gradient(135deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.05))',
+                  borderColor: 'rgb(255 255 255 / 0.3)',
+                  color: 'rgb(255 255 255)'
+                }}
               >
                 create
               </button>

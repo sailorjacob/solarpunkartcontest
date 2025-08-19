@@ -100,8 +100,22 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
               ))}
             </div>
 
-            {/* Right Spacer for Balance */}
-            <div className="hidden lg:block w-32"></div>
+            {/* Art Wall Button */}
+            <div className="hidden lg:block">
+              <motion.button
+                onClick={() => onSectionChange('wall')}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-6 py-2 text-sm font-medium tracking-wide rounded-full hover:opacity-80 transition-all duration-200 relative overflow-hidden border"
+                style={{
+                  background: 'linear-gradient(135deg, rgb(59 130 246 / 0.1), rgb(96 165 250 / 0.1))',
+                  borderColor: 'rgb(59 130 246 / 0.3)',
+                  color: 'rgb(59 130 246)'
+                }}
+              >
+                art wall
+              </motion.button>
+            </div>
 
             {/* Mobile Menu Button */}
             <button
