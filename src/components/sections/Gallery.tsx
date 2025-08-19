@@ -329,15 +329,12 @@ export default function Gallery() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="absolute bottom-24 left-8 right-8 z-20"
           >
-            <div className="max-w-2xl bg-white/75 backdrop-blur-md border border-white/40 rounded-2xl p-6 text-stone-800 shadow-xl">
-              <div className="flex items-start justify-between mb-4">
+            <div className="max-w-2xl bg-white/75 backdrop-blur-md border border-white/40 rounded-2xl p-5 text-stone-800 shadow-xl">
+              <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="text-2xl font-bold mb-2 text-stone-800">
+                  <h3 className="text-2xl font-bold text-stone-800">
                     {currentImage.title}
                   </h3>
-                  <div className="inline-block px-3 py-1 rounded-full text-sm font-medium capitalize bg-slate-100 text-slate-700">
-                    {currentImage.category}
-                  </div>
                 </div>
                 <div className="flex gap-2">
                     <motion.button
