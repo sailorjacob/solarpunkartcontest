@@ -37,9 +37,9 @@ const visionImages = [
   },
   {
     id: 5,
-    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png',
-    title: 'Cultural Art Gallery',
-    description: 'The collaborative art gallery space where citizens contribute to a living canvas, blending traditional gallery aesthetics with interactive digital art installations.',
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/underground%20skylight%20museum.png',
+    title: 'Underground Skylight Museum',
+    description: 'A magnificent subterranean cultural space featuring natural skylights that illuminate art installations and exhibitions, creating a unique blend of underground architecture and natural lighting.',
     category: 'culture'
   },
   {
