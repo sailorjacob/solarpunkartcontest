@@ -37,10 +37,10 @@ const visionImages = [
   },
   {
     id: 5,
-    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/City%20neighborhood%20river.png',
-    title: 'Riverside Commons',
-    description: 'Engineered waterways flow through residential districts, providing both ecological balance and communal gathering spaces for the citizens of Sojourn.',
-    category: 'residential'
+    src: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/gallery2.png',
+    title: 'Cultural Art Gallery',
+    description: 'The collaborative art gallery space where citizens contribute to a living canvas, blending traditional gallery aesthetics with interactive digital art installations.',
+    category: 'culture'
   },
   {
     id: 6,

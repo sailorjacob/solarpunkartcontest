@@ -93,7 +93,7 @@ export default function Home() {
   }
 
   return (
-    <main className="relative">
+    <main className="relative overflow-x-hidden">
       {/* Navigation - Hidden on About page */}
       {activeSection !== 'about' && (
         <Navigation activeSection={activeSection} onSectionChange={handleSectionChange} />
@@ -114,7 +114,7 @@ export default function Home() {
 
       {/* Footer Toggle Button - Only on Home and Gallery Pages */}
       {(activeSection === 'home' || activeSection === 'gallery') && (
-        <div className="relative">
+        <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
           {/* Toggle Button */}
           <motion.div 
             className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-20"
@@ -123,7 +123,7 @@ export default function Home() {
           >
             <button
               onClick={handleFooterToggle}
-              className="p-3 bg-stone-800/80 backdrop-blur-sm text-stone-200 rounded-t-lg hover:bg-stone-700/80 transition-all duration-300 border border-stone-600/50"
+              className="p-3 bg-stone-800/80 backdrop-blur-sm text-stone-200 rounded-t-lg hover:bg-stone-700/80 transition-all duration-300 border border-stone-600/50 pointer-events-auto"
             >
               <ChevronDownIcon 
                 className={`w-4 h-4 transform transition-transform duration-300 ${
@@ -137,11 +137,11 @@ export default function Home() {
           <AnimatePresence>
             {showFooter && (
               <motion.footer 
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
+                initial={{ y: '100%', opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: '100%', opacity: 0 }}
                 transition={{ duration: 0.4, ease: 'easeInOut' }}
-                className="relative overflow-hidden bg-amber-50 text-stone-800"
+                className="fixed bottom-0 left-0 right-0 overflow-hidden bg-amber-50 text-stone-800 max-h-[80vh] overflow-y-auto"
               >
                 <div className="container-custom py-16">
                   <div className="grid md:grid-cols-3 gap-12">
