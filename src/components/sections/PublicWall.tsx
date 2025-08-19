@@ -49,12 +49,12 @@ export default function PublicWall() {
     }
   ];
 
-  // Gallery canvas frame URLs for mapping
+  // Gallery canvas frame URLs for mapping - CORRECTED ORDER
   const galleryFrames = [
-    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe1.png',
-    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe2.png',
-    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe3.png',
-    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe4.png'
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe4.png', // Frame 1 (far left)
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe3.png', // Frame 2 (second from left)
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe1.png', // Frame 3 (third from left)
+    'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/gallery/galleryframe2.png'  // Frame 4 (far right)
   ];
 
   // Set base drawing styles
@@ -360,11 +360,11 @@ export default function PublicWall() {
       });
       setArtSubmissions(submissions);
       
-      // Randomly select a frame for the user to paint on
+      // Randomly select a frame for the user to paint on (0-3 in code = Frames 1-4 for user)
       const randomFrame = Math.floor(Math.random() * 4);
       setCurrentCanvasIndex(randomFrame);
       
-      console.log(`User assigned to frame ${randomFrame + 1}`);
+      console.log(`User assigned to Frame ${randomFrame + 1} (index ${randomFrame})`);
       
       console.log(`Loaded ${artworks.length} artworks from Supabase`);
     } catch (error) {
