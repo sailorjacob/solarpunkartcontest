@@ -185,11 +185,13 @@ export default function About({ onBack }: AboutProps) {
             Early rough layouts and basic structure - the humble beginnings
           </p>
           
-          <img 
-            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/textedit.png"
-            alt="Text editing and development"
-            className="w-full mb-3"
-          />
+          <div className="w-full h-48 mb-3 overflow-hidden">
+            <img 
+              src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/textedit.png"
+              alt="Text editing and development"
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
           <p className="text-sm text-stone-500 mb-4">
             Text editing and code development process - refining the interactive features
           </p>
@@ -212,11 +214,13 @@ export default function About({ onBack }: AboutProps) {
             Color testing - discovering that blue spray paint was too light for visibility
           </p>
 
-          <img 
-            src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokspraypaintstep.png"
-            alt="Spraypaint tool development"
-            className="w-full mb-3"
-          />
+          <div className="w-full h-48 mb-3 overflow-hidden">
+            <img 
+              src="https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/process%20documentation/grokspraypaintstep.png"
+              alt="Spraypaint tool development"
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
           <p className="text-sm text-stone-500 mb-4">
             Working on spray paint mechanics with AI assistance to achieve realistic effects
           </p>
