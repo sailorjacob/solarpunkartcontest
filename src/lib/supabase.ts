@@ -61,11 +61,13 @@ export const saveArtworkToSupabase = async (artwork: Omit<Artwork, 'id' | 'creat
 
 export const getArtworksFromSupabase = async () => {
   try {
-    // Get only the latest artwork for each frame_index
+    // Get latest artwork for each frame (0-3) with limit to prevent timeout
     const { data, error } = await supabase
       .from('artworks')
       .select('*')
+      .in('frame_index', [0, 1, 2, 3])
       .order('created_at', { ascending: false })
+      .limit(20) // Limit to recent entries to prevent timeout
 
     if (error) throw error
     
@@ -82,7 +84,8 @@ export const getArtworksFromSupabase = async () => {
     return latestByFrame
   } catch (error) {
     console.error('Error fetching artworks from Supabase:', error)
-    throw error
+    // Return empty array on error to prevent app breaking
+    return []
   }
 }
 

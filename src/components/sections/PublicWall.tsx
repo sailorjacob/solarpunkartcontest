@@ -18,8 +18,10 @@ export default function PublicWall() {
   const [artSubmissions, setArtSubmissions] = useState<string[]>([]);
   const [savedArtworks, setSavedArtworks] = useState<Artwork[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [showDescription, setShowDescription] = useState(false);
+  const [hasUserPainted, setHasUserPainted] = useState(false);
 
   // Ink blue color and settings  
   const neonBlue = '#1E40AF'; // Ink blue instead of cyan
@@ -196,6 +198,7 @@ export default function PublicWall() {
       return;
     }
     setIsDrawing(true);
+    setHasUserPainted(true); // Track that user has started painting
     const pos = getMousePos(e);
     spray(pos.x, pos.y);
   };
@@ -334,6 +337,9 @@ export default function PublicWall() {
     
     // Reload existing artwork for this frame (so public art stays visible)
     loadExistingArtwork();
+    
+    // Reset painted state
+    setHasUserPainted(false);
   };
 
   // Remove frame switching logic - single collaborative canvas
@@ -341,7 +347,7 @@ export default function PublicWall() {
   // Load saved artworks from Supabase
   const loadSavedArtworks = async () => {
     try {
-      setIsLoading(true);
+      setIsInitialLoading(true);
       const artworks = await getArtworksFromSupabase();
       setSavedArtworks(artworks);
       
@@ -363,10 +369,10 @@ export default function PublicWall() {
       console.log(`Loaded ${artworks.length} artworks from Supabase`);
     } catch (error) {
       console.error('Error loading saved artworks:', error);
-      setSaveMessage('Error loading artworks from database');
-      setTimeout(() => setSaveMessage(null), 3000);
+      // Don't show error message on initial load - just fail silently
+      console.log('Continuing with empty gallery...');
     } finally {
-      setIsLoading(false);
+      setIsInitialLoading(false);
     }
   };
 
@@ -444,6 +450,9 @@ export default function PublicWall() {
       
       // Show success message
       setSaveMessage('Artwork saved to gallery!');
+      
+      // Reset painted state after successful save
+      setHasUserPainted(false);
       
       // Clear success message after 3 seconds
       setTimeout(() => {
@@ -591,22 +600,24 @@ export default function PublicWall() {
             <div className="h-4 w-px bg-gray-300" />
             
             <div className="flex gap-2">
-              <button
-                onClick={clearCanvas}
-                className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border border-gray-200"
-              >
-                clear
-              </button>
+              {hasUserPainted && (
+                <button
+                  onClick={clearCanvas}
+                  className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border border-gray-200"
+                >
+                  clear
+                </button>
+              )}
               <button
                 onClick={saveArt}
-                disabled={isLoading}
+                disabled={isLoading || isInitialLoading}
                 className={`px-3 py-1.5 text-xs font-mono lowercase tracking-wide rounded-lg transition-all duration-200 border ${
-                  isLoading 
+                  (isLoading || isInitialLoading)
                     ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed' 
                     : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
                 }`}
               >
-                {isLoading ? 'saving...' : 'submit →'}
+                {isLoading ? 'saving...' : isInitialLoading ? 'loading...' : 'submit →'}
               </button>
             </div>
           </div>
