@@ -142,7 +142,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 className="text-7xl lg:text-9xl font-black leading-none"
               >
-                <span className="text-red-500">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">
                   SOJOURN
                 </span>
               </motion.h1>
@@ -179,12 +179,12 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-600"
             >
               <div>
-                <div className="text-3xl font-bold text-red-500">2.4B</div>
-                <div className="text-sm text-red-600 font-mono">POPULATION</div>
+                <div className="text-3xl font-bold text-emerald-400">2.4B</div>
+                <div className="text-sm text-emerald-300 font-mono">POPULATION</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-blue-500">100%</div>
-                <div className="text-sm text-blue-600 font-mono">RENEWABLE</div>
+                <div className="text-3xl font-bold text-cyan-400">100%</div>
+                <div className="text-sm text-cyan-300 font-mono">RENEWABLE</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-white">2157</div>
