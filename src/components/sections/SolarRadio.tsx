@@ -23,29 +23,29 @@ const radioStations = [
     frequency: '108.5',
     tracks: [
       { 
-        title: 'Travel', 
-        artist: 'SolarPunk DJ', 
-        duration: '2:43', 
-        audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Travel.mp3' 
-      },
-      { 
         title: 'Terraform', 
         artist: 'SolarPunk DJ', 
         duration: '2:10', 
         audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Terraform.mp3' 
+      },
+      { 
+        title: 'Travel', 
+        artist: 'SolarPunk DJ', 
+        duration: '2:43', 
+        audioUrl: 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/Travel.mp3' 
       },
     ],
   },
 ];
 
 const djVideos = [
-  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj2.mp4',
-  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj.mp4'
+  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj.mp4',
+  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/solarpunkradio/solarpunkdj2.mp4'
 ];
 
 const djPlayerImages = [
-  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/images/DJPlayer.png',
-  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/images/djplayer2.png'
+  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/images/djplayer2.png',
+  'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/images/DJPlayer.png'
 ];
 
 const undergroundMallVideo = 'https://twejikjgxkzmphocbvpt.supabase.co/storage/v1/object/public/solarpunkcity/extra%20vision/undergroundmalltimelapse.mp4';
@@ -54,7 +54,7 @@ export default function SolarRadio() {
   const router = useRouter();
   const [selectedStation, setSelectedStation] = useState(radioStations[0]);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(0); // Default to Travel track
+  const [currentTrack, setCurrentTrack] = useState(0); // Default to Terraform track
   const [volume, setVolume] = useState(70);
   const [visualizerData, setVisualizerData] = useState<number[]>(new Array(20).fill(0));
   const [progress, setProgress] = useState(0);
