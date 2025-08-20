@@ -256,14 +256,14 @@ export default function Gallery() {
       </div>
 
       {/* Image Counter */}
-      <div className="absolute top-8 left-8 z-[60]">
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 md:top-8 md:left-8 md:bottom-auto md:transform-none z-[60]">
         <div className="bg-black/30 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-white font-mono text-sm">
           {String(currentIndex + 1).padStart(2, '0')} / {String(visionImages.length).padStart(2, '0')}
         </div>
       </div>
 
-      {/* Info Toggle */}
-      <div className="absolute top-8 right-8 z-[60] flex gap-3">
+      {/* Play/Pause Button - Mobile positioned center-right, Desktop positioned right */}
+      <div className="absolute top-8 right-20 md:right-8 z-[60]">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -279,6 +279,10 @@ export default function Gallery() {
         >
           {isAutoPlaying ? <Pause size={20} /> : <Play size={20} />}
         </motion.button>
+      </div>
+
+      {/* Info Toggle - Desktop only */}
+      <div className="absolute top-8 right-8 z-[60] flex gap-3">
         
         <motion.button
           whileHover={{ scale: 1.05 }}

@@ -216,7 +216,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
               </div>
               <div>
                 <div className="text-3xl font-bold text-cyan-400">100%</div>
-                <div className="text-sm text-cyan-300 font-mono">GENERATED</div>
+                <div className="text-sm text-cyan-300 font-mono">CLEAN</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-white">2157</div>
@@ -311,7 +311,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
 
       {/* Bottom Status Bar */}
       <div 
-        className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white/80 backdrop-blur-sm z-60"
+        className="absolute bottom-0 left-0 right-0 border-t border-gray-700 bg-gray-900/90 backdrop-blur-sm z-60"
         onMouseMove={handleFooterMouseMove}
         onMouseEnter={() => setIsHoveringFooter(true)}
         onMouseLeave={() => setIsHoveringFooter(false)}
@@ -319,7 +319,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
         {/* Red Circle Trail */}
         {isHoveringFooter && (
           <div 
-            className="absolute w-8 h-8 bg-red-500 rounded-full pointer-events-none z-70 transition-opacity duration-200 shadow-lg border-2 border-white"
+            className="absolute w-8 h-8 bg-red-500 rounded-full pointer-events-none z-70 transition-opacity duration-200 shadow-lg border-2 border-gray-800"
             style={{
               left: trailPosition.x - 16,
               top: trailPosition.y - 16,
@@ -329,7 +329,7 @@ export default function Hero({ onExploreClick, onCreateClick }: HeroProps) {
         )}
         
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
-                      <div className="flex items-center justify-between text-xs font-mono text-gray-600">
+                      <div className="flex items-center justify-between text-xs font-mono text-gray-300">
               <div className="flex items-center gap-6">
                 <div>SOJOURN COLONY ALPHA</div>
                 <div>STATUS: ACTIVE</div>

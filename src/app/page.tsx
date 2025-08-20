@@ -141,7 +141,7 @@ export default function Home() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: '100%', opacity: 0 }}
                 transition={{ duration: 0.4, ease: 'easeInOut' }}
-                className="fixed bottom-0 left-0 right-0 overflow-hidden bg-gray-900 text-gray-100 max-h-[80vh] overflow-y-auto pointer-events-auto"
+                className="fixed bottom-0 left-0 right-0 overflow-hidden bg-amber-50 text-stone-800 max-h-[80vh] overflow-y-auto pointer-events-auto"
               >
                 <div className="container-custom py-16">
                   <div className="grid md:grid-cols-3 gap-12">
@@ -150,22 +150,22 @@ export default function Home() {
                       <div className="flex items-center gap-3 mb-6">
                         <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-400 rounded-sm" />
                         <div>
-                          <h3 className="font-bold text-xl text-gray-100">SOJOURN</h3>
-                          <p className="text-xs font-mono text-blue-400">KEPLER-442B</p>
+                          <h3 className="font-bold text-xl text-stone-800">SOJOURN</h3>
+                          <p className="text-xs font-mono text-blue-600">KEPLER-442B</p>
                         </div>
                       </div>
-                      <p className="text-gray-400 leading-relaxed mb-4">
+                      <p className="text-stone-600 leading-relaxed mb-4">
                         Advanced sustainable civilization project. Terraforming Kepler-442b through 
                         ecological integration and cutting-edge technology.
                       </p>
-                      <div className="text-xs font-mono text-blue-400">
+                      <div className="text-xs font-mono text-blue-600">
                         SECURITY: LEVEL 9
                       </div>
                     </div>
 
                     {/* Navigation */}
                     <div>
-                      <h4 className="font-bold text-gray-100 mb-4 uppercase tracking-wide">Sectors</h4>
+                      <h4 className="font-bold text-stone-800 mb-4 uppercase tracking-wide">Sectors</h4>
                       <ul className="space-y-2">
                         <li>
                           <a 
@@ -174,7 +174,7 @@ export default function Home() {
                               e.preventDefault();
                               handleSectionChange('about');
                             }}
-                            className="text-blue-400 hover:text-blue-300 transition-colors font-mono text-sm uppercase tracking-wide cursor-pointer"
+                            className="text-blue-600 hover:text-blue-800 transition-colors font-mono text-sm uppercase tracking-wide cursor-pointer"
                           >
                             Documentation
                           </a>
@@ -182,12 +182,12 @@ export default function Home() {
                       </ul>
                       
                       <div className="mt-6">
-                        <p className="text-gray-400 text-sm mb-1">By</p>
+                        <p className="text-stone-600 text-sm mb-1">By</p>
                         <a 
                           href="https://sailorjacob.github.io"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-gray-300 text-3xl font-light inline-block relative opacity-70 hover:opacity-100 transition-opacity duration-300"
+                          className="text-stone-500 text-3xl font-light inline-block relative opacity-70 hover:opacity-100 transition-opacity duration-300"
                           style={{
                             fontFamily: '"Brush Script MT", "Lucida Handwriting", cursive',
                             fontWeight: '300',
@@ -202,30 +202,30 @@ export default function Home() {
 
                     {/* Status */}
                     <div>
-                      <h4 className="font-bold text-gray-100 mb-4 uppercase tracking-wide">System Status</h4>
+                      <h4 className="font-bold text-stone-800 mb-4 uppercase tracking-wide">System Status</h4>
                       <div className="space-y-3 text-sm font-mono">
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-sm shadow-green-400/50" />
-                          <span className="text-gray-300 animate-fade-in">All Systems Operational</span>
+                          <div className="w-2 h-2 bg-stone-200 rounded-full animate-pulse shadow-sm" />
+                          <span className="text-stone-600 animate-fade-in">All Systems Operational</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-ping shadow-sm" style={{ animationDuration: '2s' }} />
-                          <span className="text-gray-300 animate-fade-in-delay-1">Atmospheric Processors Online</span>
+                          <div className="w-2 h-2 bg-stone-300 rounded-full animate-ping shadow-sm" style={{ animationDuration: '2s' }} />
+                          <span className="text-stone-600 animate-fade-in-delay-1">Atmospheric Processors Online</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-gray-500 rounded-full shadow-sm" />
-                          <span className="text-gray-300 animate-fade-in-delay-2">Terraforming Progress: 89.3%</span>
+                          <div className="w-2 h-2 bg-stone-400 rounded-full animate-pulse shadow-sm" style={{ animationDuration: '3s' }} />
+                          <span className="text-stone-600 animate-fade-in-delay-2">Terraforming Progress: 89.3%</span>
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="mt-12 pt-8 border-t border-gray-700">
+                  <div className="mt-12 pt-8 border-t border-stone-300">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                      <p className="text-sm font-mono text-blue-400">
+                      <p className="text-sm font-mono text-blue-600">
                         © 2157 SOJOURN COLONY ALPHA • INTERSTELLAR COLLECTIVE
                       </p>
-                      <div className="flex items-center gap-6 text-xs font-mono text-blue-400 uppercase">
+                      <div className="flex items-center gap-6 text-xs font-mono text-blue-600 uppercase">
                         <div>HARMONY PROTOCOL ACTIVE</div>
                         <div>DATA PROTECTED</div>
                         <div>TRANSMISSION PURE</div>
