@@ -288,7 +288,7 @@ export default function Gallery() {
             e.stopPropagation();
             setShowInfo(!showInfo);
           }}
-          className="p-3 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all"
+          className="hidden md:block p-3 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-black/50 transition-all"
           aria-label="Toggle image information"
         >
           <Info size={20} />

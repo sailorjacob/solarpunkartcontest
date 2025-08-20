@@ -183,20 +183,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                   {item.label}
                 </motion.button>
               ))}
-              <div className="pt-4 border-t border-stone-200">
-                <motion.button
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: navItems.length * 0.1 }}
-                  onClick={() => {
-                    onSectionChange('wall');
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="w-full btn-primary"
-                >
-                  Start Creating
-                </motion.button>
-              </div>
+
             </div>
           </motion.div>
         )}
